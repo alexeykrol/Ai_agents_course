@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Кликни квадрат!</title>
+<style>
+  * {box-sizing:border-box;margin:0;padding:0}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;
+       min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4}
+  #stats{margin-bottom:20px;font-size:1.2rem}
+  #square{position:absolute;width:50px;height:50px;background:#ff3b3b;cursor:pointer;display:none}
+  #startBtn{padding:10px 20px;font-size:1rem;cursor:pointer}
+</style>
+</head>
+<body>
+  <div id="stats">
+    <span id="time">30</span> сек | Счёт: <span id="score">0</span>
+  </div>
+
+  <button id="startBtn">Старт</button>
+  <div id="square"></div>
+
+<script>
+const square   = document.getElementById('square');
+const timeSpan = document.getElementById('time');
+const scoreSpan= document.getElementById('score');
+const startBtn = document.getElementById('startBtn');
+
+let score=0, timeLeft=30, timerId;
+
+// случайные координаты внутри окна
+function randomPos(){  
+  const size = 50;
+  const x = Math.floor(Math.random()*(window.innerWidth - size));
+  const y = Math.floor(Math.random()*(window.innerHeight - size));
+  return {x,y};
+}
+
+function placeSquare(){
+  const {x,y}=randomPos();
+  square.style.left=x+'px';
+  square.style.top =y+'px';
+}
+
+function startGame(){
+  score=0; timeLeft=30;
+  scoreSpan.textContent=score;
+  timeSpan.textContent=timeLeft;
+  startBtn.style.display='none';
+  square.style.display='block';
+  placeSquare();
+
+  timerId=setInterval(()=>{
+    timeLeft--;
+    timeSpan.textContent=timeLeft;
+    if(timeLeft<=0) endGame();
+  },1000);
+}
+
+function endGame(){
+  clearInterval(timerId);
+  square.style.display='none';
+  alert('Время вышло! Ваш результат: '+score);
+  startBtn.textContent='Сыграть ещё';
+  startBtn.style.display='inline-block';
+}
+
+// обработчики
+square.addEventListener('click', ()=>{
+  score++;
+  scoreSpan.textContent=score;
+  placeSquare();
+});
+startBtn.addEventListener('click', startGame);
+window.addEventListener('resize', ()=>square.style.display==='block'&&placeSquare());
+</script>
+</body>
+</html>
