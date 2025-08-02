@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Мини 3D полёт между горами — Three.js, управление стрелками</title>
+<style>
+  html,body{height:100%;margin:0}
+  body{background:#0fe3ff;font-family:system-ui,Arial,Helvetica,sans-serif;overflow:hidden}
+  #hud{
+    position:fixed;inset:16px auto auto 16px;z-index:10;
+    padding:8px 12px;border-radius:12px;background:#ffffffcc;backdrop-filter:blur(6px);
+    font-weight:700
+  }
+  #overlay{
+    position:fixed;inset:0;display:none;place-items:center;z-index:20;
+    background:linear-gradient(180deg,#00000099,#000000aa);
+    color:#fff;text-align:center
+  }
+  #card{
+    background:#111; color:#fff; padding:24px 28px; border-radius:16px; min-width:280px;
+    box-shadow:0 10px 40px #0008
+  }
+  #card h1{margin:0 0 6px 0;font-size:28px}
+  #card p{margin:8px 0 16px 0;font-size:16px;opacity:.9}
+  
+  
+  canvas{display:block;width:100vw;height:100vh}
+</style>
+<script src="https://unpkg.com/three@0.159.0/build/three.min.js"></script>
+</head>
+<body>
+<div id="hud">Время: <span id="time">0.0</span> c</div>
+<div id="overlay">
+  <div id="card">
+    <h1 id="title">Готовы?</h1>
+    <p id="statsP" style="display:none">Вы продержались <b><span id="finalTime">0.0</span> с</b></p>
+    <p id="hint">Нажмите <b>ПРОБЕЛ</b>, чтобы начать заново. Управление — стрелки (← ↑ → ↓). Наклон горизонта — по ←/→.</p>
+    <div id="likeRowOv" class="likeRow" style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:8px">
+      <span id="likePrompt">Поставь лайк</span>
+      <span id="likeHeartOv" class="heart" title="Лайк" style="width:20px;height:20px;background:#ff3b55;transform:rotate(45deg);position:relative;cursor:pointer;display:inline-block"></span>
+    </div>
+    <div id="reviewBoxOv" style="display:none;margin-top:10px">
+      <div style="opacity:.85;margin-bottom:6px">Напишите короткий отзыв разработчику:</div>
+      <textarea id="reviewTextOv" placeholder="Понравилось управление и дизайн..." style="width:100%;min-height:60px;border-radius:8px;padding:8px;border:none"></textarea>
+      <div class="btnRow" style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+        <button class="btn ghost" id="btnReviewCancelOv" style="padding:8px 12px;border:none;border-radius:10px;background:#333;color:#fff;font-weight:700;cursor:pointer">Отмена</button>
+        <button class="btn primary" id="btnReviewSendOv" style="padding:8px 12px;border:none;border-radius:10px;background:#00ff88;color:#081b12;font-weight:700;cursor:pointer">Отправить</button>
+      </div>
+      <div id="thanksOv" style="display:none;margin-top:6px">Спасибо!</div>
+    </div>
+  </div>
+</div>
+<canvas id="glcanvas"></canvas>
+
+<script>
+(function(){
+  // ======== Утилиты ========
+  const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+  const rand = (min,max)=>min+Math.random()*(max-min);
+
+  // ======== CONFIG: все коэффициенты можно держать во внешнем файле game-config.json ========
+  const DEFAULT_CONFIG = {
+    density: 3,        // 1..5 — плотность препятствий (5 = плотнее)
+    height: 3,         // 1..5 — высота гор
+    wind: 3,           // 1..5 — сила «ветра» при подъёме
+    rollIntensity: 3,  // 1..5 — интенсивность наклона камеры
+    rollLimit: 4,      // 1..5 => [30,45,90,135,180] градусов
+    upSpeed: 3,        // 1..5 — скорость набора высоты
+    downSpeed: 3       // 1..5 — скорость снижения
+    , shapeRatio: 3      // 1..5 — отношение основания к высоте (толщина гор)
+  };
+  let CONFIG = {...DEFAULT_CONFIG};
+
+  const map5 = (v, min, max) => min + ( (v-1) * (max-min) / 4 );
+  const rollLimitDegFrom5 = v => [30,45,90,135,180][clamp(Math.round(v)-1,0,4)];
+
+  // «Производные» параметры (будут обновляться из CONFIG)
+  let ROLL_MAX = (90*Math.PI/180), ROLL_APPLY = 2.0, ROLL_ACCEL = 1.2, ROLL_DAMP = 1.2;
+  let PITCH_MAX = 0, PITCH_ACCEL = 0, PITCH_DAMP = 1.2; // тангаж выключен
+  let V_UP = 3.0, V_DOWN = 2.6;
+  let HEIGHT_MIN = 3.2, HEIGHT_MAX = 5.2;   // высоты ярусов
+  let WIND_FRAC = 0.10;                     // доля ширины поля для ветра
+  let SPACING_BASE = 1.79, SPACING = 1.79;  // шаг по Z
+  let SHAPE_RATIO = 0.8;                    // базовое отношение основания к высоте
+
+  function applyConfig(){
+    // Предел наклона (в градусах -> радианы)
+    ROLL_MAX = (rollLimitDegFrom5(CONFIG.rollLimit) * Math.PI/180);
+    // Интенсивность наклона
+    ROLL_ACCEL = 1.2 * map5(CONFIG.rollIntensity, 0.5, 2.0);
+    ROLL_APPLY = map5(CONFIG.rollIntensity, 1.0, 2.5);
+
+    // Скорости подъёма/снижения
+    V_UP   = map5(CONFIG.upSpeed,   1.5, 5.0);
+    V_DOWN = map5(CONFIG.downSpeed, 1.0, 4.0);
+
+    // Высота гор
+    const hMul = map5(CONFIG.height, 0.6, 1.8);
+    HEIGHT_MIN = 3.2 * hMul;
+    HEIGHT_MAX = 5.2 * hMul;
+
+    // Плотность (чем больше — тем меньше шаг)
+    const densMul = map5(CONFIG.density, 0.6, 1.6);
+    SPACING = SPACING_BASE * (1.6 - (densMul-0.6)); // 1..5 => ~половинит шаг при 5
+
+    // Ветер при подъёме
+    WIND_FRAC = map5(CONFIG.wind, 0.00, 0.15);
+
+    // Толщина гор: отношение основания к высоте
+    SHAPE_RATIO = map5(CONFIG.shapeRatio, 0.3, 1.4);
+  }
+
+  async function loadExternalConfigIfAny(){
+    // Порядок приоритета: localStorage > game-config.json > default
+    try{
+      const ls = localStorage.getItem('game-config');
+      if(ls){ CONFIG = {...DEFAULT_CONFIG, ...JSON.parse(ls)}; applyConfig(); return; }
+    }catch(e){}
+    try{
+      const res = await fetch('game-config.json', {cache:'no-store'});
+      if(res.ok){ const j = await res.json(); CONFIG = {...DEFAULT_CONFIG, ...j}; applyConfig(); return; }
+    }catch(e){}
+    CONFIG = {...DEFAULT_CONFIG}; applyConfig();
+  }
+
+  function saveConfigLocal(){ try{ localStorage.setItem('game-config', JSON.stringify(CONFIG)); }catch(e){} }
+
+  // ======== Создаём UI для настроек (кнопка и модалка) ========
+  // ======== Таблица рекордов/попыток ========
+  let attempts = []; // {t: seconds, ts: timestamp}
+  let lastAttemptTs = 0;
+  function loadAttempts(){
+    try{
+      const s = localStorage.getItem('attempts');
+      if(s){ const obj = JSON.parse(s); attempts = obj.attempts||[]; lastAttemptTs = obj.lastAttemptTs||0; }
+    }catch(e){}
+  }
+  function saveAttempts(){
+    try{ localStorage.setItem('attempts', JSON.stringify({attempts, lastAttemptTs})); }catch(e){}
+  }
+  function recordAttempt(seconds){
+    const ts = Date.now();
+    attempts.push({ t: Number(seconds.toFixed(1)), ts });
+    lastAttemptTs = ts;
+    saveAttempts();
+    renderAttempts();
+  }
+  function renderAttempts(){
+    const board = document.getElementById('scoreboard');
+    if(!board) return;
+    // Топ‑10 по убыванию + последняя попытка внизу отдельной строкой
+    const sorted = [...attempts].sort((a,b)=>b.t - a.t);
+    const top = sorted.slice(0,10);
+    const last = attempts.length ? attempts[attempts.length-1] : null;
+    board.innerHTML = '';
+    const best = top.length? top[0].t : 0;
+    for(let i=0;i<top.length;i++){
+      const a = top[i];
+      const div = document.createElement('div');
+      const classes = ['score'];
+      if(a.t === best) classes.push('best');
+      div.className = classes.join(' ');
+      div.innerHTML = `<span class="rank">${i+1}</span><span class="time">${a.t.toFixed(1)}с</span>`;
+      board.appendChild(div);
+    }
+    if(last){
+      const sep = document.createElement('div'); sep.style.margin='2px 0'; board.appendChild(sep);
+      const d = document.createElement('div'); d.className='score last';
+      d.innerHTML = `<span class="rank">—</span><span class="time">${last.t.toFixed(1)}с</span>`;
+      board.appendChild(d);
+    }
+  }
+
+  // ======== Лайки и отзывы ========
+  let likesRaw = 0, likesDisplay = 0; // показываемое = round(likesRaw*2.7) + дрейф по таймеру
+  let reviews = [];
+  function loadSocial(){
+    try{ likesRaw = +(localStorage.getItem('likesRaw')||'0'); }catch(e){ likesRaw = 0; }
+    try{ reviews = JSON.parse(localStorage.getItem('reviews')||'[]'); }catch(e){ reviews=[]; }
+    likesDisplay = Math.max(0, Math.round(likesRaw*2.7));
+    updateSocialUI();
+    scheduleLikesTick();
+  }
+  function saveLikes(){ try{ localStorage.setItem('likesRaw', String(likesRaw)); }catch(e){} }
+  function saveReviews(){ try{ localStorage.setItem('reviews', JSON.stringify(reviews)); }catch(e){} }
+  function updateSocialUI(){
+    const lc=document.getElementById('likesCount'); if(lc) lc.textContent = String(likesDisplay);
+    const rc=document.getElementById('reviewsCount'); if(rc) rc.textContent = String(reviews.length);
+  }
+  function ensureLikesFloor(){ const base=Math.round(likesRaw*2.7); if(likesDisplay < base){ likesDisplay = base; updateSocialUI(); } }
+  function scheduleLikesTick(){
+    const delay = 3000 + Math.random()*4000; // раз в ~5с, но со случайным промежутком
+    setTimeout(()=>{ likesDisplay += 1; updateSocialUI(); scheduleLikesTick(); }, delay);
+  }
+  function showReviewsModal(){
+    let m=document.getElementById('reviewsModal');
+    if(!m){
+      const st=document.createElement('style');
+      st.textContent=`#reviewsModal{position:fixed;inset:0;display:none;place-items:center;z-index:40;background:linear-gradient(180deg,#0009,#000a)}
+      #reviewsCard{background:#111;color:#fff;max-width:680px;width:92%;max-height:70vh;overflow:auto;padding:20px 22px;border-radius:16px;box-shadow:0 10px 40px #0008}
+      #reviewsCard h2{margin:0 0 10px 0}
+      .rev{background:#ffffff14;margin:6px 0;padding:8px 10px;border-radius:10px;white-space:pre-wrap}`;
+      document.head.appendChild(st);
+      m=document.createElement('div'); m.id='reviewsModal';
+      m.innerHTML='<div id="reviewsCard"><h2>Отзывы</h2><div id="reviewsList"></div><div style="text-align:right;margin-top:10px"><button id="reviewsClose" class="btn ghost">Закрыть</button></div></div>';
+      document.body.appendChild(m);
+      m.addEventListener('click', (e)=>{ if(e.target.id==='reviewsModal') m.style.display='none'; });
+      m.querySelector('#reviewsClose').onclick = ()=>{ m.style.display='none'; };
+    }
+    const list=m.querySelector('#reviewsList'); list.innerHTML='';
+    if(reviews.length===0){ list.innerHTML='<div style="opacity:.75">Пока нет отзывов.</div>'; }
+    else{
+      for(let i=reviews.length-1;i>=0;i--){ const r=reviews[i]; const d=new Date(r.ts); const t=d.toLocaleString(); const div=document.createElement('div'); div.className='rev'; div.textContent = r.text + ' — ' + t; list.appendChild(div); }
+    }
+    m.style.display='grid';
+  }
+
+  function createSettingsUI(){
+    const css = `
+      #btnSettings{position:fixed;top:56px;right:16px;z-index:27;padding:8px 12px;border:none;border-radius:12px;font-weight:700;background:#222;color:#fff;opacity:.9;cursor:pointer}
+      #btnSettings:hover{opacity:1}
+      #settingsModal{position:fixed;inset:0;display:none;place-items:center;z-index:30;background:linear-gradient(180deg,#0009,#000a);}
+      #settingsCard{background:#111;color:#fff;min-width:320px;max-width:520px;padding:20px 22px;border-radius:16px;box-shadow:0 10px 40px #0008}
+      #settingsCard h2{margin:0 0 12px 0}
+      .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:10px 0}
+      .row label{opacity:.9}
+      .row input[type=range]{width:220px}
+      #settingsActions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+      .btn{padding:8px 12px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+      .btn.primary{background:#00ff88;color:#081b12}
+      .btn.ghost{background:#333;color:#fff}
+    `;
+    const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
+
+    const btn = document.createElement('button'); btn.id='btnSettings'; btn.textContent='Настройки'; document.body.appendChild(btn);
+
+    // Таблица попыток под кнопкой «Настройки»
+    const css2 = `#scoreboard{position:fixed;top:96px;right:16px;z-index:24;display:flex;flex-direction:column;gap:4px;max-height:40vh;overflow:auto;font-weight:700}
+      .score{background:#ffffffcc;backdrop-filter:blur(6px);padding:6px 10px;border-radius:10px;color:#111;display:flex;gap:8px;align-items:center}
+      .score .rank{min-width:22px;text-align:right;opacity:.6}
+      .score.best{border:2px solid #00ff88}
+      .score.last{border:2px solid #ff3b55;color:#b10012}`;
+    const s2 = document.createElement('style'); s2.textContent = css2; document.head.appendChild(s2);
+    const board = document.createElement('div'); board.id='scoreboard'; document.body.appendChild(board);
+
+    // Соц-панель: лайки и отзывы
+    const cssSB = `#socialBar{position:fixed;top:12px;right:16px;left:auto;z-index:26;display:flex;gap:12px;align-items:center;background:#ffffffcc;backdrop-filter:blur(6px);padding:6px 10px;border-radius:12px;font-weight:700}
+      #socialBar .sep{opacity:.4}
+      #btnReadReviews{padding:4px 8px;border:none;border-radius:10px;background:#333;color:#fff;cursor:pointer}`;
+    const sSB=document.createElement('style'); sSB.textContent=cssSB; document.head.appendChild(sSB);
+    const social=document.createElement('div'); social.id='socialBar';
+    social.innerHTML='❤ Лайков: <span id="likesCount">0</span> <span class="sep">|</span> Отзывов: <span id="reviewsCount">0</span> <button id="btnReadReviews">Почитать отзывы</button>';
+    document.body.appendChild(social);
+    social.querySelector('#btnReadReviews').onclick = showReviewsModal;
+
+    const modal = document.createElement('div'); modal.id='settingsModal';
+    modal.innerHTML = `
+      <div id="settingsCard">
+        <h2>Настройки (1–5)</h2>
+        <div class="row"><label>Плотность гор</label><input id="s_density" type="range" min="1" max="5" step="1"><span id="v_density"></span></div>
+        <div class="row"><label>Высота гор</label><input id="s_height" type="range" min="1" max="5" step="1"><span id="v_height"></span></div>
+        <div class="row"><label>Сила ветра (подъём)</label><input id="s_wind" type="range" min="1" max="5" step="1"><span id="v_wind"></span></div>
+        <div class="row"><label>Интенсивность наклона</label><input id="s_roll" type="range" min="1" max="5" step="1"><span id="v_roll"></span></div>
+        <div class="row"><label>Предел наклона</label><input id="s_rolllim" type="range" min="1" max="5" step="1"><span id="v_rolllim"></span></div>
+        <div class="row"><label>Основание/высота (толщина)</label><input id="s_ratio" type="range" min="1" max="5" step="1"><span id="v_ratio"></span></div>
+        <div class="row"><label>Скорость набора высоты</label><input id="s_up" type="range" min="1" max="5" step="1"><span id="v_up"></span></div>
+        <div class="row"><label>Скорость снижения</label><input id="s_down" type="range" min="1" max="5" step="1"><span id="v_down"></span></div>
+        <div id="settingsActions">
+          <button class="btn ghost" id="btnCancel">Отмена</button>
+          <button class="btn ghost" id="btnExport">Скачать JSON</button>
+          <button class="btn primary" id="btnSave">Сохранить</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+
+    // Блок лайка и отзыв в модалке
+    const card = modal.querySelector('#settingsCard');
+    const heartCss = `#likeRow{margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:center}
+      .heart{width:20px;height:20px;background:#ff3b55;transform:rotate(45deg);position:relative;cursor:pointer;animation:beat .9s infinite}
+      .heart:before,.heart:after{content:'';position:absolute;width:20px;height:20px;background:#ff3b55;border-radius:50%}
+      .heart:before{top:-10px;left:0}
+      .heart:after{left:-10px;top:0}
+      @keyframes beat{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(45deg) scale(1.2)}}
+      #reviewBox{display:none;margin-top:10px}
+      #reviewBox textarea{width:100%;min-height:60px;border-radius:8px;padding:8px;border:none}
+      #reviewBox .btnRow{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}`;
+    const st3=document.createElement('style'); st3.textContent=heartCss; document.head.appendChild(st3);
+    const likeRow=document.createElement('div'); likeRow.id='likeRow'; likeRow.innerHTML='<span>Поставить лайк</span> <span id="likeHeart" class="heart" title="Лайк"></span>';
+    const reviewBox=document.createElement('div'); reviewBox.id='reviewBox'; reviewBox.innerHTML='<div style="opacity:.85;margin-bottom:6px">Напишите короткий отзыв:</div><textarea id="reviewText" placeholder="Понравилось управление и дизайн..."></textarea><div class="btnRow"><button class="btn ghost" id="btnReviewCancel">Отмена</button><button class="btn primary" id="btnReviewSend">Отправить</button></div>';
+    card.appendChild(likeRow); card.appendChild(reviewBox);
+    const heartEl=likeRow.querySelector('#likeHeart');
+    const btnSend=reviewBox.querySelector('#btnReviewSend');
+    const btnCancel=reviewBox.querySelector('#btnReviewCancel');
+    heartEl.onclick=()=>{ heartEl.style.display='none'; reviewBox.style.display='block'; likesRaw++; saveLikes(); ensureLikesFloor(); updateSocialUI(); };
+    btnSend.onclick=()=>{ const txt = (reviewBox.querySelector('#reviewText').value||'').trim(); if(txt){ reviews.push({text:txt, ts:Date.now()}); saveReviews(); updateSocialUI(); } reviewBox.style.display='none'; heartEl.style.display='inline-block'; };
+    btnCancel.onclick=()=>{ reviewBox.style.display='none'; heartEl.style.display='inline-block'; };
+
+    function syncUI(){
+      const set = (id,val,fmt)=>{ const el=document.getElementById('s_'+id); el.value=val; document.getElementById('v_'+id).textContent=fmt?fmt(val):val; };
+      set('density',CONFIG.density);
+      set('height',CONFIG.height);
+      set('wind',CONFIG.wind);
+      set('roll',CONFIG.rollIntensity);
+      set('rolllim',CONFIG.rollLimit, v=>rollLimitDegFrom5(v)+"°");
+      set('up',CONFIG.upSpeed);
+      set('down',CONFIG.downSpeed);
+      set('ratio',CONFIG.shapeRatio);
+    }
+    syncUI();
+
+    btn.onclick = ()=>{ syncUI(); modal.style.display='grid'; };
+    document.getElementById('btnCancel').onclick = ()=>{ modal.style.display='none'; };
+    document.getElementById('btnSave').onclick = ()=>{
+      CONFIG = {
+        density: +document.getElementById('s_density').value,
+        height: +document.getElementById('s_height').value,
+        wind: +document.getElementById('s_wind').value,
+        rollIntensity: +document.getElementById('s_roll').value,
+        rollLimit: +document.getElementById('s_rolllim').value,
+        upSpeed: +document.getElementById('s_up').value,
+        downSpeed: +document.getElementById('s_down').value,
+        shapeRatio: +document.getElementById('s_ratio').value,
+      };
+      applyConfig(); saveConfigLocal(); modal.style.display='none';
+    };
+    document.getElementById('btnExport').onclick = ()=>{
+      const blob = new Blob([JSON.stringify(CONFIG,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='game-config.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    };
+  }
+
+  // ======== БАЗОВАЯ СЦЕНА THREE.JS ========
+  const canvas = document.getElementById('glcanvas');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0fe3ff);
+
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+  camera.position.set(0, 1.2, 4.2);
+
+  window.addEventListener('resize', ()=>{
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }, {passive:true});
+
+  // ======== СВЕТ ========
+  const ambient = new THREE.AmbientLight(0xffffff, 0.35); scene.add(ambient);
+  const sun = new THREE.DirectionalLight(0xffffff, 0.95);
+  sun.position.set(-4, 8, 6); sun.castShadow = true; sun.shadow.mapSize.set(1024,1024);
+  sun.shadow.camera.near=0.5; sun.shadow.camera.far=40; sun.shadow.camera.left=-16; sun.shadow.camera.right=16; sun.shadow.camera.top=16; sun.shadow.camera.bottom=-16; scene.add(sun);
+
+  // ======== HUD ========
+  const hudTime = document.getElementById('time');
+  const overlay = document.getElementById('overlay');
+  const titleEl = document.getElementById('title');
+  const hintEl = document.getElementById('hint');
+  const statsP = document.getElementById('statsP');
+  const finalTimeEl = document.getElementById('finalTime');
+  // overlay like/review elements
+  const likeHeartOv = document.getElementById('likeHeartOv');
+  const likePromptOv = document.getElementById('likePrompt');
+  const likeRowOv = document.getElementById('likeRowOv');
+  const reviewBoxOv = document.getElementById('reviewBoxOv');
+  const reviewTextOv = document.getElementById('reviewTextOv');
+  const btnReviewSendOv = document.getElementById('btnReviewSendOv');
+  const btnReviewCancelOv = document.getElementById('btnReviewCancelOv');
+  const thanksOv = document.getElementById('thanksOv');
+
+  // add heart visuals (two circles) via CSS pseudo-elements
+  (function(){
+    const st = document.createElement('style');
+    st.textContent = `.heart:before,.heart:after{content:'';position:absolute;width:20px;height:20px;background:#ff3b55;border-radius:50%}
+    .heart:before{top:-10px;left:0}
+    .heart:after{left:-10px;top:0}
+    @keyframes beat{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(45deg) scale(1.2)}}
+    .heart{animation:beat .9s infinite}`;
+    document.head.appendChild(st);
+  })();
+
+  // Показ лайк-промо «каждый 5‑й раз»
+  let overlayCount = 0; let overlayLikePending = false;
+  function loadOverlayCount(){ try{ overlayCount = +(localStorage.getItem('overlayCount')||'0'); }catch(e){ overlayCount=0; } }
+  function saveOverlayCount(){ try{ localStorage.setItem('overlayCount', String(overlayCount)); }catch(e){} }
+  function refreshOverlayLikeUI(){
+    const showLike = (overlayCount % 5 === 0); // показываем предложение поставить лайк каждый 5-й показ оверлея
+    if(likeRowOv) likeRowOv.style.display = showLike ? 'flex' : 'none';
+    if(likeHeartOv) likeHeartOv.style.display = 'inline-block';
+    if(likePromptOv) likePromptOv.style.display = '';
+    if(reviewBoxOv) reviewBoxOv.style.display = 'none';
+    if(thanksOv) thanksOv.style.display = 'none';
+    overlayLikePending = false;
+  }
+
+  // overlay like/review handlers
+  likeHeartOv.onclick = ()=>{
+    // Сразу увеличиваем лайк и открываем форму отзыва; если отменят — откатим
+    overlayLikePending = true;
+    likesRaw++; saveLikes(); ensureLikesFloor(); updateSocialUI();
+    likeHeartOv.style.display='none';
+    if(likePromptOv) likePromptOv.style.display='none';
+    reviewBoxOv.style.display='block';
+  };
+  btnReviewSendOv.onclick = ()=>{
+    const txt=(reviewTextOv.value||'').trim();
+    if(txt){ reviews.push({text:txt, ts:Date.now()}); saveReviews(); likesDisplay += 10; updateSocialUI(); if(thanksOv) thanksOv.style.display='block'; }
+    reviewBoxOv.style.display='none';
+    overlayLikePending = false; // лайк остаётся засчитанным
+  };
+  btnReviewCancelOv.onclick = ()=>{
+    // Отменили отзыв — возвращаемся к оверлею, лайк откатываем, пробел снова активен
+    if(overlayLikePending){ overlayLikePending=false; likesRaw = Math.max(0, likesRaw-1); saveLikes(); ensureLikesFloor(); updateSocialUI(); }
+    reviewBoxOv.style.display='none';
+    likeHeartOv.style.display='inline-block';
+    if(likePromptOv) likePromptOv.style.display='inline-block';
+  };
+
+
+  // ======== МИР ========
+  const world = { halfWidth:18.0, groundY:-2.0, spawnZ:-12, nearZ:3, spacing: 1.79 };
+
+  // Земля и полосы
+  const groundGeo = new THREE.PlaneGeometry(world.halfWidth*5, 200, 1, 1);
+  const groundMat = new THREE.MeshStandardMaterial({color: 0x091a29, roughness: 1, metalness: 0});
+  const ground = new THREE.Mesh(groundGeo, groundMat); ground.rotation.x=-Math.PI/2; ground.position.y=world.groundY; ground.receiveShadow=true; scene.add(ground);
+  const stripeGeo = new THREE.BoxGeometry(0.2, 0.02, 1.4);
+  const stripeMat = new THREE.MeshStandardMaterial({color: 0xf2f2f2});
+  const stripes = Array.from({length: 18}, (_,i)=>{ const m=new THREE.Mesh(stripeGeo, stripeMat); m.position.set(0, world.groundY+0.02, -i*2.2); m.castShadow=false; m.receiveShadow=true; scene.add(m); return m; });
+
+  // ======== Игрок ========
+  const player = new THREE.Mesh(new THREE.SphereGeometry(0.11, 20, 14), new THREE.MeshStandardMaterial({color: 0xfff21a, roughness: 0.45, metalness: 0.05}));
+  player.castShadow=true; player.position.set(0,0,0); scene.add(player); player.userData.radius=0.11;
+  const blob = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), new THREE.MeshStandardMaterial({color: 0x000000, roughness:1, metalness:0}));
+  blob.scale.set(0.125,0.02,0.125); blob.position.set(0, world.groundY+0.02, 0); blob.receiveShadow=true; scene.add(blob);
+
+  // ======== Препятствия ========
+  const obstacles = []; const MAX_OBS = 28; const palette=[0xff3b55,0xffcc00,0x33ff77,0x4da0ff,0xff66e6,0x19ffff];
+  function makeCompositeObstacle(z){
+    const inverted = Math.random() < 0.5; // true => вершина на земле, false => основание на земле
+    const tiers = (Math.random()<0.5?2:3);
+    const segs=[]; let baseRadius=0; const segOffsets=[];
+    for(let i=0;i<tiers;i++){
+      const h = rand(HEIGHT_MIN, HEIGHT_MAX) * (i===0?1.0:rand(0.9,1.1));
+      const baseR = h * SHAPE_RATIO;
+      const r0 = i===0 ? baseR : Math.max(0.6, segs[i-1].r0 * rand(0.85, 1.05));
+      const dx = rand(-r0*0.6, r0*0.6);
+      segs.push({h,r0}); segOffsets.push(dx); baseRadius=r0;
+    }
+    const height = Math.max(...segs.map(s=>s.h)); const maxR = Math.max(...segs.map(s=>s.r0));
+    const x = rand(-world.halfWidth + maxR + 0.5, world.halfWidth - maxR - 0.5);
+    const group = new THREE.Group();
+    for(let i=0;i<segs.length;i++){
+      const color = palette[(Math.random()*palette.length)|0];
+      const mat = new THREE.MeshStandardMaterial({color, roughness:0.75, metalness:0.0, flatShading:true});
+      const sides=(Math.random()<0.5?16:4);
+      let geo=new THREE.ConeGeometry(segs[i].r0, segs[i].h, sides);
+      if(inverted){
+        // ВЕРШИНА на земле: апекс на Y=0, основание на Y=+h
+        geo.rotateX(Math.PI);
+        geo.translate(0, segs[i].h/2, 0);
+      } else {
+        // ОСНОВАНИЕ на земле: основание на Y=0, апекс на Y=+h
+        geo.translate(0, segs[i].h/2, 0);
+      }
+      const m=new THREE.Mesh(geo, mat); m.castShadow=true; m.receiveShadow=true; m.position.set(segOffsets[i], world.groundY, 0); group.add(m);
+    }
+    group.position.set(x,0,z); scene.add(group);
+    const segments = segs.map((s,i)=>({ y0: world.groundY, h: s.h, r0: s.r0, dx: segOffsets[i] }));
+    group.userData = { baseRadius:maxR, height, segments, inverted };
+    return group;
+  }
+  function resetObstacles(){ for(const o of obstacles){ scene.remove(o); o.traverse(n=>{ if(n.isMesh){ n.geometry.dispose(); n.material.dispose&&n.material.dispose(); } }); }
+    obstacles.length=0; let z=world.spawnZ; for(let i=0;i<MAX_OBS;i++){ obstacles.push(makeCompositeObstacle(z)); z -= world.spacing; } updatePlayerCeiling(); }
+
+  // ======== Ввод ========
+  const keys={ArrowUp:false,ArrowDown:false,ArrowLeft:false,ArrowRight:false};
+  window.addEventListener('keydown', e=>{
+    if(e.code==='Space'){
+      // Если открыта форма отзыва в оверлее — пробел НЕ запускает игру, чтобы можно было печатать
+      const rv = document.getElementById('reviewBoxOv');
+      const reviewOpen = rv && rv.style.display !== 'none' && overlay && overlay.style.display !== 'none';
+      if(!running && reviewOpen){ return; } // не предотвращаем — пусть печатается пробел
+      if(!running){ startGame(); e.preventDefault(); }
+      return;
+    }
+    if(keys.hasOwnProperty(e.key)){ keys[e.key]=true; e.preventDefault(); }
+  });
+  window.addEventListener('keyup',   e=>{ if(keys.hasOwnProperty(e.key)){ keys[e.key]=false; e.preventDefault(); } });
+
+  // ======== Состояние ========
+  let running=false, startTime=0, elapsed=0, speed=4.4; let last=performance.now();
+  let camRoll=0, camPitch=0; let playerYMax=-0.2; let vY=0; let prevUp=false;
+  let windOffset=0, windBaseX=0, windTarget=0, windTimer=0;
+
+  function updatePlayerCeiling(){ if(obstacles.length===0){ playerYMax=0.8; return; } let minH=Infinity; for(const o of obstacles){ minH=Math.min(minH,o.userData.height); } playerYMax = world.groundY + minH*0.8; }
+
+  function showStart(){
+    running=false;
+    titleEl.textContent='Готовы?';
+    statsP.style.display='none';
+    hintEl.innerHTML='Нажмите <b>ПРОБЕЛ</b>, чтобы начать заново. Управление — стрелки (← ↑ → ↓). Наклон горизонта — по ←/→.';
+    overlay.style.display='grid';
+    overlayCount++; saveOverlayCount(); refreshOverlayLikeUI();
+    renderer.setAnimationLoop(null);
+  }
+  function startGame(){ running=true; overlay.style.display='none'; player.position.set(0,0,0); blob.position.set(0,world.groundY+0.02,0); camera.position.set(0,1.2,4.2); camera.rotation.z=0; speed=4.4; world.spacing=SPACING; resetObstacles(); startTime=performance.now(); last=startTime; renderer.setAnimationLoop(loop); }
+  function gameOver(){
+    running=false; finalTimeEl.textContent=elapsed.toFixed(1);
+    // записываем попытку в рейтинг
+    recordAttempt(elapsed);
+    titleEl.textContent='Игра окончена';
+    statsP.style.display='block';
+    hintEl.innerHTML='Нажмите <b>ПРОБЕЛ</b>, чтобы начать заново.';
+    overlay.style.display='grid';
+    overlayCount++; saveOverlayCount(); refreshOverlayLikeUI();
+    renderer.setAnimationLoop(null);
+  }
+  
+
+  // ======== Коллизии ========
+  function effectiveRadiusAtY(ob, y){
+    // Радиус сечения — максимум по всем сегментам (объединение ярусов). Если гора inverted — радиус растёт с высотой.
+    let r = 0; const segs = ob.userData.segments; const inverted = !!ob.userData.inverted;
+    for(const s of segs){
+      if(y >= s.y0 && y <= s.y0 + s.h){
+        const t = (y - s.y0) / s.h; // 0 у основания/вершины, 1 на другой стороне
+        const rr = inverted ? (s.r0 * t) : (s.r0 * (1 - t));
+        r = Math.max(r, Math.max(0.0, rr));
+      }
+    }
+    return r;
+  }
+
+  // ======== Логика ========
+  function update(dt){
+    // Горизонталь
+    const accel=3.8, maxV=2.8; let vx=0,vy=0; if(keys.ArrowLeft)vx-=accel*dt; if(keys.ArrowRight)vx+=accel*dt; if(keys.ArrowUp)vy+=accel*dt; if(keys.ArrowDown)vy-=accel*dt;
+    player.position.x += clamp(vx,-maxV,maxV);
+
+    // Вертикаль: постоянные скорости без гравитации
+    const upPressed=keys.ArrowUp, downPressed=keys.ArrowDown; vY = upPressed? V_UP : (downPressed? -V_DOWN : 0); player.position.y += vY*dt;
+
+    // Ветер при подъёме
+    if(upPressed && !prevUp){ windBaseX=player.position.x; windOffset=0; windTarget=(Math.random()<0.5?-1:1)*world.halfWidth*WIND_FRAC; windTimer=rand(0.9,1.6); }
+    if(upPressed){ const lerpK=0.6; windOffset+=(windTarget-windOffset)*lerpK*dt; windTimer-=dt; if(windTimer<=0){ windTarget=(Math.random()<0.5?-1:1)*world.halfWidth*WIND_FRAC; windTimer=rand(0.9,1.6);} const targetX=windBaseX+windOffset; const driftFollow=0.4; player.position.x += (targetX-player.position.x)*driftFollow*dt; } else { windOffset += (0-windOffset)*0.6*dt; windBaseX = player.position.x - windOffset; }
+    prevUp=upPressed;
+
+    player.position.x = clamp(player.position.x, -world.halfWidth+0.35, world.halfWidth-0.35);
+    player.position.y = clamp(player.position.y, world.groundY+0.25, playerYMax);
+    if(player.position.y<=world.groundY+0.25 && vY<0) vY=0; if(player.position.y>=playerYMax && vY>0) vY=0;
+
+    // Наклон игрока
+    const targetTilt = THREE.MathUtils.clamp(vx*2.5, -0.6, 0.6); player.rotation.z += (targetTilt - player.rotation.z) * 10*dt;
+
+    // Камера (third person)
+    const desiredCamX=player.position.x, desiredCamY=player.position.y+0.9, desiredCamZ=player.position.z+3.6;
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, desiredCamX, 0.18);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, desiredCamY, 0.14);
+    camera.position.z = THREE.MathUtils.lerp(camera.position.z, desiredCamZ, 0.18);
+    camera.lookAt(player.position.x, player.position.y + 0.1, player.position.z);
+
+    // Плавное накопление крена (pitch отключён)
+    const inputX=(keys.ArrowRight?1:0) - (keys.ArrowLeft?1:0);
+    camRoll += (-inputX) * ROLL_ACCEL * dt; // инверсия направления
+    camRoll -= camRoll * ROLL_DAMP * dt;
+    camRoll = THREE.MathUtils.clamp(camRoll, -ROLL_MAX, ROLL_MAX);
+    const lookQ = camera.quaternion.clone();
+    const rollQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(0,0, THREE.MathUtils.clamp(camRoll*ROLL_APPLY, -ROLL_MAX, ROLL_MAX)));
+    const targetQ = lookQ.clone().multiply(rollQ);
+    camera.quaternion.slerp(targetQ, upPressed ? 0.14 : 0.18);
+
+    // Движение и респавн
+    const dz = speed*dt; for(const o of obstacles){ o.position.z += dz; }
+    for(let i=0;i<obstacles.length;i++){ if(obstacles[i].position.z > world.nearZ){ const farZ = Math.min(...obstacles.map(x=>x.position.z)) - world.spacing; const old=obstacles[i]; scene.remove(old); old.traverse(n=>{ if(n.isMesh){ n.geometry.dispose(); n.material.dispose&&n.material.dispose(); } }); obstacles[i]=makeCompositeObstacle(farZ); updatePlayerCeiling(); } }
+
+    // Сложность
+    speed += 0.12*dt;
+
+    // Полосы
+    for(let i=0;i<stripes.length;i++){ stripes[i].position.z += dz; if(stripes[i].position.z > 2){ stripes[i].position.z -= 2.2*stripes.length; } }
+
+    // Тень
+    blob.position.x=player.position.x; blob.position.z=player.position.z;
+
+    // Коллизии
+    const pr=player.userData.radius;
+    for(const o of obstacles){ if(o.position.z>-0.8 && o.position.z<0.8){ const y=player.position.y; const segs=o.userData.segments; for(const s of segs){ if(y>=s.y0 && y<=s.y0+s.h){ const t=(y - s.y0)/s.h; const rr = (o.userData.inverted ? (s.r0 * t) : (s.r0 * (1 - t))); const effR = Math.max(0.0, rr); const segX=o.position.x + s.dx; const dx=Math.abs(player.position.x - segX); if(dx < pr + effR){ gameOver(); return; } } } } }
+  }
+
+  // ======== Цикл ========
+  function loop(now){ if(!running) return; const dt=Math.min(0.033, (now-last)/1000 || 0); last=now; elapsed=(now-startTime)/1000; document.getElementById('time').textContent=elapsed.toFixed(1); update(dt); renderer.render(scene,camera); }
+
+  // ======== Инициализация ========
+  createSettingsUI();
+  loadExternalConfigIfAny().then(()=>{ loadOverlayCount(); showStart(); loadAttempts(); renderAttempts(); loadSocial(); updateSocialUI(); });
+  
+})();
+</script>
+</body>
+</html>
