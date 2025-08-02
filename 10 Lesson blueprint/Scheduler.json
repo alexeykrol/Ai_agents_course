@@ -1,0 +1,66 @@
+{
+  "name": "Scheduler",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hook.us1.make.com/wlgbduneeylmcawlog2mmtzl1iwwrxlm",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"run\": true,\n  \"source\": \"n8n\",\n  \"timestamp\": \"2025-07-04T22:27:16.790Z\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "d5cad7be-2ecd-4008-9326-a655285d1459",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "05bfc650-2bef-4057-b659-11b16e12c025",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a5684570-8050-4323-a71a-ec57cc33167e",
+  "meta": {
+    "instanceId": "f6d75b3a10ac990baeac979361444e13968039955b88afe4d9f2bbb685dc10b1"
+  },
+  "id": "AjnNRVq1KmgSJ73D",
+  "tags": []
+}

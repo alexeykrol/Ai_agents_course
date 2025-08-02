@@ -1,0 +1,1260 @@
+{
+    "name": "Transcribe audio files from Google Drive using OpenAI Whisper and send an email",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-drive:watchFilesInAFolder",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4264666,
+                "select": "create",
+                "destination": "drive",
+                "mimeType": "all",
+                "limit": 1,
+                "folderId": "/1RuObmURNN0-FQjE4nb-GCpeDmbQ6oZrc"
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Google Restricted connection (alexeykrol@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            }
+                        },
+                        "select": {
+                            "label": "By Created Time"
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        },
+                        "mimeType": {
+                            "label": "All"
+                        },
+                        "folderId": {
+                            "path": [
+                                "КурсИИ"
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Watch Files",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "create",
+                                "modify"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "select",
+                        "label": "File Types to Watch",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "all",
+                                "document",
+                                "spreadsheet",
+                                "slide",
+                                "drawing"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "folderId",
+                        "type": "folder",
+                        "label": "Select the Folder to be Watched",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "google-drive:getAFile",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4264666
+            },
+            "mapper": {
+                "select": "value",
+                "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "formatSpreadsheets": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "formatDrawings": "image/jpeg",
+                "destination": "drive",
+                "file": "/1RuObmURNN0-FQjE4nb-GCpeDmbQ6oZrc/1yv8xjMLh73r965xoHaUbkhfMd6yzKsjE"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 247,
+                    "y": 152
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Google Restricted connection (alexeykrol@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "select": {
+                            "label": "Select from the list"
+                        },
+                        "formatDocuments": {
+                            "label": "MS Word Document"
+                        },
+                        "formatSpreadsheets": {
+                            "label": "MS Excel"
+                        },
+                        "formatPresentations": {
+                            "label": "MS PowerPoint"
+                        },
+                        "formatDrawings": {
+                            "label": "JPEG"
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        },
+                        "file": {
+                            "path": [
+                                "КурсИИ",
+                                "test.MP3"
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a File ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "value"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDocuments",
+                        "type": "select",
+                        "label": "Convert Google Documents Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "application/pdf",
+                                "application/vnd.oasis.opendocument.text",
+                                "text/html",
+                                "text/plain",
+                                "application/rtf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatSpreadsheets",
+                        "type": "select",
+                        "label": "Convert Google Spreadsheets Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "application/x-vnd.oasis.opendocument.spreadsheet",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatPresentations",
+                        "type": "select",
+                        "label": "Convert Google Slides Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDrawings",
+                        "type": "select",
+                        "label": "Convert Google Drawings Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "image/jpeg",
+                                "image/png",
+                                "image/svg+xml",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "file",
+                        "type": "file",
+                        "label": "File ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "openai-gpt-3:CreateTranscription",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 4204809
+            },
+            "mapper": {
+                "fileName": "{{3.name}}",
+                "fileData": "{{3.data}}",
+                "model": "whisper-1",
+                "temperature": "1",
+                "language": "ru",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 578,
+                    "y": 152
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "2 My OpenAI connection",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "model": {
+                            "mode": "chose",
+                            "nested": [
+                                {
+                                    "name": "response_format",
+                                    "type": "select",
+                                    "label": "Response Format",
+                                    "default": "json",
+                                    "options": [
+                                        {
+                                            "label": "JSON",
+                                            "value": "json"
+                                        },
+                                        {
+                                            "label": "Text",
+                                            "value": "text"
+                                        },
+                                        {
+                                            "label": "SRT",
+                                            "value": "srt"
+                                        },
+                                        {
+                                            "label": "Verbose JSON",
+                                            "value": "verbose_json"
+                                        },
+                                        {
+                                            "label": "VTT",
+                                            "value": "vtt"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "label": "Whisper-1"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "fileName",
+                        "type": "filename",
+                        "label": "File Name",
+                        "required": true
+                    },
+                    {
+                        "name": "fileData",
+                        "type": "buffer",
+                        "label": "File Data",
+                        "required": true
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "prompt",
+                        "type": "text",
+                        "label": "Prompt"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "type": "text",
+                        "label": "Language"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "json",
+                                "text",
+                                "srt",
+                                "verbose_json",
+                                "vtt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "fileName",
+                        "type": "filename",
+                        "label": "File Name",
+                        "required": true
+                    },
+                    {
+                        "name": "fileData",
+                        "type": "buffer",
+                        "label": "File Data",
+                        "required": true
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "prompt",
+                        "type": "text",
+                        "label": "Prompt"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "type": "text",
+                        "label": "Language"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "json",
+                                "text",
+                                "srt",
+                                "verbose_json",
+                                "vtt"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "advanced": true
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": [
+                [
+                    {
+                        "id": 4,
+                        "module": "google-docs:createADocument",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "name": "{{3.id}}",
+                            "footer": false,
+                            "header": false,
+                            "content": "{{2.text}}",
+                            "folderId": "/1aAuC2SDBynmouBy6ExFm2fBZIaV5l0MS/1y26_6atDKqqvve7VgXbadJkZ6Tl_hpcI",
+                            "destination": "drive"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 975,
+                                "y": -30,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    },
+                                    {
+                                        "category": "reference",
+                                        "severity": "warning",
+                                        "message": "Referenced module 'OpenAI (ChatGPT, Whisper, DALL-E) - Create a Transcription' [2] is not accessible."
+                                    },
+                                    {
+                                        "category": "reference",
+                                        "severity": "warning",
+                                        "message": "Referenced module 'Google Drive - Download a File' [3] is not accessible."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "expect": {
+                                    "folderId": {
+                                        "mode": "chose",
+                                        "path": [
+                                            "Whisper test",
+                                            "Transcripts"
+                                        ]
+                                    },
+                                    "destination": {
+                                        "label": "My Drive"
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "google"
+                                        },
+                                        "label": "Sashas's (a.rodnyy@make.com)"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:google",
+                                    "label": "Connection"
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "content",
+                                    "type": "text",
+                                    "label": "Content",
+                                    "required": true
+                                },
+                                {
+                                    "name": "destination",
+                                    "type": "select",
+                                    "label": "Choose a Drive",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "drive",
+                                            "share",
+                                            "team"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "header",
+                                    "type": "boolean",
+                                    "label": "Insert a Header",
+                                    "required": true
+                                },
+                                {
+                                    "name": "footer",
+                                    "type": "boolean",
+                                    "label": "Insert a Footer",
+                                    "required": true
+                                },
+                                {
+                                    "name": "folderId",
+                                    "type": "folder",
+                                    "label": "New Document's Location",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 6,
+                        "module": "google-docs:exportADocument",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "document": "{{4.id}}",
+                            "mimeType": "text/plain",
+                            "destination": "drive"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 1200,
+                                "y": 0
+                            },
+                            "restore": {
+                                "expect": {
+                                    "document": {
+                                        "mode": "edit",
+                                        "path": []
+                                    },
+                                    "mimeType": {
+                                        "mode": "chose",
+                                        "label": "Plain Text (.txt)"
+                                    },
+                                    "destination": {
+                                        "label": "My Drive"
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "google"
+                                        },
+                                        "label": "My Google connection (l.govender@make.com)"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:google",
+                                    "label": "Connection"
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "destination",
+                                    "type": "select",
+                                    "label": "Choose a Drive",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "drive",
+                                            "share",
+                                            "team"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "mimeType",
+                                    "type": "select",
+                                    "label": "Type",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                            "application/vnd.oasis.opendocument.text",
+                                            "application/rtf",
+                                            "application/pdf",
+                                            "text/plain",
+                                            "text/html",
+                                            "application/epub+zip"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "document",
+                                    "type": "file",
+                                    "label": "Document ID",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 5,
+                        "module": "email:ActionSendEmail",
+                        "version": 7,
+                        "parameters": {
+                            "saveAfterSent": false
+                        },
+                        "mapper": {
+                            "cc": [],
+                            "to": [
+                                "a.rodnyy@make.com"
+                            ],
+                            "bcc": [],
+                            "from": "",
+                            "html": "Hey there!\n\nYou can find the transcript attached.\n{{4.webViewLink}}\n\n\nThanks",
+                            "sender": "",
+                            "headers": [],
+                            "replyTo": "",
+                            "subject": "Here's the transcript for the latest audio file",
+                            "priority": "normal",
+                            "inReplyTo": "",
+                            "references": [],
+                            "attachments": [
+                                {
+                                    "cid": "",
+                                    "data": "{{6.data}}",
+                                    "fileName": "{{6.filename}}"
+                                }
+                            ]
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 1500,
+                                "y": 0
+                            },
+                            "restore": {
+                                "expect": {
+                                    "cc": {
+                                        "mode": "chose"
+                                    },
+                                    "to": {
+                                        "mode": "chose",
+                                        "items": [
+                                            null
+                                        ]
+                                    },
+                                    "bcc": {
+                                        "mode": "chose"
+                                    },
+                                    "priority": {
+                                        "label": "Normal"
+                                    },
+                                    "references": {
+                                        "mode": "chose"
+                                    },
+                                    "attachments": {
+                                        "mode": "chose",
+                                        "items": [
+                                            null
+                                        ]
+                                    },
+                                    "contentType": {
+                                        "label": "HTML"
+                                    }
+                                },
+                                "parameters": {
+                                    "account": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "google-restricted"
+                                        },
+                                        "label": "Sasha's (a.rodnyy@make.com)"
+                                    },
+                                    "saveAfterSent": {
+                                        "label": "No"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "account",
+                                    "type": "account:smtp,google-restricted,microsoft-smtp-imap",
+                                    "label": "Connection"
+                                },
+                                {
+                                    "name": "saveAfterSent",
+                                    "type": "select",
+                                    "label": "Save message after sending",
+                                    "validate": {
+                                        "enum": [
+                                            true,
+                                            false
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "hidden"
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "to",
+                                    "spec": {
+                                        "name": "value",
+                                        "type": "email",
+                                        "label": "Email address",
+                                        "required": true
+                                    },
+                                    "type": "array",
+                                    "label": "To",
+                                    "required": true
+                                },
+                                {
+                                    "name": "subject",
+                                    "type": "text",
+                                    "label": "Subject"
+                                },
+                                {
+                                    "name": "contentType",
+                                    "type": "select",
+                                    "label": "Content Type",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "html",
+                                            "text"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "attachments",
+                                    "spec": [
+                                        {
+                                            "name": "fileName",
+                                            "type": "filename",
+                                            "label": "File name",
+                                            "required": true,
+                                            "semantic": "file:name"
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "buffer",
+                                            "label": "Data",
+                                            "required": true,
+                                            "semantic": "file:data"
+                                        },
+                                        {
+                                            "name": "cid",
+                                            "type": "text",
+                                            "label": "Content-ID"
+                                        }
+                                    ],
+                                    "type": "array",
+                                    "label": "Attachments"
+                                },
+                                {
+                                    "name": "cc",
+                                    "spec": {
+                                        "name": "value",
+                                        "type": "email",
+                                        "label": "Email address"
+                                    },
+                                    "type": "array",
+                                    "label": "Copy recipient"
+                                },
+                                {
+                                    "name": "bcc",
+                                    "spec": {
+                                        "name": "value",
+                                        "type": "email",
+                                        "label": "Email address"
+                                    },
+                                    "type": "array",
+                                    "label": "Blind copy recipient"
+                                },
+                                {
+                                    "name": "from",
+                                    "type": "text",
+                                    "label": "From"
+                                },
+                                {
+                                    "name": "sender",
+                                    "type": "text",
+                                    "label": "Sender"
+                                },
+                                {
+                                    "name": "replyTo",
+                                    "type": "text",
+                                    "label": "Reply-To"
+                                },
+                                {
+                                    "name": "inReplyTo",
+                                    "type": "text",
+                                    "label": "In-Reply-To"
+                                },
+                                {
+                                    "name": "references",
+                                    "spec": {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "Reference",
+                                        "required": true
+                                    },
+                                    "type": "array",
+                                    "label": "References"
+                                },
+                                {
+                                    "name": "priority",
+                                    "type": "select",
+                                    "label": "Priority",
+                                    "validate": {
+                                        "enum": [
+                                            "high",
+                                            "normal",
+                                            "low"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "headers",
+                                    "spec": [
+                                        {
+                                            "name": "key",
+                                            "type": "text",
+                                            "label": "Key",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Value",
+                                            "required": true
+                                        }
+                                    ],
+                                    "type": "array",
+                                    "label": "Headers"
+                                },
+                                {
+                                    "name": "html",
+                                    "type": "text",
+                                    "label": "Content"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 7,
+                        "module": "cloudconvert:ConvertFile",
+                        "version": 2,
+                        "parameters": {},
+                        "mapper": {
+                            "export": {
+                                "downloadFile": true
+                            },
+                            "import": {
+                                "data": "{{3.data}}",
+                                "filename": "{{3.name}}",
+                                "importType": "upload"
+                            },
+                            "options": {
+                                "filename": "file.mp3",
+                                "useInputType": "no",
+                                "output_format": "mp3"
+                            }
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 935,
+                                "y": 433,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    },
+                                    {
+                                        "category": "reference",
+                                        "severity": "warning",
+                                        "message": "Referenced module 'Google Drive - Download a File' [3] is not accessible."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "expect": {
+                                    "export": {
+                                        "nested": {
+                                            "downloadFile": {
+                                                "mode": "chose"
+                                            }
+                                        }
+                                    },
+                                    "import": {
+                                        "nested": {
+                                            "importType": {
+                                                "label": "upload a file"
+                                            }
+                                        }
+                                    },
+                                    "options": {
+                                        "nested": {
+                                            "opts": {
+                                                "mode": "chose"
+                                            },
+                                            "useInputType": {
+                                                "mode": "chose",
+                                                "label": "I don't know the input format"
+                                            },
+                                            "output_format": {
+                                                "mode": "chose",
+                                                "label": "mp3"
+                                            }
+                                        }
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "cloudconvert3"
+                                        },
+                                        "label": "My CloudConvert API KEY connection (development@integromat.com)"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:cloudconvert3,cloudconvert2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "import",
+                                    "spec": [
+                                        {
+                                            "name": "importType",
+                                            "type": "select",
+                                            "label": "Input file",
+                                            "required": true,
+                                            "validate": {
+                                                "enum": [
+                                                    "upload",
+                                                    "url"
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "buffer",
+                                            "label": "Data",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "filename",
+                                            "type": "filename",
+                                            "label": "File name",
+                                            "required": true
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Import options",
+                                    "required": true
+                                },
+                                {
+                                    "name": "options",
+                                    "spec": [
+                                        {
+                                            "name": "useInputType",
+                                            "type": "select",
+                                            "label": "Format",
+                                            "required": true,
+                                            "validate": {
+                                                "enum": [
+                                                    "yes",
+                                                    "no"
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "name": "output_format",
+                                            "type": "select",
+                                            "label": "Output format",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "filename",
+                                            "type": "filename",
+                                            "label": "File name",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "opts",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "array",
+                                            "label": "Conversion and engine specific options"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Convert options",
+                                    "required": true
+                                },
+                                {
+                                    "name": "export",
+                                    "spec": [
+                                        {
+                                            "name": "downloadFile",
+                                            "type": "boolean",
+                                            "label": "Download a file",
+                                            "required": true
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Export options",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 8,
+                        "module": "openai-gpt-3:CreateTranscription",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "model": "whisper-1",
+                            "fileData": "{{7.data}}",
+                            "fileName": "{{7.filename}}",
+                            "temperature": "1",
+                            "response_format": "json"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 1200,
+                                "y": 300
+                            },
+                            "restore": {
+                                "expect": {
+                                    "model": {
+                                        "mode": "chose",
+                                        "label": "Whisper-1"
+                                    },
+                                    "response_format": {
+                                        "mode": "chose",
+                                        "label": "JSON"
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "openai-gpt-3"
+                                        },
+                                        "label": "Make Ent GPT4"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:openai-gpt-3",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "fileName",
+                                    "type": "filename",
+                                    "label": "File Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "fileData",
+                                    "type": "buffer",
+                                    "label": "File Data",
+                                    "required": true
+                                },
+                                {
+                                    "name": "model",
+                                    "type": "select",
+                                    "label": "Model",
+                                    "required": true
+                                },
+                                {
+                                    "name": "prompt",
+                                    "type": "text",
+                                    "label": "Prompt"
+                                },
+                                {
+                                    "name": "response_format",
+                                    "type": "select",
+                                    "label": "Response Format",
+                                    "validate": {
+                                        "enum": [
+                                            "json",
+                                            "text",
+                                            "srt",
+                                            "verbose_json",
+                                            "vtt"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "temperature",
+                                    "type": "number",
+                                    "label": "Temperature",
+                                    "validate": {
+                                        "max": 1,
+                                        "min": 0
+                                    }
+                                },
+                                {
+                                    "name": "language",
+                                    "type": "text",
+                                    "label": "Language"
+                                }
+                            ],
+                            "interface": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text"
+                                }
+                            ],
+                            "advanced": true
+                        }
+                    },
+                    {
+                        "id": 9,
+                        "module": "builtin:Resume",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "text": "{{8.text}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": 1500,
+                                "y": 300,
+                                "messages": [
+                                    {
+                                        "category": "badroute",
+                                        "severity": "error",
+                                        "message": "Directive is outside of an error handler."
+                                    }
+                                ]
+                            },
+                            "restore": {},
+                            "expect": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            ]
+        },
+        "zone": "us1.make.com",
+        "notes": []
+    }
+}

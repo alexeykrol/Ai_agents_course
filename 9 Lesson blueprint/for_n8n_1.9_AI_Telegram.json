@@ -1,0 +1,338 @@
+{
+  "name": "AI_Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://www.inoreader.com/stream/user/1004901627/tag/AI_Telegram"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f39198e4-8130-43f4-8b60-eac1a032d4b6",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "content",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "=ClearText",
+              "cssSelector": "*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "2002aed5-eb70-4d1f-8907-fbef44f7c2c2",
+      "name": "Извлекаем Текст",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const text = item.json.ClearText || \"\";\n  const urlRegex = /https?:\\/\\/[^\\s\\]\\\"]+/g;\n\n  const links = text.match(urlRegex) || [];\n\n  const result = {};\n\n  let imageCount = 1;\n  let telegramCount = 1;\n  let linkCount = 1;\n\n  links.forEach(link => {\n    const lower = link.toLowerCase();\n\n    if (lower.match(/\\.(jpg|jpeg|png|webp|gif)$/)) {\n      result[`Image_${imageCount}`] = link;\n      imageCount++;\n    } else if (lower.includes(\"https://t.me/\")) {\n      result[`Telegram_Link_${telegramCount}`] = link;\n      telegramCount++;\n    } else {\n      result[`Link_${linkCount}`] = link;\n      linkCount++;\n    }\n  });\n\n  return { json: result };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "6da317f0-39fd-4549-9a05-e711fdd58941",
+      "name": "Извлекаем ссылки"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "196267257",
+        "file": "={{ $('Извлекаем ссылки').item.json.Image_1 }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1500,
+        -180
+      ],
+      "id": "3048b62d-a199-4940-89c3-5b1dc30cb124",
+      "name": "Фотка",
+      "webhookId": "abf5d929-172a-4000-971b-dac137dfb52c",
+      "credentials": {
+        "telegramApi": {
+          "id": "kwX9s2KoZT3g0H8V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "196267257",
+        "text": "={{ $('Code').item.json.ClearText }}",
+        "replyMarkup": "forceReply",
+        "forceReply": {},
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        -180
+      ],
+      "id": "fc65fb63-30a8-4af9-9864-af4c04541ceb",
+      "name": "Текст",
+      "webhookId": "abf5d929-172a-4000-971b-dac137dfb52c",
+      "credentials": {
+        "telegramApi": {
+          "id": "kwX9s2KoZT3g0H8V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "274af1af-505f-4de3-9e0b-466ae8e5b7a8",
+              "leftValue": "={{ $('Извлекаем ссылки').item.json.Image_1 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "7600fcc2-e7b3-406e-ba81-702629d09867",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "196267257",
+        "text": "={{ $('Убираем thumb.jpeg').item.json.CleanText }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1500,
+        100
+      ],
+      "id": "5638b722-14f7-412d-b4e5-348253012968",
+      "name": "Текст без картинки",
+      "webhookId": "abf5d929-172a-4000-971b-dac137dfb52c",
+      "credentials": {
+        "telegramApi": {
+          "id": "kwX9s2KoZT3g0H8V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Code node — Run Once for All Items\n * Удаляем все вхождения «thumb.jpeg» из поля ClearText,\n * причём само поле берём из узла «Извлекаем Текст».\n */\n\nreturn items.map(item => {\n  // 1. берём исходный текст у узла-источника\n  const raw = $node['Извлекаем Текст'].json.ClearText ?? \"\";\n\n  // 2. убираем «thumb.jpeg»\n  const cleaned = raw.replace(/thumb\\.jpeg/gi, \"\");\n\n  // 3. кладём результат в текущий item\n  item.json.ClearText = cleaned;      // перезаписываем\n  // или item.json.cleaned = cleaned;  // если нужно отдельное поле\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        0
+      ],
+      "id": "4341a6a5-e88d-410a-b533-e0ebd17fa8ae",
+      "name": "Убираем thumb.jpeg"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n *  Узел Code  –  очищаем ClearText\n *  Исходный текст берём из узла «Извлекаем Текст».\n */\n\nreturn items.map(item => {\n  // 1. текст-источник\n  let text = $node['Извлекаем Текст'].json.ClearText ?? \"\";\n\n  // 2. убираем thumb.jpeg\n  text = text.replace(/thumb\\.jpeg/gi, \"\");\n\n  // 3. удаляем ссылки\n  text = text\n    // [https://…]\n    .replace(/\\[https?:\\/\\/[^\\]]+\\]/gi, \"\")\n    // одиночные http/https-ссылки\n    .replace(/https?:\\/\\/\\S+/gi, \"\");\n\n  // 4. подчистим лишние пробелы и пустые строки\n  text = text\n    .replace(/[ \\t]+/g, \" \")      // множественные пробелы → один\n    .replace(/\\n{3,}/g, \"\\n\\n\")   // >2 подряд пустых строк → одна\n    .trim();\n\n  // 5. записываем обратно\n  item.json.ClearText = text;     // или item.json.cleaned = text;\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        0
+      ],
+      "id": "362d813b-94f5-4a4e-a2b6-0ac56cc27009",
+      "name": "Code"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        -300
+      ],
+      "id": "ff61411e-8378-45bf-86ab-214404263b3e",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        -40
+      ],
+      "id": "bd094be3-395e-4bb4-814b-1a515b1c9d6a",
+      "name": "No Operation, do nothing1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Извлекаем Текст",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Извлекаем Текст": {
+      "main": [
+        [
+          {
+            "node": "Извлекаем ссылки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Извлекаем ссылки": {
+      "main": [
+        [
+          {
+            "node": "Убираем thumb.jpeg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Фотка": {
+      "main": [
+        [
+          {
+            "node": "Текст",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Фотка",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Текст без картинки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Убираем thumb.jpeg": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Текст": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e50a40c6-27df-4adc-b800-b3098af3184a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f6d75b3a10ac990baeac979361444e13968039955b88afe4d9f2bbb685dc10b1"
+  },
+  "id": "5O2mBwfEMl9fdV89",
+  "tags": []
+}

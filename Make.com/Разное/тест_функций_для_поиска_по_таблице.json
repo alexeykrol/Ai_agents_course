@@ -1,0 +1,2460 @@
+{
+    "name": "функции тест",
+    "flow": [
+        {
+            "id": 21,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "вопрос",
+                "scope": "roundtrip",
+                "value": "у вас есть акварин  для клубники"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -811,
+                    "y": 1191
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "вопрос",
+                        "type": "any",
+                        "label": "вопрос"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 22,
+            "module": "openai-gpt-3:makeApiCall",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 3238319
+            },
+            "mapper": {
+                "url": "/v1/chat/completions",
+                "method": "POST",
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": "{\n \"model\": \"gpt-4o\",\n \"messages\": [\n   {\n     \"role\": \"system\",\n     \"content\": \"Ты - продавец-консультант магазина. База данных: A - название, B - цена, C - остаток. Правила запросов: 1) Всегда используй lower() и contains; 2) Для поиска вариантов товара используй разные части слов. пример запроса select A, B, C where lower(A) contains 'рассада' and lower(A) contains 'томат' order by B  3) При слове 'недорогой' добавляй order by B. В ответе сначала говори о выгодных предложениях, потом об остальных.\"\n   },\n   {\n     \"role\": \"user\",\n     \"content\": \"{{21.`вопрос`}}\"\n   }\n ],\n \"tools\": [\n   {\n     \"type\": \"function\",\n     \"function\": {\n       \"name\": \"search_products\",\n       \"description\": \"Поиск товаров в базе данных\",\n       \"parameters\": {\n         \"type\": \"object\",\n         \"properties\": {\n           \"query\": {\n             \"type\": \"string\",\n             \"description\": \"SQL-запрос к базе данных\"\n           }\n         },\n         \"required\": [\"query\"]\n       }\n     }\n   }\n ]\n}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -429,
+                    "y": 1006
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Гугл таблица Новости рынка 10.10.24",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "method": {
+                            "mode": "chose",
+                            "label": "POST"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "qs": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Headers",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Key"
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Value"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Header",
+                            "name": "value"
+                        }
+                    },
+                    {
+                        "name": "qs",
+                        "type": "array",
+                        "label": "Query String",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Key"
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Value"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Query String",
+                            "name": "value"
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 23,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": -139,
+                    "y": 878
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 24,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "filter": {
+                                "name": "текстом ответ",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{22.body.choices[].finish_reason}}",
+                                            "b": "stop",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "name": "ответ",
+                                "scope": "roundtrip",
+                                "value": "{{22.body.choices[].message.content}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 204,
+                                    "y": 578
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "ответ",
+                                        "type": "any",
+                                        "label": "ответ"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 30,
+                            "module": "json:ParseJSON",
+                            "version": 1,
+                            "parameters": {
+                                "type": ""
+                            },
+                            "filter": {
+                                "name": "поиск квартир",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{22.body.choices[].message.tool_calls[].function.name}}",
+                                            "b": "search_products",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "json": "{{22.body.choices[].message.tool_calls[].function.arguments}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 266,
+                                    "y": 911
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "type": {
+                                            "label": "Choose a data structure"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "type",
+                                        "type": "udt",
+                                        "label": "Data structure"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "json",
+                                        "type": "text",
+                                        "label": "JSON string",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 34,
+                            "module": "google-sheets:filterRowsAdvanced",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 2930248
+                            },
+                            "mapper": {
+                                "tq": "{{30.query}}",
+                                "select": "fromAll",
+                                "sheetId": 494364507,
+                                "spreadsheetId": "1tYmXiHDRMOIAAo9fpvKz2_8goOxR_UwkI1BkVCMGCNk"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1021,
+                                    "y": 1059
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "Select from all"
+                                        },
+                                        "sheetId": {
+                                            "mode": "chose",
+                                            "label": "Лист7"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "olgaisakova1971 (olgaisakova1971@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Search Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "list",
+                                                "fromAll",
+                                                "map"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "tq",
+                                        "type": "text",
+                                        "label": "Query",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "spreadsheetId",
+                                        "type": "text",
+                                        "label": "Spreadsheet ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sheetId",
+                                        "type": "select",
+                                        "label": "Sheet Name",
+                                        "required": true
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "__IMTLENGTH__",
+                                        "type": "uinteger",
+                                        "label": "Total number of bundles"
+                                    },
+                                    {
+                                        "name": "__IMTINDEX__",
+                                        "type": "uinteger",
+                                        "label": "Bundle order position"
+                                    },
+                                    {
+                                        "name": "0",
+                                        "type": "text",
+                                        "label": "наименование (A)"
+                                    },
+                                    {
+                                        "name": "1",
+                                        "type": "number",
+                                        "label": "цена (B)"
+                                    },
+                                    {
+                                        "name": "2",
+                                        "type": "number",
+                                        "label": "Кол-во (C)"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 32,
+                            "module": "util:TextAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 34,
+                                "rowSeparator": "\n"
+                            },
+                            "mapper": {
+                                "value": "наименование {{34.`0`}}, цена {{34.`1`}}, остаток {{34.`2`}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1234,
+                                    "y": 949
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Google Sheets - Search Rows (Advanced) [34]"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "rowSeparator": {
+                                            "label": "New row"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "rowSeparator",
+                                        "type": "select",
+                                        "label": "Row separator",
+                                        "validate": {
+                                            "enum": [
+                                                "\n",
+                                                "\t",
+                                                "other"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 33,
+                            "module": "openai-gpt-3:CreateCompletion",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3238319
+                            },
+                            "mapper": {
+                                "model": "gpt-4o",
+                                "top_p": "1",
+                                "select": "chat",
+                                "messages": [
+                                    {
+                                        "role": "assistant",
+                                        "content": "ты умный помощник"
+                                    },
+                                    {
+                                        "role": "user",
+                                        "content": "ответь на вопрос пользователя {{21.`вопрос`}}\nвызванная тобою функция вернула такое значение:{{32.text}}",
+                                        "imageDetail": "auto"
+                                    }
+                                ],
+                                "max_tokens": "2048",
+                                "temperature": "1",
+                                "n_completions": "1",
+                                "response_format": "text"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1515,
+                                    "y": 791
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "stop": {
+                                            "mode": "chose"
+                                        },
+                                        "model": {
+                                            "mode": "chose",
+                                            "label": "gpt-4o (system)"
+                                        },
+                                        "select": {
+                                            "label": "Create a Chat Completion (GPT and o1 models)"
+                                        },
+                                        "messages": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "Assistant"
+                                                    }
+                                                },
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "User"
+                                                    },
+                                                    "imageDetail": {
+                                                        "mode": "chose",
+                                                        "label": "Auto"
+                                                    },
+                                                    "imageInputType": {
+                                                        "mode": "chose",
+                                                        "label": "Empty"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "logit_bias": {
+                                            "mode": "chose"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Text"
+                                        },
+                                        "additionalParameters": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "Гугл таблица Новости рынка 10.10.24"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Select Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "chat",
+                                                "prompt"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "n_completions",
+                                        "type": "number",
+                                        "label": "Number"
+                                    },
+                                    {
+                                        "name": "frequency_penalty",
+                                        "type": "number",
+                                        "label": "Frequency Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "presence_penalty",
+                                        "type": "number",
+                                        "label": "Presence Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "logit_bias",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "token",
+                                                    "type": "text",
+                                                    "label": "Token ID",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "probability",
+                                                    "type": "number",
+                                                    "label": "Probability",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "max": 100,
+                                                        "min": -100
+                                                    }
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Token Probability"
+                                        },
+                                        "type": "array",
+                                        "label": "Token Probability"
+                                    },
+                                    {
+                                        "name": "seed",
+                                        "type": "integer",
+                                        "label": "Seed"
+                                    },
+                                    {
+                                        "name": "stop",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Stop Sequence"
+                                        },
+                                        "type": "array",
+                                        "label": "Stop Sequences",
+                                        "validate": {
+                                            "maxItems": 4
+                                        }
+                                    },
+                                    {
+                                        "name": "additionalParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "key",
+                                                    "type": "text",
+                                                    "label": "Parameter Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "type",
+                                                    "type": "select",
+                                                    "label": "Input Type",
+                                                    "options": [
+                                                        {
+                                                            "label": "Text",
+                                                            "value": "text",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ],
+                                                            "default": true
+                                                        },
+                                                        {
+                                                            "label": "Number",
+                                                            "value": "number",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "number",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Boolean",
+                                                            "value": "boolean",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "boolean",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Date",
+                                                            "value": "date",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "date",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Any",
+                                                            "value": "any",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "any",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Input Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Other Input Parameters"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "max_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "messages",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "role",
+                                                    "type": "select",
+                                                    "label": "Role",
+                                                    "options": {
+                                                        "store": [
+                                                            {
+                                                                "label": "System",
+                                                                "value": "system",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "User",
+                                                                "value": "user",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    },
+                                                                    {
+                                                                        "name": "imageInputType",
+                                                                        "type": "select",
+                                                                        "label": "Image Input Type",
+                                                                        "options": [
+                                                                            {
+                                                                                "label": "URL",
+                                                                                "value": "url",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Make sure to use a publically accessible URL.\nYou can test if your image is publically accessible by opening the link in an incognito tab.",
+                                                                                        "name": "imageUrl",
+                                                                                        "type": "url",
+                                                                                        "label": "Image URL"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "label": "Image File",
+                                                                                "value": "file",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "name": "imageFile",
+                                                                                        "spec": [
+                                                                                            {
+                                                                                                "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                                "name": "imageFilename",
+                                                                                                "type": "filename",
+                                                                                                "label": "Image Filename",
+                                                                                                "semantic": "file:name",
+                                                                                                "extension": [
+                                                                                                    "jpg",
+                                                                                                    "jpeg",
+                                                                                                    "png",
+                                                                                                    "webp",
+                                                                                                    "gif"
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "name": "imageData",
+                                                                                                "type": "buffer",
+                                                                                                "label": "Image Data",
+                                                                                                "semantic": "file:data"
+                                                                                            }
+                                                                                        ],
+                                                                                        "type": "collection",
+                                                                                        "label": "Image"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ],
+                                                                        "mappable": false
+                                                                    },
+                                                                    {
+                                                                        "name": "imageDetail",
+                                                                        "type": "select",
+                                                                        "label": "Image Detail",
+                                                                        "options": [
+                                                                            {
+                                                                                "label": "Auto",
+                                                                                "value": "auto",
+                                                                                "default": true
+                                                                            },
+                                                                            {
+                                                                                "label": "High",
+                                                                                "value": "high"
+                                                                            },
+                                                                            {
+                                                                                "label": "Low",
+                                                                                "value": "low"
+                                                                            }
+                                                                        ],
+                                                                        "advanced": true
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Assistant",
+                                                                "value": "assistant",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "required": true
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Message"
+                                        },
+                                        "type": "array",
+                                        "label": "Messages",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "text",
+                                                "json_object"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "result",
+                                        "type": "any",
+                                        "label": "Result"
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "object",
+                                        "type": "text",
+                                        "label": "Object"
+                                    },
+                                    {
+                                        "name": "created",
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "text",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "choices",
+                                        "spec": {
+                                            "spec": [
+                                                {
+                                                    "name": "text",
+                                                    "type": "text",
+                                                    "label": "Text"
+                                                },
+                                                {
+                                                    "name": "index",
+                                                    "type": "number",
+                                                    "label": "Index"
+                                                },
+                                                {
+                                                    "name": "logprobs",
+                                                    "type": "text",
+                                                    "label": "Log Probs"
+                                                },
+                                                {
+                                                    "name": "finish_reason",
+                                                    "type": "text",
+                                                    "label": "Finish Reason"
+                                                },
+                                                {
+                                                    "name": "message",
+                                                    "spec": [
+                                                        {
+                                                            "name": "role",
+                                                            "type": "text",
+                                                            "label": "Role"
+                                                        },
+                                                        {
+                                                            "name": "content",
+                                                            "type": "text",
+                                                            "label": "Content"
+                                                        },
+                                                        {
+                                                            "name": "refusal",
+                                                            "type": "text",
+                                                            "label": "Refusal"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Message"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        },
+                                        "type": "array",
+                                        "label": "Choices"
+                                    },
+                                    {
+                                        "name": "usage",
+                                        "spec": [
+                                            {
+                                                "name": "prompt_tokens",
+                                                "type": "number",
+                                                "label": "Prompt Tokens"
+                                            },
+                                            {
+                                                "name": "completion_tokens",
+                                                "type": "text",
+                                                "label": "Completion Tokens"
+                                            },
+                                            {
+                                                "name": "total_tokens",
+                                                "type": "number",
+                                                "label": "Total Tokens"
+                                            },
+                                            {
+                                                "name": "prompt_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "cached_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Cached Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "image_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Image Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Prompt Tokens Details"
+                                            },
+                                            {
+                                                "name": "completion_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "reasoning_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Reasoning Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Completion Tokens Details"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Usage"
+                                    },
+                                    {
+                                        "name": "system_fingerprint",
+                                        "type": "text",
+                                        "label": "System Fingerprint"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": [
+                [
+                    {
+                        "id": 1,
+                        "module": "util:SetVariable2",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "name": "вопрос",
+                            "scope": "roundtrip",
+                            "value": "Есть квартиры 2 комн  на Ленина до 6 милионнов но не меньше 40 м?"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -734,
+                                "y": -70,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "expect": {
+                                    "scope": {
+                                        "label": "One cycle"
+                                    }
+                                }
+                            },
+                            "expect": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Variable name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "scope",
+                                    "type": "select",
+                                    "label": "Variable lifetime",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "roundtrip",
+                                            "execution"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "any",
+                                    "label": "Variable value"
+                                }
+                            ],
+                            "interface": [
+                                {
+                                    "name": "вопрос",
+                                    "type": "any",
+                                    "label": "вопрос"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 4,
+                        "module": "openai-gpt-3:makeApiCall",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 3238319
+                        },
+                        "mapper": {
+                            "url": "/v1/chat/completions",
+                            "method": "POST",
+                            "headers": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"model\": \"gpt-4o\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Ты помощник для поиска квартир. Твоя задача - помогать искать квартиры по параметрам из запроса пользователя. Внимательно анализируй запрос на наличие следующих параметров: количество комнат, улица, максимальная цена и минимальная площадь. Если эти параметры есть в запросе (даже если они указаны неформально), используй их для поиска. Примеры понимания параметров: '2 комн' = 2 комнаты, 'на Мира' = улица Мира, 'до 5 миллионов' = максимальная цена 5000000, '40 квадратов' = минимальная площадь 40. Задавай уточняющие вопросы ТОЛЬКО если какой-то из обязательных параметров действительно отсутствует в запросе. Обязательные параметры для вызова функции: количество комнат и максимальная цена.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{1.`вопрос`}}\"\n    }\n  ],\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"search_apartments\",\n        \"description\": \"Поиск квартир по параметрам. Используй эту функцию, когда в запросе есть хотя бы количество комнат и максимальная цена. Извлекай параметры из естественной речи пользователя.\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"rooms\": {\n              \"type\": \"integer\",\n              \"description\": \"Количество комнат (например, из фраз '1 комн', 'однокомнатная', 'одна комната')\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"street\": {\n              \"type\": \"string\",\n              \"description\": \"Название улицы (например, из фраз 'на Ленина', 'по адресу Пушкина')\"\n            },\n            \"price_max\": {\n              \"type\": \"integer\",\n              \"description\": \"Максимальная цена (например, из фраз 'до 5 миллионов', 'не дороже 3м')\"\n            },\n            \"area_min\": {\n              \"type\": \"number\",\n              \"description\": \"Минимальная площадь в кв.м. (например, из фраз '40 квадратов', 'от 45 метров')\"\n            }\n          },\n          \"required\": [\"rooms\", \"street\", \"price_max\", \"area_min\"]\n        }\n      }\n    }\n  ],\n  \"tool_choice\": \"auto\"\n}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -453,
+                                "y": -536
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "label": "Гугл таблица Новости рынка 10.10.24",
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "openai-gpt-3"
+                                        }
+                                    }
+                                },
+                                "expect": {
+                                    "method": {
+                                        "mode": "chose",
+                                        "label": "POST"
+                                    },
+                                    "headers": {
+                                        "mode": "chose",
+                                        "items": [
+                                            null
+                                        ]
+                                    },
+                                    "qs": {
+                                        "mode": "chose"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:openai-gpt-3",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "url",
+                                    "type": "text",
+                                    "label": "URL",
+                                    "required": true
+                                },
+                                {
+                                    "name": "method",
+                                    "type": "select",
+                                    "label": "Method",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "GET",
+                                            "POST",
+                                            "PUT",
+                                            "PATCH",
+                                            "DELETE"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "headers",
+                                    "type": "array",
+                                    "label": "Headers",
+                                    "spec": {
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "text",
+                                                "label": "Key"
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Header",
+                                        "name": "value"
+                                    }
+                                },
+                                {
+                                    "name": "qs",
+                                    "type": "array",
+                                    "label": "Query String",
+                                    "spec": {
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "text",
+                                                "label": "Key"
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Query String",
+                                        "name": "value"
+                                    }
+                                },
+                                {
+                                    "name": "body",
+                                    "type": "any",
+                                    "label": "Body"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 11,
+                        "module": "builtin:BasicRouter",
+                        "version": 1,
+                        "mapper": null,
+                        "metadata": {
+                            "designer": {
+                                "x": -111,
+                                "y": -371
+                            }
+                        },
+                        "routes": [
+                            {
+                                "flow": [
+                                    {
+                                        "id": 12,
+                                        "module": "util:SetVariable2",
+                                        "version": 1,
+                                        "parameters": {},
+                                        "filter": {
+                                            "name": "текстом ответ",
+                                            "conditions": [
+                                                [
+                                                    {
+                                                        "a": "{{4.body.choices[].finish_reason}}",
+                                                        "b": "stop",
+                                                        "o": "text:equal"
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        "mapper": {
+                                            "name": "ответ",
+                                            "scope": "roundtrip",
+                                            "value": "{{4.body.choices[].message.content}}"
+                                        },
+                                        "metadata": {
+                                            "designer": {
+                                                "x": 232,
+                                                "y": -715
+                                            },
+                                            "restore": {
+                                                "expect": {
+                                                    "scope": {
+                                                        "label": "One cycle"
+                                                    }
+                                                }
+                                            },
+                                            "expect": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Variable name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "scope",
+                                                    "type": "select",
+                                                    "label": "Variable lifetime",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "enum": [
+                                                            "roundtrip",
+                                                            "execution"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Variable value"
+                                                }
+                                            ],
+                                            "interface": [
+                                                {
+                                                    "name": "ответ",
+                                                    "type": "any",
+                                                    "label": "ответ"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "flow": [
+                                    {
+                                        "id": 14,
+                                        "module": "json:ParseJSON",
+                                        "version": 1,
+                                        "parameters": {
+                                            "type": ""
+                                        },
+                                        "filter": {
+                                            "name": "поиск квартир",
+                                            "conditions": [
+                                                [
+                                                    {
+                                                        "a": "{{4.body.choices[].message.tool_calls[].function.name}}",
+                                                        "b": "search_apartments",
+                                                        "o": "text:equal"
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        "mapper": {
+                                            "json": "{{4.body.choices[].message.tool_calls[].function.arguments}}"
+                                        },
+                                        "metadata": {
+                                            "designer": {
+                                                "x": 286,
+                                                "y": -364
+                                            },
+                                            "restore": {
+                                                "parameters": {
+                                                    "type": {
+                                                        "label": "Choose a data structure"
+                                                    }
+                                                }
+                                            },
+                                            "parameters": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "udt",
+                                                    "label": "Data structure"
+                                                }
+                                            ],
+                                            "expect": [
+                                                {
+                                                    "name": "json",
+                                                    "type": "text",
+                                                    "label": "JSON string",
+                                                    "required": true
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "id": 15,
+                                        "module": "google-sheets:filterRows",
+                                        "version": 2,
+                                        "parameters": {
+                                            "__IMTCONN__": 2930248
+                                        },
+                                        "mapper": {
+                                            "from": "drive",
+                                            "filter": [
+                                                [
+                                                    {
+                                                        "a": "A",
+                                                        "b": "{{14.rooms}}",
+                                                        "o": "number:equal"
+                                                    },
+                                                    {
+                                                        "a": "B",
+                                                        "b": "{{14.street}}",
+                                                        "o": "text:equal"
+                                                    },
+                                                    {
+                                                        "a": "D",
+                                                        "b": "{{14.area_min}}",
+                                                        "o": "number:greaterorequal"
+                                                    },
+                                                    {
+                                                        "a": "E",
+                                                        "b": "{{14.price_max}}",
+                                                        "o": "number:lessorequal"
+                                                    }
+                                                ]
+                                            ],
+                                            "sheetId": "Лист4",
+                                            "sortOrder": "asc",
+                                            "spreadsheetId": "1THldA5kWoC7AqN6VYfxsPP7dtkF54LKAwroPjcCNsFI",
+                                            "tableFirstRow": "A1:Z1",
+                                            "includesHeaders": true,
+                                            "valueRenderOption": "FORMATTED_VALUE",
+                                            "dateTimeRenderOption": "FORMATTED_STRING"
+                                        },
+                                        "metadata": {
+                                            "designer": {
+                                                "x": 921,
+                                                "y": -358
+                                            },
+                                            "restore": {
+                                                "expect": {
+                                                    "from": {
+                                                        "label": "Select from My Drive"
+                                                    },
+                                                    "orderBy": {
+                                                        "mode": "chose"
+                                                    },
+                                                    "sheetId": {
+                                                        "mode": "chose",
+                                                        "label": "Лист4"
+                                                    },
+                                                    "sortOrder": {
+                                                        "mode": "chose",
+                                                        "label": "Ascending"
+                                                    },
+                                                    "spreadsheetId": {
+                                                        "mode": "edit"
+                                                    },
+                                                    "tableFirstRow": {
+                                                        "label": "A-Z"
+                                                    },
+                                                    "includesHeaders": {
+                                                        "mode": "chose",
+                                                        "label": "Yes"
+                                                    },
+                                                    "valueRenderOption": {
+                                                        "mode": "chose",
+                                                        "label": "Formatted value"
+                                                    },
+                                                    "dateTimeRenderOption": {
+                                                        "mode": "chose",
+                                                        "label": "Formatted string"
+                                                    }
+                                                },
+                                                "parameters": {
+                                                    "__IMTCONN__": {
+                                                        "data": {
+                                                            "scoped": "true",
+                                                            "connection": "google"
+                                                        },
+                                                        "label": "olgaisakova1971 (olgaisakova1971@gmail.com)"
+                                                    }
+                                                }
+                                            },
+                                            "parameters": [
+                                                {
+                                                    "name": "__IMTCONN__",
+                                                    "type": "account:google",
+                                                    "label": "Connection",
+                                                    "required": true
+                                                }
+                                            ],
+                                            "expect": [
+                                                {
+                                                    "name": "from",
+                                                    "type": "select",
+                                                    "label": "Search Method",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "enum": [
+                                                            "drive",
+                                                            "share"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "valueRenderOption",
+                                                    "type": "select",
+                                                    "label": "Value render option",
+                                                    "validate": {
+                                                        "enum": [
+                                                            "FORMATTED_VALUE",
+                                                            "UNFORMATTED_VALUE",
+                                                            "FORMULA"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "dateTimeRenderOption",
+                                                    "type": "select",
+                                                    "label": "Date and time render option",
+                                                    "validate": {
+                                                        "enum": [
+                                                            "SERIAL_NUMBER",
+                                                            "FORMATTED_STRING"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "limit",
+                                                    "type": "uinteger",
+                                                    "label": "Limit"
+                                                },
+                                                {
+                                                    "name": "spreadsheetId",
+                                                    "type": "select",
+                                                    "label": "Spreadsheet ID",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "sheetId",
+                                                    "type": "select",
+                                                    "label": "Sheet Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "includesHeaders",
+                                                    "type": "select",
+                                                    "label": "Table contains headers",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "enum": [
+                                                            true,
+                                                            false
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "tableFirstRow",
+                                                    "type": "select",
+                                                    "label": "Column range",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "enum": [
+                                                            "A1:Z1",
+                                                            "A1:BZ1",
+                                                            "A1:CZ1",
+                                                            "A1:DZ1",
+                                                            "A1:MZ1",
+                                                            "A1:ZZ1",
+                                                            "A1:AZZ1",
+                                                            "A1:BZZ1",
+                                                            "A1:CZZ1",
+                                                            "A1:DZZ1",
+                                                            "A1:MZZ1",
+                                                            "A1:ZZZ1"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "filter",
+                                                    "type": "filter",
+                                                    "label": "Filter",
+                                                    "options": "rpc://google-sheets/2/rpcGetFilterKeys?includesHeaders=true"
+                                                },
+                                                {
+                                                    "name": "orderBy",
+                                                    "type": "select",
+                                                    "label": "Order by"
+                                                },
+                                                {
+                                                    "name": "sortOrder",
+                                                    "type": "select",
+                                                    "label": "Sort order",
+                                                    "validate": {
+                                                        "enum": [
+                                                            "asc",
+                                                            "desc"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "interface": [
+                                                {
+                                                    "name": "__IMTLENGTH__",
+                                                    "type": "uinteger",
+                                                    "label": "Total number of bundles"
+                                                },
+                                                {
+                                                    "name": "__IMTINDEX__",
+                                                    "type": "uinteger",
+                                                    "label": "Bundle order position"
+                                                },
+                                                {
+                                                    "name": "__ROW_NUMBER__",
+                                                    "type": "number",
+                                                    "label": "Row number"
+                                                },
+                                                {
+                                                    "name": "__SPREADSHEET_ID__",
+                                                    "type": "text",
+                                                    "label": "Spreadsheet ID"
+                                                },
+                                                {
+                                                    "name": "__SHEET__",
+                                                    "type": "text",
+                                                    "label": "Sheet"
+                                                },
+                                                {
+                                                    "name": "0",
+                                                    "type": "text",
+                                                    "label": "кол-во комнат (A)"
+                                                },
+                                                {
+                                                    "name": "1",
+                                                    "type": "text",
+                                                    "label": "улица (B)"
+                                                },
+                                                {
+                                                    "name": "2",
+                                                    "type": "text",
+                                                    "label": "этаж (C)"
+                                                },
+                                                {
+                                                    "name": "3",
+                                                    "type": "text",
+                                                    "label": "общая площадь (D)"
+                                                },
+                                                {
+                                                    "name": "4",
+                                                    "type": "text",
+                                                    "label": "цена (E)"
+                                                },
+                                                {
+                                                    "name": "5",
+                                                    "type": "text",
+                                                    "label": "(F)"
+                                                },
+                                                {
+                                                    "name": "6",
+                                                    "type": "text",
+                                                    "label": "(G)"
+                                                },
+                                                {
+                                                    "name": "7",
+                                                    "type": "text",
+                                                    "label": "(H)"
+                                                },
+                                                {
+                                                    "name": "8",
+                                                    "type": "text",
+                                                    "label": "(I)"
+                                                },
+                                                {
+                                                    "name": "9",
+                                                    "type": "text",
+                                                    "label": "(J)"
+                                                },
+                                                {
+                                                    "name": "10",
+                                                    "type": "text",
+                                                    "label": "(K)"
+                                                },
+                                                {
+                                                    "name": "11",
+                                                    "type": "text",
+                                                    "label": "(L)"
+                                                },
+                                                {
+                                                    "name": "12",
+                                                    "type": "text",
+                                                    "label": "(M)"
+                                                },
+                                                {
+                                                    "name": "13",
+                                                    "type": "text",
+                                                    "label": "(N)"
+                                                },
+                                                {
+                                                    "name": "14",
+                                                    "type": "text",
+                                                    "label": "(O)"
+                                                },
+                                                {
+                                                    "name": "15",
+                                                    "type": "text",
+                                                    "label": "(P)"
+                                                },
+                                                {
+                                                    "name": "16",
+                                                    "type": "text",
+                                                    "label": "(Q)"
+                                                },
+                                                {
+                                                    "name": "17",
+                                                    "type": "text",
+                                                    "label": "(R)"
+                                                },
+                                                {
+                                                    "name": "18",
+                                                    "type": "text",
+                                                    "label": "(S)"
+                                                },
+                                                {
+                                                    "name": "19",
+                                                    "type": "text",
+                                                    "label": "(T)"
+                                                },
+                                                {
+                                                    "name": "20",
+                                                    "type": "text",
+                                                    "label": "(U)"
+                                                },
+                                                {
+                                                    "name": "21",
+                                                    "type": "text",
+                                                    "label": "(V)"
+                                                },
+                                                {
+                                                    "name": "22",
+                                                    "type": "text",
+                                                    "label": "(W)"
+                                                },
+                                                {
+                                                    "name": "23",
+                                                    "type": "text",
+                                                    "label": "(X)"
+                                                },
+                                                {
+                                                    "name": "24",
+                                                    "type": "text",
+                                                    "label": "(Y)"
+                                                },
+                                                {
+                                                    "name": "25",
+                                                    "type": "text",
+                                                    "label": "(Z)"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "id": 20,
+                                        "module": "util:TextAggregator",
+                                        "version": 1,
+                                        "parameters": {
+                                            "feeder": 15,
+                                            "rowSeparator": "\n"
+                                        },
+                                        "mapper": {
+                                            "value": "кол-во комнат {{15.`0`}}, улица {{15.`1`}}, этаж {{15.`2`}}, общая площадь {{15.`3`}}, цена{{15.`4`}}"
+                                        },
+                                        "metadata": {
+                                            "designer": {
+                                                "x": 1174,
+                                                "y": -465
+                                            },
+                                            "restore": {
+                                                "extra": {
+                                                    "feeder": {
+                                                        "label": "Google Sheets - Search Rows [15]"
+                                                    }
+                                                },
+                                                "parameters": {
+                                                    "rowSeparator": {
+                                                        "label": "New row"
+                                                    }
+                                                }
+                                            },
+                                            "parameters": [
+                                                {
+                                                    "name": "rowSeparator",
+                                                    "type": "select",
+                                                    "label": "Row separator",
+                                                    "validate": {
+                                                        "enum": [
+                                                            "\n",
+                                                            "\t",
+                                                            "other"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "expect": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Text"
+                                                }
+                                            ],
+                                            "advanced": true
+                                        }
+                                    },
+                                    {
+                                        "id": 16,
+                                        "module": "openai-gpt-3:CreateCompletion",
+                                        "version": 1,
+                                        "parameters": {
+                                            "__IMTCONN__": 3238319
+                                        },
+                                        "mapper": {
+                                            "model": "gpt-4o",
+                                            "top_p": "1",
+                                            "select": "chat",
+                                            "messages": [
+                                                {
+                                                    "role": "assistant",
+                                                    "content": "ты умный помощник"
+                                                },
+                                                {
+                                                    "role": "user",
+                                                    "content": "ответь на вопрос пользователя {{1.`вопрос`}}\nвызванная тобою функция вернула такое значение:{{20.text}}",
+                                                    "imageDetail": "auto"
+                                                }
+                                            ],
+                                            "max_tokens": "2048",
+                                            "temperature": "1",
+                                            "n_completions": "1",
+                                            "response_format": "text"
+                                        },
+                                        "metadata": {
+                                            "designer": {
+                                                "x": 1431,
+                                                "y": -614
+                                            },
+                                            "restore": {
+                                                "expect": {
+                                                    "stop": {
+                                                        "mode": "chose"
+                                                    },
+                                                    "model": {
+                                                        "mode": "chose",
+                                                        "label": "gpt-4o (system)"
+                                                    },
+                                                    "select": {
+                                                        "label": "Create a Chat Completion (GPT and o1 models)"
+                                                    },
+                                                    "messages": {
+                                                        "mode": "chose",
+                                                        "items": [
+                                                            {
+                                                                "role": {
+                                                                    "mode": "chose",
+                                                                    "label": "Assistant"
+                                                                }
+                                                            },
+                                                            {
+                                                                "role": {
+                                                                    "mode": "chose",
+                                                                    "label": "User"
+                                                                },
+                                                                "imageDetail": {
+                                                                    "mode": "chose",
+                                                                    "label": "Auto"
+                                                                },
+                                                                "imageInputType": {
+                                                                    "mode": "chose",
+                                                                    "label": "Empty"
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    "logit_bias": {
+                                                        "mode": "chose"
+                                                    },
+                                                    "response_format": {
+                                                        "mode": "chose",
+                                                        "label": "Text"
+                                                    },
+                                                    "additionalParameters": {
+                                                        "mode": "chose"
+                                                    }
+                                                },
+                                                "parameters": {
+                                                    "__IMTCONN__": {
+                                                        "data": {
+                                                            "scoped": "true",
+                                                            "connection": "openai-gpt-3"
+                                                        },
+                                                        "label": "Гугл таблица Новости рынка 10.10.24"
+                                                    }
+                                                }
+                                            },
+                                            "parameters": [
+                                                {
+                                                    "name": "__IMTCONN__",
+                                                    "type": "account:openai-gpt-3",
+                                                    "label": "Connection",
+                                                    "required": true
+                                                }
+                                            ],
+                                            "expect": [
+                                                {
+                                                    "name": "select",
+                                                    "type": "select",
+                                                    "label": "Select Method",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "enum": [
+                                                            "chat",
+                                                            "prompt"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "name": "temperature",
+                                                    "type": "number",
+                                                    "label": "Temperature",
+                                                    "validate": {
+                                                        "max": 2,
+                                                        "min": 0
+                                                    }
+                                                },
+                                                {
+                                                    "name": "top_p",
+                                                    "type": "number",
+                                                    "label": "Top P",
+                                                    "validate": {
+                                                        "max": 1,
+                                                        "min": 0
+                                                    }
+                                                },
+                                                {
+                                                    "name": "n_completions",
+                                                    "type": "number",
+                                                    "label": "Number"
+                                                },
+                                                {
+                                                    "name": "frequency_penalty",
+                                                    "type": "number",
+                                                    "label": "Frequency Penalty",
+                                                    "validate": {
+                                                        "max": 2,
+                                                        "min": -2
+                                                    }
+                                                },
+                                                {
+                                                    "name": "presence_penalty",
+                                                    "type": "number",
+                                                    "label": "Presence Penalty",
+                                                    "validate": {
+                                                        "max": 2,
+                                                        "min": -2
+                                                    }
+                                                },
+                                                {
+                                                    "name": "logit_bias",
+                                                    "spec": {
+                                                        "name": "value",
+                                                        "spec": [
+                                                            {
+                                                                "name": "token",
+                                                                "type": "text",
+                                                                "label": "Token ID",
+                                                                "required": true
+                                                            },
+                                                            {
+                                                                "name": "probability",
+                                                                "type": "number",
+                                                                "label": "Probability",
+                                                                "required": true,
+                                                                "validate": {
+                                                                    "max": 100,
+                                                                    "min": -100
+                                                                }
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Token Probability"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Token Probability"
+                                                },
+                                                {
+                                                    "name": "seed",
+                                                    "type": "integer",
+                                                    "label": "Seed"
+                                                },
+                                                {
+                                                    "name": "stop",
+                                                    "spec": {
+                                                        "name": "value",
+                                                        "type": "text",
+                                                        "label": "Stop Sequence"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Stop Sequences",
+                                                    "validate": {
+                                                        "maxItems": 4
+                                                    }
+                                                },
+                                                {
+                                                    "name": "additionalParameters",
+                                                    "spec": {
+                                                        "name": "value",
+                                                        "spec": [
+                                                            {
+                                                                "name": "key",
+                                                                "type": "text",
+                                                                "label": "Parameter Name",
+                                                                "required": true
+                                                            },
+                                                            {
+                                                                "name": "type",
+                                                                "type": "select",
+                                                                "label": "Input Type",
+                                                                "options": [
+                                                                    {
+                                                                        "label": "Text",
+                                                                        "value": "text",
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "text",
+                                                                                "label": "Parameter Value"
+                                                                            }
+                                                                        ],
+                                                                        "default": true
+                                                                    },
+                                                                    {
+                                                                        "label": "Number",
+                                                                        "value": "number",
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "number",
+                                                                                "label": "Parameter Value"
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "label": "Boolean",
+                                                                        "value": "boolean",
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "boolean",
+                                                                                "label": "Parameter Value"
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "label": "Date",
+                                                                        "value": "date",
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "date",
+                                                                                "label": "Parameter Value"
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "label": "Any",
+                                                                        "value": "any",
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "any",
+                                                                                "label": "Parameter Value"
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Input Parameter"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Other Input Parameters"
+                                                },
+                                                {
+                                                    "name": "model",
+                                                    "type": "select",
+                                                    "label": "Model",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "max_tokens",
+                                                    "type": "uinteger",
+                                                    "label": "Max Completion Tokens"
+                                                },
+                                                {
+                                                    "name": "messages",
+                                                    "spec": {
+                                                        "name": "value",
+                                                        "spec": [
+                                                            {
+                                                                "name": "role",
+                                                                "type": "select",
+                                                                "label": "Role",
+                                                                "options": {
+                                                                    "store": [
+                                                                        {
+                                                                            "label": "System",
+                                                                            "value": "system",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                    "name": "content",
+                                                                                    "type": "text",
+                                                                                    "label": "Text Content"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "User",
+                                                                            "value": "user",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                    "name": "content",
+                                                                                    "type": "text",
+                                                                                    "label": "Text Content"
+                                                                                },
+                                                                                {
+                                                                                    "name": "imageInputType",
+                                                                                    "type": "select",
+                                                                                    "label": "Image Input Type",
+                                                                                    "options": [
+                                                                                        {
+                                                                                            "label": "URL",
+                                                                                            "value": "url",
+                                                                                            "nested": [
+                                                                                                {
+                                                                                                    "help": "Make sure to use a publically accessible URL.\nYou can test if your image is publically accessible by opening the link in an incognito tab.",
+                                                                                                    "name": "imageUrl",
+                                                                                                    "type": "url",
+                                                                                                    "label": "Image URL"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "label": "Image File",
+                                                                                            "value": "file",
+                                                                                            "nested": [
+                                                                                                {
+                                                                                                    "name": "imageFile",
+                                                                                                    "spec": [
+                                                                                                        {
+                                                                                                            "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                                            "name": "imageFilename",
+                                                                                                            "type": "filename",
+                                                                                                            "label": "Image Filename",
+                                                                                                            "semantic": "file:name",
+                                                                                                            "extension": [
+                                                                                                                "jpg",
+                                                                                                                "jpeg",
+                                                                                                                "png",
+                                                                                                                "webp",
+                                                                                                                "gif"
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "imageData",
+                                                                                                            "type": "buffer",
+                                                                                                            "label": "Image Data",
+                                                                                                            "semantic": "file:data"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "type": "collection",
+                                                                                                    "label": "Image"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ],
+                                                                                    "mappable": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "imageDetail",
+                                                                                    "type": "select",
+                                                                                    "label": "Image Detail",
+                                                                                    "options": [
+                                                                                        {
+                                                                                            "label": "Auto",
+                                                                                            "value": "auto",
+                                                                                            "default": true
+                                                                                        },
+                                                                                        {
+                                                                                            "label": "High",
+                                                                                            "value": "high"
+                                                                                        },
+                                                                                        {
+                                                                                            "label": "Low",
+                                                                                            "value": "low"
+                                                                                        }
+                                                                                    ],
+                                                                                    "advanced": true
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Assistant",
+                                                                            "value": "assistant",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                    "name": "content",
+                                                                                    "type": "text",
+                                                                                    "label": "Text Content"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "required": true
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Message"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Messages",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "response_format",
+                                                    "type": "select",
+                                                    "label": "Response Format",
+                                                    "validate": {
+                                                        "enum": [
+                                                            "text",
+                                                            "json_object"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "interface": [
+                                                {
+                                                    "name": "result",
+                                                    "type": "any",
+                                                    "label": "Result"
+                                                },
+                                                {
+                                                    "name": "id",
+                                                    "type": "text",
+                                                    "label": "ID"
+                                                },
+                                                {
+                                                    "name": "object",
+                                                    "type": "text",
+                                                    "label": "Object"
+                                                },
+                                                {
+                                                    "name": "created",
+                                                    "type": "date",
+                                                    "label": "Created"
+                                                },
+                                                {
+                                                    "name": "model",
+                                                    "type": "text",
+                                                    "label": "Model"
+                                                },
+                                                {
+                                                    "name": "choices",
+                                                    "spec": {
+                                                        "spec": [
+                                                            {
+                                                                "name": "text",
+                                                                "type": "text",
+                                                                "label": "Text"
+                                                            },
+                                                            {
+                                                                "name": "index",
+                                                                "type": "number",
+                                                                "label": "Index"
+                                                            },
+                                                            {
+                                                                "name": "logprobs",
+                                                                "type": "text",
+                                                                "label": "Log Probs"
+                                                            },
+                                                            {
+                                                                "name": "finish_reason",
+                                                                "type": "text",
+                                                                "label": "Finish Reason"
+                                                            },
+                                                            {
+                                                                "name": "message",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "role",
+                                                                        "type": "text",
+                                                                        "label": "Role"
+                                                                    },
+                                                                    {
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Content"
+                                                                    },
+                                                                    {
+                                                                        "name": "refusal",
+                                                                        "type": "text",
+                                                                        "label": "Refusal"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Message"
+                                                            }
+                                                        ],
+                                                        "type": "collection"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Choices"
+                                                },
+                                                {
+                                                    "name": "usage",
+                                                    "spec": [
+                                                        {
+                                                            "name": "prompt_tokens",
+                                                            "type": "number",
+                                                            "label": "Prompt Tokens"
+                                                        },
+                                                        {
+                                                            "name": "completion_tokens",
+                                                            "type": "text",
+                                                            "label": "Completion Tokens"
+                                                        },
+                                                        {
+                                                            "name": "total_tokens",
+                                                            "type": "number",
+                                                            "label": "Total Tokens"
+                                                        },
+                                                        {
+                                                            "name": "prompt_tokens_details",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "cached_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Cached Tokens"
+                                                                },
+                                                                {
+                                                                    "name": "text_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Text Tokens"
+                                                                },
+                                                                {
+                                                                    "name": "image_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Image Tokens"
+                                                                },
+                                                                {
+                                                                    "name": "audio_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Audio Tokens"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Prompt Tokens Details"
+                                                        },
+                                                        {
+                                                            "name": "completion_tokens_details",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "reasoning_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Reasoning Tokens"
+                                                                },
+                                                                {
+                                                                    "name": "text_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Text Tokens"
+                                                                },
+                                                                {
+                                                                    "name": "audio_tokens",
+                                                                    "type": "uinteger",
+                                                                    "label": "Audio Tokens"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Completion Tokens Details"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Usage"
+                                                },
+                                                {
+                                                    "name": "system_fingerprint",
+                                                    "type": "text",
+                                                    "label": "System Fingerprint"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            ]
+        },
+        "zone": "eu2.make.com"
+    }
+}

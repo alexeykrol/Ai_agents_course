@@ -1,0 +1,71 @@
+{
+    "name": "Make.com Beginner Scenario #4",
+    "flow": [
+        {
+            "id": 3,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": ""
+            },
+            "mapper": {
+                "json": "[{\n  \"lead\": {\n    \"name\": \"Jane Doe\",\n    \"email\": \"jane.doe@example.com\",\n    \"phone\": \"+1234567890\",\n    \"details\": {\n      \"company\": \"Tech Solutions\",\n      \"job_title\": \"Marketing Manager\"\n    },\n    \"interests\": [\"DJ Services\", \"Photography\", \"Video\"],\n    \"budget\": 5000,\n    \"employee_count\": 50,\n    \"premium_service_interested\": true,\n    \"submission_date\": \"2024-11-06\",\n    \"follow_up_date\": \"2024-11-10\",\n    \"attached_file\": {\n      \"file_name\": \"company_info.pdf\",\n      \"file_type\": \"application/pdf\",\n      \"file_content\": \"JVBERi0xLjQKJcTl8uXrp/Og0MTGCjggMSAwIG9iago8PC9UeXBlL1hPYmplY3QvU3ViamVjd...\"\n    }\n  }\n}\n]"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "messages": [
+                        {
+                            "category": "last",
+                            "severity": "warning",
+                            "message": "A transformer should not be the last module in the route."
+                        }
+                    ]
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "Choose a data structure"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com"
+    }
+}

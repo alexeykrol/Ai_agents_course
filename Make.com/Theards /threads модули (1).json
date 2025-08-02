@@ -1,0 +1,1061 @@
+{
+    "name": "Презентация Threads PRO",
+    "flow": [
+        {
+            "id": 24,
+            "module": "app#threads-1lqd8y:Hook",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 1580340
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -1472,
+                    "y": 2504
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My тест webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:app#threads-1lqd8y",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": [
+                [
+                    {
+                        "id": 22,
+                        "module": "app#threads-1lqd8y:search",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5215732
+                        },
+                        "mapper": {
+                            "keyword": "автоматизация"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1467,
+                                "y": 2180,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "Всё включено"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "keyword",
+                                    "type": "text",
+                                    "label": "Ключевое слово",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 23,
+                        "module": "app#threads-1lqd8y:postinfo",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "post_id": "18056271046837667"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1077,
+                                "y": 2169
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "post_id",
+                                    "type": "text",
+                                    "label": "ID поста",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 1,
+                        "module": "app#threads-1lqd8y:createTextPost",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5215732
+                        },
+                        "mapper": {
+                            "message": "Привет всем "
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -935,
+                                "y": -253,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "Всё включено"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "message",
+                                    "type": "text",
+                                    "label": "Текст поста",
+                                    "required": true
+                                },
+                                {
+                                    "name": "links",
+                                    "type": "text",
+                                    "label": "Прикрепленные ссылки"
+                                },
+                                {
+                                    "name": "message",
+                                    "type": "text",
+                                    "label": "Текст поста",
+                                    "required": true
+                                },
+                                {
+                                    "name": "links",
+                                    "type": "text",
+                                    "label": "Прикрепленные ссылки"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 4,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5215732
+                        },
+                        "mapper": {
+                            "container_id": "{{1.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -512,
+                                "y": -252
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "Всё включено"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                },
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 20,
+                        "module": "app#threads-1lqd8y:repost",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "threads_post_id": "18378962536114755"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1455,
+                                "y": 1853,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "threads_post_id",
+                                    "type": "text",
+                                    "label": "ID поста для репоста",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 10,
+                        "module": "app#threads-1lqd8y:carusel1",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "image_url": "https://mayai.ru/wp-content/uploads/2025/01/avtomatizatsiya-prodazh-s-make.com-i-amocrm-poshagovyj-gajd-dlya-maksimalnoj-effektivnosti-biznesa.png",
+                            "media_type": "IMAGE"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1422,
+                                "y": 620,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "expect": {
+                                    "media_type": {
+                                        "mode": "chose",
+                                        "label": "Изображение"
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "media_type",
+                                    "type": "select",
+                                    "label": "Тип медиа",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "IMAGE",
+                                            "VIDEO"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "image_url",
+                                    "type": "text",
+                                    "label": "Ссылка на изображение"
+                                },
+                                {
+                                    "name": "video_url",
+                                    "type": "text",
+                                    "label": "Ссылка на видео"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 12,
+                        "module": "app#threads-1lqd8y:carusel1",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "image_url": "https://mayai.ru/wp-content/uploads/2025/01/integatsiya-1s-s-make-com-avtomatizatsiya-biznes-protsessov.jpg.png",
+                            "media_type": "IMAGE"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -998,
+                                "y": 612
+                            },
+                            "restore": {
+                                "expect": {
+                                    "media_type": {
+                                        "mode": "chose",
+                                        "label": "Изображение"
+                                    }
+                                },
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "media_type",
+                                    "type": "select",
+                                    "label": "Тип медиа",
+                                    "required": true,
+                                    "validate": {
+                                        "enum": [
+                                            "IMAGE",
+                                            "VIDEO"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "image_url",
+                                    "type": "text",
+                                    "label": "Ссылка на изображение"
+                                },
+                                {
+                                    "name": "video_url",
+                                    "type": "text",
+                                    "label": "Ссылка на видео"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 11,
+                        "module": "app#threads-1lqd8y:karuselall",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "text": "тест карусели",
+                            "children": "{{12.id}},{{10.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -654,
+                                "y": 606
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "children",
+                                    "type": "text",
+                                    "label": "ID контейнеров",
+                                    "required": true
+                                },
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Описание карусели"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 13,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "container_id": "{{11.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -276,
+                                "y": 611
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 7,
+                        "module": "app#threads-1lqd8y:video",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "caption": "Проверка ",
+                            "videoUrl": "https://mayai.ru/wp-content/uploads/2024/09/IMG_4201.mp4"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -948,
+                                "y": 317,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "videoUrl",
+                                    "type": "text",
+                                    "label": "Ссылка на видео",
+                                    "required": true
+                                },
+                                {
+                                    "name": "caption",
+                                    "type": "text",
+                                    "label": "Описание видео"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 9,
+                        "module": "util:FunctionSleep",
+                        "version": 1,
+                        "parameters": {},
+                        "mapper": {
+                            "duration": "30"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -634,
+                                "y": 315
+                            },
+                            "restore": {},
+                            "expect": [
+                                {
+                                    "name": "duration",
+                                    "type": "uinteger",
+                                    "label": "Delay",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 300,
+                                        "min": 1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 8,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "container_id": "{{7.creation_id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -311,
+                                "y": 313
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 14,
+                        "module": "app#threads-1lqd8y:post1",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "media_id": "17942157071825473"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1443,
+                                "y": 955,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "media_id",
+                                    "type": "text",
+                                    "label": "ID поста",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 15,
+                        "module": "app#threads-1lqd8y:Reply2",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "message": "5000",
+                            "thread_id": "18009952589692246"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1448,
+                                "y": 1254,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "thread_id",
+                                    "type": "text",
+                                    "label": "ID поста",
+                                    "required": true
+                                },
+                                {
+                                    "name": "message",
+                                    "type": "text",
+                                    "label": "Текст ответа",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 16,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "container_id": "{{15.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1032,
+                                "y": 1251
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 18,
+                        "module": "app#threads-1lqd8y:citata",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "message": "проверка цитаты ",
+                            "quote_post_id": "17900973975099068"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1453,
+                                "y": 1575,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "quote_post_id",
+                                    "type": "text",
+                                    "label": "ID цитируемого поста",
+                                    "required": true
+                                },
+                                {
+                                    "name": "message",
+                                    "type": "text",
+                                    "label": "Текст цитаты",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 19,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "container_id": "{{18.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -1077,
+                                "y": 1572
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                [
+                    {
+                        "id": 5,
+                        "module": "app#threads-1lqd8y:image",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "text": "привет",
+                            "image_url": "https://mayai.ru/wp-content/uploads/2025/01/avtoposting-avtomatizatsiya-raboty-s-veb-formami-make-com.png"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -934,
+                                "y": 28,
+                                "messages": [
+                                    {
+                                        "category": "link",
+                                        "severity": "warning",
+                                        "message": "The module is not connected to the data flow."
+                                    }
+                                ]
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "image_url",
+                                    "type": "text",
+                                    "label": "Ссылка на изображение",
+                                    "required": true
+                                },
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Текст поста"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 6,
+                        "module": "app#threads-1lqd8y:publish",
+                        "version": 1,
+                        "parameters": {
+                            "__IMTCONN__": 5214096
+                        },
+                        "mapper": {
+                            "container_id": "{{5.id}}"
+                        },
+                        "metadata": {
+                            "designer": {
+                                "x": -513,
+                                "y": 29
+                            },
+                            "restore": {
+                                "parameters": {
+                                    "__IMTCONN__": {
+                                        "data": {
+                                            "scoped": "true",
+                                            "connection": "app#threads-1lqd8y2"
+                                        },
+                                        "label": "My Подключение по API connection"
+                                    }
+                                }
+                            },
+                            "parameters": [
+                                {
+                                    "name": "__IMTCONN__",
+                                    "type": "account:app#threads-1lqd8y2",
+                                    "label": "Connection",
+                                    "required": true
+                                }
+                            ],
+                            "expect": [
+                                {
+                                    "name": "container_id",
+                                    "type": "text",
+                                    "label": "ID контейнера",
+                                    "required": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            ]
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

@@ -1,0 +1,1312 @@
+{
+    "name": "inoreader:AI",
+    "flow": [
+        {
+            "id": 80,
+            "module": "rss:TriggerNewArticle",
+            "version": 4,
+            "parameters": {
+                "url": "https://www.inoreader.com/stream/user/1004901627/tag/AI",
+                "gzip": true,
+                "include": [],
+                "password": "",
+                "username": "",
+                "maxResults": 5
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -2015,
+                    "y": -491
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of returned items",
+                        "required": true
+                    },
+                    {
+                        "name": "username",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "password",
+                        "type": "text",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "include",
+                        "type": "select",
+                        "label": "Process RSS fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "google-merchant-center",
+                                "itunes"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Title"
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "summary",
+                        "type": "text",
+                        "label": "Summary"
+                    },
+                    {
+                        "name": "author",
+                        "type": "text",
+                        "label": "Author"
+                    },
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "name": "dateUpdated",
+                        "type": "date",
+                        "label": "Date updated"
+                    },
+                    {
+                        "name": "dateCreated",
+                        "type": "date",
+                        "label": "Date created"
+                    },
+                    {
+                        "name": "comments",
+                        "type": "url",
+                        "label": "Comments"
+                    },
+                    {
+                        "name": "image",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Image"
+                    },
+                    {
+                        "name": "categories",
+                        "spec": {
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Categories"
+                    },
+                    {
+                        "name": "source",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Source"
+                    },
+                    {
+                        "name": "enclosures",
+                        "spec": [
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            },
+                            {
+                                "name": "type",
+                                "type": "text",
+                                "label": "Type"
+                            },
+                            {
+                                "name": "length",
+                                "type": "number",
+                                "label": "Length"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Enclosures"
+                    },
+                    {
+                        "help": "Other RSS fields. All values are in text format.",
+                        "name": "rssFields",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "title"
+                            },
+                            {
+                                "name": "link",
+                                "type": "text",
+                                "label": "link"
+                            },
+                            {
+                                "name": "description",
+                                "type": "text",
+                                "label": "description"
+                            },
+                            {
+                                "name": "pubdate",
+                                "type": "text",
+                                "label": "pubdate"
+                            },
+                            {
+                                "name": "category",
+                                "type": "text",
+                                "label": "category"
+                            },
+                            {
+                                "name": "source",
+                                "type": "text",
+                                "label": "source"
+                            },
+                            {
+                                "name": "guid",
+                                "type": "text",
+                                "label": "guid"
+                            },
+                            {
+                                "name": "enclosure",
+                                "type": "text",
+                                "label": "enclosure"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "RSS fields"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "qs": [],
+                "url": "{{80.url}}",
+                "data": "",
+                "gzip": true,
+                "method": "get",
+                "headers": [],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "raw",
+                "contentType": "text/html",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1631,
+                    "y": -488
+                },
+                "restore": {
+                    "expect": {
+                        "qs": {
+                            "mode": "chose"
+                        },
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose"
+                        },
+                        "bodyType": {
+                            "label": "Raw"
+                        },
+                        "contentType": {
+                            "label": "HTML (text/html)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "handleErrors",
+                        "type": "boolean",
+                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                        "required": true
+                    },
+                    {
+                        "name": "useNewZLibDeCompress",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "serializeUrl",
+                        "type": "boolean",
+                        "label": "Serialize URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "get",
+                                "head",
+                                "post",
+                                "put",
+                                "patch",
+                                "delete",
+                                "options"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "qs",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Query String"
+                    },
+                    {
+                        "name": "bodyType",
+                        "type": "select",
+                        "label": "Body type",
+                        "validate": {
+                            "enum": [
+                                "raw",
+                                "x_www_form_urlencoded",
+                                "multipart_form_data"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseResponse",
+                        "type": "boolean",
+                        "label": "Parse response",
+                        "required": true
+                    },
+                    {
+                        "name": "authUser",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "authPass",
+                        "type": "password",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "uinteger",
+                        "label": "Timeout",
+                        "validate": {
+                            "max": 300,
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    },
+                    {
+                        "name": "ca",
+                        "type": "cert",
+                        "label": "Self-signed certificate"
+                    },
+                    {
+                        "name": "rejectUnauthorized",
+                        "type": "boolean",
+                        "label": "Reject connections that are using unverified (self-signed) certificates",
+                        "required": true
+                    },
+                    {
+                        "name": "followRedirect",
+                        "type": "boolean",
+                        "label": "Follow redirect",
+                        "required": true
+                    },
+                    {
+                        "name": "useQuerystring",
+                        "type": "boolean",
+                        "label": "Disable serialization of multiple same query string keys as arrays",
+                        "required": true
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    },
+                    {
+                        "name": "useMtls",
+                        "type": "boolean",
+                        "label": "Use Mutual TLS",
+                        "required": true
+                    },
+                    {
+                        "name": "contentType",
+                        "type": "select",
+                        "label": "Content type",
+                        "validate": {
+                            "enum": [
+                                "text/plain",
+                                "application/json",
+                                "application/xml",
+                                "text/xml",
+                                "text/html",
+                                "custom"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "data",
+                        "type": "buffer",
+                        "label": "Request content"
+                    },
+                    {
+                        "name": "followAllRedirects",
+                        "type": "boolean",
+                        "label": "Follow all redirect",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "regexp:HTMLToText",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "html": "{{7.data}}",
+                "newline": "lf",
+                "uppercaseHeadings": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1112,
+                    "y": -494
+                },
+                "restore": {
+                    "expect": {
+                        "newline": {
+                            "label": "LF (\\n) - Unix/Mac OS X"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "html",
+                        "type": "text",
+                        "label": "HTML"
+                    },
+                    {
+                        "name": "newline",
+                        "type": "select",
+                        "label": "Line break",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "lf",
+                                "crlf",
+                                "cr"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "uppercaseHeadings",
+                        "type": "boolean",
+                        "label": "Uppercase headings",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 70,
+            "module": "openai-gpt-3:messageAssistantAdvanced",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 4331518
+            },
+            "mapper": {
+                "role": "user",
+                "message": "{{5.text}}",
+                "assistantId": "asst_GNR8KbOlKCfi1lctUjIsqfw1"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -613,
+                    "y": -505,
+                    "name": "Cleaner"
+                },
+                "restore": {
+                    "expect": {
+                        "role": {
+                            "label": "User"
+                        },
+                        "model": {
+                            "mode": "chose"
+                        },
+                        "tools": {
+                            "mode": "chose"
+                        },
+                        "image_urls": {
+                            "mode": "chose"
+                        },
+                        "assistantId": {
+                            "mode": "chose",
+                            "label": "Cleaner (gpt-4.1-nano)",
+                            "nested": []
+                        },
+                        "image_files": {
+                            "mode": "chose"
+                        },
+                        "tool_choice": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "truncation_strategy": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "file_search_resources": {
+                            "mode": "chose"
+                        },
+                        "code_interpreter_resources": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "Trinity OpenAI"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "assistantId",
+                        "type": "select",
+                        "label": "Assistant",
+                        "required": true
+                    },
+                    {
+                        "name": "role",
+                        "type": "select",
+                        "label": "Role",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "user",
+                                "assistant"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "threadId",
+                        "type": "text",
+                        "label": "Thread ID"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "tools",
+                        "type": "select",
+                        "label": "Tools",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "file_search",
+                                "code_interpreter"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "file_search_resources",
+                        "type": "select",
+                        "label": "File Search Resources"
+                    },
+                    {
+                        "name": "code_interpreter_resources",
+                        "type": "select",
+                        "label": "Code Interpreter Resources",
+                        "multiple": true,
+                        "validate": {
+                            "maxItems": 20
+                        }
+                    },
+                    {
+                        "name": "tool_choice",
+                        "type": "select",
+                        "label": "Tool Choice",
+                        "validate": {
+                            "enum": [
+                                "none",
+                                "auto",
+                                "required",
+                                "file_search",
+                                "code_interpreter",
+                                "function"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "instructions",
+                        "type": "text",
+                        "label": "Instructions"
+                    },
+                    {
+                        "name": "max_prompt_tokens",
+                        "type": "uinteger",
+                        "label": "Max Prompt Tokens"
+                    },
+                    {
+                        "name": "max_completion_tokens",
+                        "type": "uinteger",
+                        "label": "Max Completion Tokens"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "auto",
+                                "json_object",
+                                "text"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "truncation_strategy",
+                        "type": "select",
+                        "label": "Truncation Strategy",
+                        "validate": {
+                            "enum": [
+                                "auto",
+                                "last_messages"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "type": "text",
+                        "label": "Message",
+                        "required": true
+                    },
+                    {
+                        "name": "image_files",
+                        "type": "select",
+                        "label": "Image Files",
+                        "multiple": true
+                    },
+                    {
+                        "name": "image_urls",
+                        "spec": {
+                            "name": "value",
+                            "type": "url",
+                            "label": "Image URL",
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "Image URLs"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 61,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "Prompt_Tokens",
+                "scope": "roundtrip",
+                "value": "{{length(70.result) / 3.8}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -207,
+                    "y": -496,
+                    "name": "Prompt_Tokens"
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "Prompt_Tokens",
+                        "type": "any",
+                        "label": "Prompt_Tokens"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 62,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "Compl_Tokens",
+                "scope": "roundtrip",
+                "value": "{{61.Prompt_Tokens * 25}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 238,
+                    "y": -487,
+                    "name": "Compl_Tokens"
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "Compl_Tokens",
+                        "type": "any",
+                        "label": "Compl_Tokens"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 43,
+            "module": "airtable:ActionCreateRecord",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 4156908
+            },
+            "mapper": {
+                "base": "app5VGioZdapp729W",
+                "table": "tblbWGPI4WUCdZBX8",
+                "record": {
+                    "fld4PFvEJk7GDtOhD": "{{80.title}}",
+                    "fld6jHOeGHMfm9EoY": "{{70.result}}",
+                    "fld94kdDdbL8kSh8g": "{{80.description}}",
+                    "fldBXPdJ28094O1Am": "Make",
+                    "fldCndzBrgVU2MFvm": "{{62.Compl_Tokens}}",
+                    "fldLhKJH4TB6Fl2gr": "{{80.url}}",
+                    "fldTNEtvt4JafLACX": "{{80.date}}",
+                    "fldWOWunh9pHZ7sAu": "inoreader:AI_Feed",
+                    "fldfAnQPFV3spUbyK": "{{80.rssFields.guid}}",
+                    "fldo6y9kCWkYmJpbW": "{{61.Prompt_Tokens}}"
+                },
+                "typecast": false,
+                "useColumnId": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 660,
+                    "y": -491
+                },
+                "restore": {
+                    "expect": {
+                        "base": {
+                            "label": "Агент"
+                        },
+                        "table": {
+                            "label": "Trinity_raw_Input_1",
+                            "nested": [
+                                {
+                                    "name": "record",
+                                    "spec": [
+                                        {
+                                            "name": "fldfAnQPFV3spUbyK",
+                                            "type": "text",
+                                            "label": "my_ID"
+                                        },
+                                        {
+                                            "name": "fldqF4wHllljFAQ3Z",
+                                            "type": "text",
+                                            "label": "published"
+                                        },
+                                        {
+                                            "name": "fldRVUd2eOHxOIWQe",
+                                            "type": "text",
+                                            "label": "AI_Relevance"
+                                        },
+                                        {
+                                            "name": "fld3fQeRMoDKOaSxe",
+                                            "type": "text",
+                                            "label": "AI-eval"
+                                        },
+                                        {
+                                            "name": "fldWOWunh9pHZ7sAu",
+                                            "type": "text",
+                                            "label": "Feed"
+                                        },
+                                        {
+                                            "name": "fldVDOCkI2fyY5FeT",
+                                            "type": "text",
+                                            "label": "Quality"
+                                        },
+                                        {
+                                            "name": "fld6jHOeGHMfm9EoY",
+                                            "type": "text",
+                                            "label": "Content",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "name": "fldBXPdJ28094O1Am",
+                                            "type": "text",
+                                            "label": "Tech"
+                                        },
+                                        {
+                                            "name": "fldCndzBrgVU2MFvm",
+                                            "type": "text",
+                                            "label": "Compl_Tokens"
+                                        },
+                                        {
+                                            "name": "fldUEArzP1CFsEVQ2",
+                                            "type": "text",
+                                            "label": "AI_expain",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "name": "fld4PFvEJk7GDtOhD",
+                                            "type": "text",
+                                            "label": "Title"
+                                        },
+                                        {
+                                            "name": "fld94kdDdbL8kSh8g",
+                                            "type": "text",
+                                            "label": "Description",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "name": "fldTNEtvt4JafLACX",
+                                            "type": "text",
+                                            "label": "Date"
+                                        },
+                                        {
+                                            "name": "fldLhKJH4TB6Fl2gr",
+                                            "type": "text",
+                                            "label": "origin_URL"
+                                        },
+                                        {
+                                            "name": "fld8MEM2tn20Yt4fj",
+                                            "type": "text",
+                                            "label": "Topics"
+                                        },
+                                        {
+                                            "name": "fldyca63MIGfBPR1C",
+                                            "spec": {
+                                                "mode": "edit",
+                                                "type": "select",
+                                                "label": "Value",
+                                                "dynamic": true,
+                                                "options": [],
+                                                "validate": false
+                                            },
+                                            "type": "array",
+                                            "label": "Keywords"
+                                        },
+                                        {
+                                            "name": "fldo6y9kCWkYmJpbW",
+                                            "type": "text",
+                                            "label": "Prompt_Tokens"
+                                        },
+                                        {
+                                            "name": "fldNoSTW2pLF7W487",
+                                            "type": "text",
+                                            "label": "TGURL"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Record"
+                                }
+                            ]
+                        },
+                        "record": {
+                            "nested": {
+                                "fldyca63MIGfBPR1C": {
+                                    "mode": "chose"
+                                }
+                            }
+                        },
+                        "typecast": {
+                            "mode": "chose"
+                        },
+                        "useColumnId": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable2"
+                            },
+                            "label": "Airtable"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "base",
+                        "type": "select",
+                        "label": "Base",
+                        "required": true
+                    },
+                    {
+                        "name": "typecast",
+                        "type": "boolean",
+                        "label": "Smart links",
+                        "required": true
+                    },
+                    {
+                        "name": "useColumnId",
+                        "type": "boolean",
+                        "label": "Use Column ID",
+                        "required": true
+                    },
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    },
+                    {
+                        "name": "record",
+                        "spec": [
+                            {
+                                "name": "fldfAnQPFV3spUbyK",
+                                "type": "text",
+                                "label": "my_ID"
+                            },
+                            {
+                                "name": "fldqF4wHllljFAQ3Z",
+                                "type": "text",
+                                "label": "published"
+                            },
+                            {
+                                "name": "fldRVUd2eOHxOIWQe",
+                                "type": "text",
+                                "label": "AI_Relevance"
+                            },
+                            {
+                                "name": "fld3fQeRMoDKOaSxe",
+                                "type": "text",
+                                "label": "AI-eval"
+                            },
+                            {
+                                "name": "fldWOWunh9pHZ7sAu",
+                                "type": "text",
+                                "label": "Feed"
+                            },
+                            {
+                                "name": "fldVDOCkI2fyY5FeT",
+                                "type": "text",
+                                "label": "Quality"
+                            },
+                            {
+                                "name": "fld6jHOeGHMfm9EoY",
+                                "type": "text",
+                                "label": "Content"
+                            },
+                            {
+                                "name": "fldBXPdJ28094O1Am",
+                                "type": "text",
+                                "label": "Tech"
+                            },
+                            {
+                                "name": "fldCndzBrgVU2MFvm",
+                                "type": "text",
+                                "label": "Compl_Tokens"
+                            },
+                            {
+                                "name": "fldUEArzP1CFsEVQ2",
+                                "type": "text",
+                                "label": "AI_expain"
+                            },
+                            {
+                                "name": "fld4PFvEJk7GDtOhD",
+                                "type": "text",
+                                "label": "Title"
+                            },
+                            {
+                                "name": "fld94kdDdbL8kSh8g",
+                                "type": "text",
+                                "label": "Description"
+                            },
+                            {
+                                "name": "fldTNEtvt4JafLACX",
+                                "type": "text",
+                                "label": "Date"
+                            },
+                            {
+                                "name": "fldLhKJH4TB6Fl2gr",
+                                "type": "text",
+                                "label": "origin_URL"
+                            },
+                            {
+                                "name": "fld8MEM2tn20Yt4fj",
+                                "type": "text",
+                                "label": "Topics"
+                            },
+                            {
+                                "name": "fldyca63MIGfBPR1C",
+                                "spec": {
+                                    "mode": "edit",
+                                    "name": "value",
+                                    "type": "select",
+                                    "label": "Value",
+                                    "dynamic": true,
+                                    "options": [],
+                                    "validate": false
+                                },
+                                "type": "array",
+                                "label": "Keywords"
+                            },
+                            {
+                                "name": "fldo6y9kCWkYmJpbW",
+                                "type": "text",
+                                "label": "Prompt_Tokens"
+                            },
+                            {
+                                "name": "fldNoSTW2pLF7W487",
+                                "type": "text",
+                                "label": "TGURL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Record"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "createdTime",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "my_ID",
+                        "type": "text",
+                        "label": "my_ID"
+                    },
+                    {
+                        "name": "published",
+                        "type": "text",
+                        "label": "published"
+                    },
+                    {
+                        "name": "AI_Relevance",
+                        "type": "text",
+                        "label": "AI_Relevance"
+                    },
+                    {
+                        "name": "AI-eval",
+                        "type": "text",
+                        "label": "AI-eval"
+                    },
+                    {
+                        "name": "Feed",
+                        "type": "text",
+                        "label": "Feed"
+                    },
+                    {
+                        "name": "Created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "Quality",
+                        "type": "text",
+                        "label": "Quality"
+                    },
+                    {
+                        "name": "Content",
+                        "type": "text",
+                        "label": "Content",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Tech",
+                        "type": "text",
+                        "label": "Tech"
+                    },
+                    {
+                        "name": "Compl_Tokens",
+                        "type": "text",
+                        "label": "Compl_Tokens"
+                    },
+                    {
+                        "name": "AI_expain",
+                        "type": "text",
+                        "label": "AI_expain",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Last Modified",
+                        "type": "date",
+                        "label": "Last Modified"
+                    },
+                    {
+                        "name": "Title",
+                        "type": "text",
+                        "label": "Title"
+                    },
+                    {
+                        "name": "Description",
+                        "type": "text",
+                        "label": "Description",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Date",
+                        "type": "text",
+                        "label": "Date"
+                    },
+                    {
+                        "name": "origin_URL",
+                        "type": "text",
+                        "label": "origin_URL"
+                    },
+                    {
+                        "name": "Topics",
+                        "type": "text",
+                        "label": "Topics"
+                    },
+                    {
+                        "name": "Keywords",
+                        "type": "array",
+                        "label": "Keywords",
+                        "dynamic": true,
+                        "editable": true
+                    },
+                    {
+                        "name": "Prompt_Tokens",
+                        "type": "text",
+                        "label": "Prompt_Tokens"
+                    },
+                    {
+                        "name": "Autonumber",
+                        "type": "number",
+                        "label": "Autonumber"
+                    },
+                    {
+                        "name": "TGURL",
+                        "type": "text",
+                        "label": "TGURL"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": true,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com",
+        "notes": []
+    }
+}
