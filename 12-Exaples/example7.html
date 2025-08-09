@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Kanban Board (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html { -webkit-text-size-adjust: 100%; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const initialData = {
+      todo: [
+        { id: 't1', title: 'Write specs' },
+        { id: 't2', title: 'Design wireframes' },
+        { id: 't3', title: 'Set up repo' },
+      ],
+      inprogress: [
+        { id: 't4', title: 'Build auth flow' },
+        { id: 't5', title: 'API contract' },
+        { id: 't6', title: 'Landing copy' },
+      ],
+      done: [
+        { id: 't7', title: 'Project kickoff' },
+        { id: 't8', title: 'Team onboarding' },
+        { id: 't9', title: 'Backlog grooming' },
+      ],
+    };
+
+    function Kanban() {
+      const [columns, setColumns] = useState(initialData);
+      const [dragItem, setDragItem] = useState(null); // { colId, taskId }
+      const [dragOverCol, setDragOverCol] = useState(null);
+
+      const columnDefs = [
+        { id: 'todo', label: 'To Do' },
+        { id: 'inprogress', label: 'In Progress' },
+        { id: 'done', label: 'Done' },
+      ];
+
+      function onDragStart(e, colId, taskId) {
+        setDragItem({ colId, taskId });
+        e.dataTransfer.effectAllowed = 'move';
+        // for Firefox
+        e.dataTransfer.setData('text/plain', taskId);
+      }
+
+      function onDragOverCol(e, colId) {
+        e.preventDefault();
+        setDragOverCol(colId);
+        e.dataTransfer.dropEffect = 'move';
+      }
+
+      function onDragLeaveCol(e, colId) {
+        if (dragOverCol === colId) setDragOverCol(null);
+      }
+
+      function onDropCol(e, targetColId) {
+        e.preventDefault();
+        setDragOverCol(null);
+        if (!dragItem) return;
+        const { colId: sourceColId, taskId } = dragItem;
+        if (sourceColId === targetColId) return;
+
+        setColumns(prev => {
+          const sourceList = [...prev[sourceColId]];
+          const targetList = [...prev[targetColId]];
+          const idx = sourceList.findIndex(t => t.id === taskId);
+          if (idx === -1) return prev;
+          const [moved] = sourceList.splice(idx, 1);
+          targetList.push(moved);
+          return { ...prev, [sourceColId]: sourceList, [targetColId]: targetList };
+        });
+        setDragItem(null);
+      }
+
+      function Card({ task, colId }) {
+        return (
+          <div
+            draggable
+            onDragStart={(e) => onDragStart(e, colId, task.id)}
+            className="select-none rounded-xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow transition-shadow cursor-grab active:cursor-grabbing"
+          >
+            <div className="text-sm font-medium">{task.title}</div>
+          </div>
+        );
+      }
+
+      function Column({ def }) {
+        const list = columns[def.id];
+        const isOver = dragOverCol === def.id;
+        return (
+          <div
+            className={[
+              'flex flex-col rounded-2xl border bg-gray-50',
+              isOver ? 'border-dashed border-gray-400 bg-gray-100' : 'border-gray-200',
+            ].join(' ')}
+            onDragOver={(e) => onDragOverCol(e, def.id)}
+            onDragLeave={(e) => onDragLeaveCol(e, def.id)}
+            onDrop={(e) => onDropCol(e, def.id)}
+          >
+            <div className="px-4 py-3 border-b border-gray-200 bg-white rounded-t-2xl">
+              <h2 className="text-sm font-semibold tracking-tight">{def.label}</h2>
+            </div>
+            <div className="p-3 flex-1 flex flex-col gap-3 overflow-auto min-h-[200px]" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+              {list.map((t) => (
+                <Card key={t.id} task={t} colId={def.id} />
+              ))}
+              {isOver && (
+                <div className="rounded-xl border-2 border-dashed border-gray-400 bg-gray-100/60 p-6 text-center text-xs text-gray-500">
+                  Drop here
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="min-h-screen p-4 sm:p-6">
+          <header className="max-w-6xl mx-auto mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Simple Kanban</h1>
+            <p className="text-sm text-gray-500">Drag cards between columns. Demo only, no backend.</p>
+          </header>
+
+          <main className="max-w-6xl mx-auto">
+            <div className="flex gap-4 sm:gap-6 overflow-x-auto">
+              {columnDefs.map((c) => (
+                <div key={c.id} className="w-72 shrink-0">
+                  <Column def={c} />
+                </div>
+              ))}
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Kanban />);
+  </script>
+</body>
+</html>

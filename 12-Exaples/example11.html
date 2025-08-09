@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filterable Data Table (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html { -webkit-text-size-adjust: 100%; }
+    /* For fixed header shadow hint when scrolling */
+    .thead-sticky-shadow:after { content: ""; position: absolute; inset-inline: 0; bottom: -1px; height: 1px; background: rgba(0,0,0,0.06); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const CATEGORIES = ['All', 'Marketing', 'Engineering', 'Sales', 'Support'];
+
+    const ROWS = [
+      { id: 1,  name: 'Alice Johnson',     email: 'alice@example.com',     category: 'Marketing',   status: 'Active',   created: '2025-05-02' },
+      { id: 2,  name: 'Bob Lee',           email: 'bob.lee@example.com',   category: 'Engineering', status: 'Active',   created: '2025-04-18' },
+      { id: 3,  name: 'Carla Mendes',      email: 'carla@company.com',     category: 'Sales',       status: 'Pending',  created: '2025-03-27' },
+      { id: 4,  name: 'Daniel Price',      email: 'dprice@example.com',    category: 'Support',     status: 'Active',   created: '2025-05-11' },
+      { id: 5,  name: 'Emily Zhang',       email: 'emilyz@company.com',    category: 'Engineering', status: 'Inactive', created: '2025-02-10' },
+      { id: 6,  name: 'Felix Martins',     email: 'felix@company.com',     category: 'Marketing',   status: 'Active',   created: '2025-05-22' },
+      { id: 7,  name: 'Grace Kim',         email: 'grace.kim@example.com', category: 'Support',     status: 'Pending',  created: '2025-01-31' },
+      { id: 8,  name: 'Hiro Tanaka',       email: 'hiro.t@example.com',    category: 'Engineering', status: 'Active',   created: '2025-04-03' },
+      { id: 9,  name: 'Isabella Rossi',    email: 'isa@company.com',       category: 'Sales',       status: 'Inactive', created: '2025-03-12' },
+      { id: 10, name: 'Jonah Patel',       email: 'jonah@company.com',     category: 'Marketing',   status: 'Active',   created: '2025-02-25' },
+    ];
+
+    function App() {
+      const [q, setQ] = useState('');
+      const [cat, setCat] = useState('All');
+
+      const filtered = useMemo(() => {
+        const qn = q.trim().toLowerCase();
+        return ROWS.filter(r => {
+          const byName = !qn || r.name.toLowerCase().includes(qn);
+          const byCat = cat === 'All' || r.category === cat;
+          return byName && byCat;
+        });
+      }, [q, cat]);
+
+      return (
+        <div className="min-h-screen p-4 sm:p-6">
+          <header className="max-w-6xl mx-auto mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Filterable Data Table</h1>
+            <p className="text-sm text-gray-600">Search by name and filter by category. Demo only, no backend.</p>
+          </header>
+
+          <main className="max-w-6xl mx-auto bg-white rounded-2xl shadow ring-1 ring-black/5">
+            {/* Controls */}
+            <div className="p-4 sm:p-5 border-b border-gray-200 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <label htmlFor="search" className="sr-only">Search</label>
+                <div className="relative w-full sm:w-72">
+                  <input
+                    id="search"
+                    type="text"
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Search by name…"
+                    className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                    <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor"><path fillRule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l3.387 3.387a1 1 0 01-1.414 1.414l-3.387-3.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clipRule="evenodd"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <label htmlFor="category" className="sr-only">Category</label>
+                <select
+                  id="category"
+                  value={cat}
+                  onChange={(e) => setCat(e.target.value)}
+                  className="rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                >
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+
+            {/* Table wrapper for sticky header */}
+            <div className="relative overflow-auto" style={{ maxHeight: '60vh' }}>
+              <table className="w-full text-left text-sm">
+                <thead className="bg-white sticky top-0 z-10 thead-sticky-shadow">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Name</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Email</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Category</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((r, i) => (
+                    <tr key={r.id} className="odd:bg-gray-50 hover:bg-gray-100/70">
+                      <td className="px-4 py-3 whitespace-nowrap">{r.name}</td>
+                      <td className="px-4 py-3 text-gray-600">{r.email}</td>
+                      <td className="px-4 py-3">{r.category}</td>
+                      <td className="px-4 py-3">
+                        <span className={[
+                          'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                          r.status === 'Active' ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20' :
+                          r.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20' :
+                          'bg-gray-100 text-gray-700 ring-1 ring-gray-500/10'
+                        ].join(' ')}>
+                          {r.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{r.created}</td>
+                    </tr>
+                  ))}
+                  {filtered.length === 0 && (
+                    <tr>
+                      <td colSpan="5" className="px-4 py-6 text-center text-gray-500">No results.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
