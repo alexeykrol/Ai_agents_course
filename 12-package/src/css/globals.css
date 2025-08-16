@@ -1,0 +1,104 @@
+@import 'tailwindcss';
+@import './layouts/container.css' layer(base);
+@import './layouts/sidebar.css';
+@import './layouts/header.css' layer(base);
+@import './override/reboot.css' layer(base);
+
+
+@plugin 'flowbite-react/plugin/tailwindcss';
+@source '../../.flowbite-react/class-list.json';
+@source '../../node_modules/flowbite-react/dist/esm/**/*.mjs';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+
+  --font-*: initial;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+
+  --color-primary: oklch(0.6 0.1613 247.83);
+  --color-secondary: oklch(0.57 0.0172 241.96);
+  --color-info: oklch(0.7811 0.1209 218.04);
+  --color-success: oklch(0.7676 0.1533 156.87);
+  --color-warning: oklch(0.8429 0.1119 73.04);
+  --color-error: oklch(0.7745 0.1265 35.41);
+  --color-indigo: oklch(0.5933 0.1751 294.4);
+  --color-dark: oklch(0.23 0.037 258.85);
+
+  --shadow-md: 0 2px 6px #2553b91a;
+  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+  --radius-sm: 7px;
+  --radius-md: 9px;
+  --radius-lg: 18px;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility container {
+  @apply max-w-[1300px];
+}
+
+@utility sidebar-link {
+  @apply !h-12 !rounded-full !rounded-s-none text-sm !font-medium
+}
+
+@utility dropdown {
+  @apply shadow-md bg-white dark:bg-dark relative rounded-sm;
+}
+
+@utility card-title {
+  @apply text-lg font-semibold text-dark dark:text-white;
+}
+
+@utility sidebar-dropdown {
+  & .drop-items{
+    @apply text-dark/60 dark:text-white/50 group-hover/link:text-dark dark:group-hover/link:text-white;
+  }
+}
+
+@utility form-control {
+  & input {
+    @apply border border-gray-300 bg-transparent w-full text-sm rounded-sm;
+  }
+
+  & input:focus {
+    @apply border-primary outline-hidden shadow-none ring-offset-0 ring-transparent;
+  }
+}
+
+
+
+@layer components {
+
+  button {
+    @apply !cursor-pointer;
+  }
+
+  /*heading text color*/
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-dark dark:text-white font-semibold;
+  }
+
+
+}

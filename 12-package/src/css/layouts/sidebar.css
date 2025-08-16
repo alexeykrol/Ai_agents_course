@@ -1,0 +1,108 @@
+.menu-sidebar {
+    flex-shrink: 0;
+    z-index: 10;
+    transition: .2s ease-in;
+    position: fixed;
+    inset-inline-start: 0px;
+    width: 270px !important;
+    overflow-y: hidden;
+    box-shadow: 0 2px 6px #2553b91a !important;
+}
+
+
+.logo img {
+    margin: 0 auto;
+}
+
+.miniicons {
+    height: calc(100vh - 150px);
+}
+
+.sidebar-nav {
+    margin-inline-end: 16px;
+}
+
+.sidebar-nav .caption {
+    padding-top: 15px !important;
+    margin-top: 5px !important;
+}
+
+.sidebar-nav .caption:first-child {
+    padding-top: 0 !important;
+    margin-top: 0px !important;
+    border-top: 0 !important;
+}
+
+
+
+.sidebar-dropdown li a.active {
+    opacity: 1;
+    color: var(--primary) !important;
+}
+
+
+.sidebar-dropdown li a {
+    opacity: 0.9;   
+    box-shadow: none !important;
+}
+
+.sidebar-nav li button {
+    width: 100% !important;
+}
+
+.sidebar-dropdown li a {
+    background-color: transparent !important;
+}
+
+.sidebar-dropdown li a:hover {
+    background-color: transparent !important;
+    opacity: 1;
+}
+
+.sidebar-dropdown li button:hover {
+    background-color: transparent !important;
+}
+
+.sidebar-dropdown li .iconify--fad {
+    height: 9px;
+    width: 9px;
+    margin: 0 4px;
+}
+
+.menu-sidebar .hide-icon {
+    display: none;
+}
+
+.brand-logo img {
+    max-width: unset;
+}
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] li {
+    display: flex;
+}
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] .collpase-items li {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] .collpase-items li button {
+    flex-grow: 1;
+}
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] .collpase-items li button .iconify {
+    flex-shrink: 0;
+}
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] .collpase-items li button [data-testid="flowbite-sidebar-collapse-label"] {
+    flex-grow: 1;
+}
+
+.menu-sidebar [data-testid="flowbite-sidebar-item-group"] li a {
+    flex-grow: 1;
+}
+
+.collpase-items .sidebar-dropdown li button {
+    max-height: 35px !important;
+}
