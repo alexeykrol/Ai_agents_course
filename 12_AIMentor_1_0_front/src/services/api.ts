@@ -1,6 +1,28 @@
 import { supabase } from '../lib/supabase';
 import { AgentRecord, EditableFields, NewAgentFields, ApiResponse } from '../types';
 
+// SECURITY: Helper function to check authentication
+async function checkAuthentication(): Promise<{ isAuthenticated: boolean; userId?: string; error?: string }> {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error) {
+      return { isAuthenticated: false, error: error.message };
+    }
+    
+    if (!user) {
+      return { isAuthenticated: false, error: 'User not authenticated' };
+    }
+    
+    return { isAuthenticated: true, userId: user.id };
+  } catch (error) {
+    return { 
+      isAuthenticated: false, 
+      error: error instanceof Error ? error.message : 'Authentication check failed' 
+    };
+  }
+}
+
 export class ApiService {
   // Helper function to parse semver and compare versions
   private parseVersion(version: string) {
@@ -45,6 +67,15 @@ export class ApiService {
     try {
       console.log('=== API GET RECORDS ===');
       
+      // SECURITY: Check authentication before proceeding
+      const authCheck = await checkAuthentication();
+      if (!authCheck.isAuthenticated) {
+        return {
+          success: false,
+          error: `Authentication required: ${authCheck.error}`,
+        };
+      }
+      
       const { data, error } = await supabase
         .from('agents')
         .select('*')
@@ -88,6 +119,15 @@ export class ApiService {
     try {
       console.log('=== API GET RECORD ===', id);
       
+      // SECURITY: Check authentication before proceeding
+      const authCheck = await checkAuthentication();
+      if (!authCheck.isAuthenticated) {
+        return {
+          success: false,
+          error: `Authentication required: ${authCheck.error}`,
+        };
+      }
+      
       const { data, error } = await supabase
         .from('agents')
         .select('*')
@@ -120,6 +160,15 @@ export class ApiService {
     try {
       console.log('=== API CREATE RECORD ===', fields);
 
+      // SECURITY: Check authentication before proceeding
+      const authCheck = await checkAuthentication();
+      if (!authCheck.isAuthenticated) {
+        return {
+          success: false,
+          error: `Authentication required: ${authCheck.error}`,
+        };
+      }
+
       // Get all records with the same name to determine next version
       const { data: existingRecords, error: fetchError } = await supabase
         .from('agents')
@@ -144,7 +193,7 @@ export class ApiService {
       }
 
       // Generate new p2_id
-      const newP2Id = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const newP2Id = `agent_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
       const { data, error } = await supabase
         .from('agents')
@@ -186,6 +235,15 @@ export class ApiService {
     try {
       console.log('=== API DELETE RECORD ===', id);
       
+      // SECURITY: Check authentication before proceeding
+      const authCheck = await checkAuthentication();
+      if (!authCheck.isAuthenticated) {
+        return {
+          success: false,
+          error: `Authentication required: ${authCheck.error}`,
+        };
+      }
+      
       const { error } = await supabase
         .from('agents')
         .delete()
@@ -216,8 +274,17 @@ export class ApiService {
     try {
       console.log('=== API CREATE NEW AGENT ===', fields);
 
+      // SECURITY: Check authentication before proceeding
+      const authCheck = await checkAuthentication();
+      if (!authCheck.isAuthenticated) {
+        return {
+          success: false,
+          error: `Authentication required: ${authCheck.error}`,
+        };
+      }
+
       // Generate new p2_id
-      const newP2Id = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const newP2Id = `agent_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
       const { data, error } = await supabase
         .from('agents')

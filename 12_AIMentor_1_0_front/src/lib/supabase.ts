@@ -1,15 +1,22 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Реальные ключи Supabase - захардкожены в код (это безопасно для ANON ключа!)
-const supabaseUrl = 'https://oqlurxlsdskvkrudxntz.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xbHVyeGxzZHNrdmtydWR4bnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNjEzNjcsImV4cCI6MjA2OTgzNzM2N30.8k_zsmHlMHqFMVU1PxR3Q2kKcgsK_3T9A0TJbYZOS6U';
+// SECURITY FIX: Use environment variables instead of hardcoded keys
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Validate required environment variables
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing required environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set');
+}
 
 export const supabase = createClient(
   supabaseUrl,
   supabaseAnonKey,
   {
     auth: {
-      persistSession: false
+      persistSession: true, // SECURITY FIX: Enable session persistence for proper authentication
+      autoRefreshToken: true,
+      detectSessionInUrl: true
     },
     global: {
       headers: {

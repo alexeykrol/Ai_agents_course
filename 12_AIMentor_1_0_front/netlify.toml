@@ -6,7 +6,24 @@ command = "npx vite build"
 [build.environment]
 NODE_VERSION = "18"
 
+# SECURITY: Restrict redirects to specific paths only
 [[redirects]]
-from = "/*"
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
+
+[[redirects]]
+from = "/auth/*"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/dashboard/*"
+to = "/index.html"
+status = 200
+
+# SECURITY: Only allow specific SPA routes, not all paths
+[[redirects]]
+from = "/"
 to = "/index.html"
 status = 200

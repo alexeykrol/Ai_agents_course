@@ -52,9 +52,15 @@ def get_chat_history(user_id, business_connection_id):
 # Настройка детального логирования
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Токены API
-TELEGRAM_TOKEN = 'Вcтавте ваш токен телеграма'
-OPENAI_API_KEY = 'Вставте ваш API OPEN AI '
+# SECURITY FIX: Use environment variables for sensitive data
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# Validate required environment variables
+if not TELEGRAM_TOKEN:
+    raise ValueError("TELEGRAM_BOT_TOKEN environment variable is required")
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable is required")
 
 # Инициализация OpenAI API
 openai.api_key = OPENAI_API_KEY

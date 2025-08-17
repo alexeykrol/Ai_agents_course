@@ -36,11 +36,26 @@ export class AuthService {
   // Sign up with email and password
   async signUp(email: string, password: string): Promise<AuthResponse> {
     try {
+      // SECURITY: Add input validation
+      if (!email || !email.includes('@')) {
+        return {
+          success: false,
+          error: 'Please provide a valid email address'
+        };
+      }
+      
+      if (!password || password.length < 8) {
+        return {
+          success: false,
+          error: 'Password must be at least 8 characters long'
+        };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: undefined // Disable email confirmation
+          emailRedirectTo: `${window.location.origin}/verify-email` // SECURITY FIX: Enable email confirmation
         }
       });
 
@@ -77,6 +92,21 @@ export class AuthService {
   // Sign in with email and password
   async signIn(email: string, password: string): Promise<AuthResponse> {
     try {
+      // SECURITY: Add input validation
+      if (!email || !email.includes('@')) {
+        return {
+          success: false,
+          error: 'Please provide a valid email address'
+        };
+      }
+      
+      if (!password) {
+        return {
+          success: false,
+          error: 'Password is required'
+        };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -138,6 +168,14 @@ export class AuthService {
   // Reset password
   async resetPassword(email: string): Promise<AuthResponse> {
     try {
+      // SECURITY: Add input validation
+      if (!email || !email.includes('@')) {
+        return {
+          success: false,
+          error: 'Please provide a valid email address'
+        };
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`
       });
@@ -162,7 +200,7 @@ export class AuthService {
 
   // Listen to auth state changes
   onAuthStateChange(callback: (user: User | null) => void) {
-    return supabase.auth.onAuthStateChange(async (event, session) => {
+    return supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         callback({
           id: session.user.id,
