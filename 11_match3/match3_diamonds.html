@@ -84,6 +84,12 @@
   .cell-4 { background: #a78bfa; }
   .cell-5 { background: #f87171; }
 
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
   .tips { opacity: 0.8; font-size: 13px; }
   .footer { opacity: 0.6; font-size: 12px; margin-top: 4px; }
   @media (max-width: 520px) {
@@ -137,11 +143,35 @@
 
   function newGrid() {
     grid = Array.from({length: SIZE}, () => Array(SIZE).fill(0));
+    let attempts = 0;
+    const MAX_ATTEMPTS = 100;
     do {
       for (let r=0; r<SIZE; r++)
         for (let c=0; c<SIZE; c++)
           grid[r][c] = rand();
+      attempts++;
+      if (attempts >= MAX_ATTEMPTS) {
+        // Принудительно убираем совпадения
+        breakInitialMatches();
+        break;
+      }
     } while (findMatches().length);
+  }
+
+  function breakInitialMatches() {
+    const matches = findMatches();
+    matches.forEach(({r, c}) => {
+      let newVal;
+      do {
+        newVal = rand();
+      } while (
+        (c > 1 && grid[r][c-1] === newVal && grid[r][c-2] === newVal) ||
+        (c < SIZE-2 && grid[r][c+1] === newVal && grid[r][c+2] === newVal) ||
+        (r > 1 && grid[r-1][c] === newVal && grid[r-2][c] === newVal) ||
+        (r < SIZE-2 && grid[r+1][c] === newVal && grid[r+2][c] === newVal)
+      );
+      grid[r][c] = newVal;
+    });
   }
 
   function render() {
@@ -225,8 +255,53 @@
     render();
     await wait(120);
     const m=findMatches();
-    if(m.length) await resolve(); else { swap(a,b); render(); }
+    if(m.length) {
+      moves++;
+      await resolve(); 
+    } else { 
+      swap(a,b); 
+      render();
+      showInvalidMove();
+    }
     busy=false;
+  }
+
+  function showInvalidMove() {
+    boardEl.style.animation = 'shake 0.5s ease-in-out';
+    setTimeout(() => boardEl.style.animation = '', 500);
+  }
+
+  function hasPossibleMoves() {
+    for(let r = 0; r < SIZE; r++) {
+      for(let c = 0; c < SIZE; c++) {
+        // Проверяем соседей справа и снизу
+        if(c < SIZE-1) {
+          swap({r,c}, {r,c:c+1});
+          if(findMatches().length > 0) {
+            swap({r,c}, {r,c:c+1}); // возвращаем обратно
+            return true;
+          }
+          swap({r,c}, {r,c:c+1}); // возвращаем обратно
+        }
+        if(r < SIZE-1) {
+          swap({r,c}, {r:r+1,c});
+          if(findMatches().length > 0) {
+            swap({r,c}, {r:r+1,c}); // возвращаем обратно
+            return true;
+          }
+          swap({r,c}, {r:r+1,c}); // возвращаем обратно
+        }
+      }
+    }
+    return false;
+  }
+
+  async function checkGameOver() {
+    if(!hasPossibleMoves()) {
+      await wait(1000);
+      alert('Нет возможных ходов! Начинаем новую игру.');
+      reset();
+    }
   }
 
   async function onCellClick(r,c){
@@ -236,7 +311,10 @@
     if(sel.r===r&&sel.c===c){ sel=null; render(); return; }
     if(areAdj(sel,cur)){
       const a=sel,b=cur;
-      sel=null; moves++; await trySwap(a,b); render();
+      sel=null; 
+      await trySwap(a,b); 
+      render();
+      await checkGameOver();
     } else { sel=cur; render(); }
   }
 
