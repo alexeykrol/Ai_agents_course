@@ -1,0 +1,898 @@
+{
+    "name": "Эхо-бот в Телеграмм",
+    "flow": [
+        {
+            "id": 1,
+            "module": "telegram:WatchUpdates",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 1308433
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -642,
+                    "y": -142,
+                    "name": "ВХОДЯЩЕЕ СООБЩЕНИЕ"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "Course2024_1Bot"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:telegramapi",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": -52,
+                    "y": -126
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 3,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3978257
+                            },
+                            "filter": {
+                                "name": "не кнопка",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.callback_query.id}}",
+                                            "b": "",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "chatId": "{{1.message.from.id}}",
+                                "text": "{{1.message.text}}",
+                                "messageThreadId": "",
+                                "parseMode": "",
+                                "replyToMessageId": "",
+                                "replyMarkupAssembleType": "reply_markup_assemble",
+                                "replyMarkupSpec": {
+                                    "inline_keyboard": [
+                                        {
+                                            "button_set": [
+                                                {
+                                                    "button": {
+                                                        "text": "кнопка 1",
+                                                        "url": "",
+                                                        "callback_data": "кнопка 1",
+                                                        "switch_inline_query": ""
+                                                    }
+                                                },
+                                                {
+                                                    "button": {
+                                                        "text": "кнопка 2",
+                                                        "url": "",
+                                                        "callback_data": "кнопка 2",
+                                                        "switch_inline_query": ""
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "keyboard": []
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 248,
+                                    "y": -276,
+                                    "name": "сообщение с кнопками"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "Course2024_1Bot",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "Empty"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "nested": [
+                                                {
+                                                    "help": "Assemble additional interface options to define an inline keyboard or a custom reply keyboard, to remove the reply keyboard or to force a reply from the user.",
+                                                    "name": "replyMarkupSpec",
+                                                    "spec": [
+                                                        {
+                                                            "name": "inline_keyboard",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "button_set",
+                                                                    "spec": [
+                                                                        {
+                                                                            "name": "button",
+                                                                            "spec": [
+                                                                                {
+                                                                                    "name": "text",
+                                                                                    "type": "text",
+                                                                                    "label": "Text",
+                                                                                    "required": true
+                                                                                },
+                                                                                {
+                                                                                    "name": "url",
+                                                                                    "type": "url",
+                                                                                    "label": "URL",
+                                                                                    "required": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "callback_data",
+                                                                                    "type": "text",
+                                                                                    "label": "Data to Be Sent in a Callback Query",
+                                                                                    "required": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "switch_inline_query",
+                                                                                    "type": "text",
+                                                                                    "label": "Specified inline query in the input field",
+                                                                                    "required": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "pay",
+                                                                                    "type": "boolean",
+                                                                                    "label": "Flag whether to Send a Pay button",
+                                                                                    "required": false
+                                                                                }
+                                                                            ],
+                                                                            "type": "collection",
+                                                                            "label": "Button",
+                                                                            "required": true
+                                                                        }
+                                                                    ],
+                                                                    "type": "array",
+                                                                    "label": "Array of Buttons"
+                                                                }
+                                                            ],
+                                                            "type": "array",
+                                                            "label": "Inline Keyboard",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "keyboard",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "button_set",
+                                                                    "spec": [
+                                                                        {
+                                                                            "name": "button",
+                                                                            "spec": [
+                                                                                {
+                                                                                    "name": "text",
+                                                                                    "type": "text",
+                                                                                    "label": "Text",
+                                                                                    "required": true
+                                                                                },
+                                                                                {
+                                                                                    "name": "request_contact",
+                                                                                    "type": "boolean",
+                                                                                    "label": "Flag if to Send the User's Phone Number when the Button Is Pressed",
+                                                                                    "required": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "request_location",
+                                                                                    "type": "boolean",
+                                                                                    "label": "Flag if to Send the User's lLcation when the Button is Pressed",
+                                                                                    "required": false
+                                                                                }
+                                                                            ],
+                                                                            "type": "collection",
+                                                                            "label": "Button",
+                                                                            "required": true
+                                                                        }
+                                                                    ],
+                                                                    "type": "array",
+                                                                    "label": "Array of Buttons"
+                                                                }
+                                                            ],
+                                                            "type": "array",
+                                                            "label": "Keyboard",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "resize_keyboard",
+                                                            "type": "boolean",
+                                                            "label": "Flag if to Resize Keyboard Vertically for Optimal Fit",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "one_time_keyboard",
+                                                            "type": "boolean",
+                                                            "label": "Flag if to Hide the Keyboard as Soon as It's Been Used",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "selective",
+                                                            "type": "boolean",
+                                                            "label": "Flag if to Show the Keyboard to Specific Users Only",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "remove_keyboard",
+                                                            "type": "boolean",
+                                                            "label": "Flag if to Remove the Custom Keyboard",
+                                                            "required": false
+                                                        },
+                                                        {
+                                                            "name": "force_reply",
+                                                            "type": "boolean",
+                                                            "label": "Flag if to Show Interface to the User",
+                                                            "required": false
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Reply Markup",
+                                                    "advanced": true,
+                                                    "required": false
+                                                }
+                                            ],
+                                            "label": "Assemble the Reply Markup"
+                                        },
+                                        "replyMarkupSpec": {
+                                            "nested": {
+                                                "inline_keyboard": {
+                                                    "items": [
+                                                        {
+                                                            "button_set": {
+                                                                "mode": "chose",
+                                                                "items": [
+                                                                    {
+                                                                        "button": {
+                                                                            "nested": {
+                                                                                "pay": {
+                                                                                    "mode": "chose"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "button": {
+                                                                            "nested": {
+                                                                                "pay": {
+                                                                                    "mode": "chose"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkupSpec",
+                                        "type": "collection",
+                                        "label": "Reply Markup",
+                                        "spec": [
+                                            {
+                                                "name": "inline_keyboard",
+                                                "type": "array",
+                                                "label": "Inline Keyboard",
+                                                "spec": [
+                                                    {
+                                                        "name": "button_set",
+                                                        "spec": [
+                                                            {
+                                                                "name": "button",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "callback_data",
+                                                                        "type": "text",
+                                                                        "label": "Data to Be Sent in a Callback Query"
+                                                                    },
+                                                                    {
+                                                                        "name": "switch_inline_query",
+                                                                        "type": "text",
+                                                                        "label": "Specified inline query in the input field"
+                                                                    },
+                                                                    {
+                                                                        "name": "pay",
+                                                                        "type": "boolean",
+                                                                        "label": "Flag whether to Send a Pay button"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Button",
+                                                                "required": true
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Array of Buttons"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "keyboard",
+                                                "type": "array",
+                                                "label": "Keyboard",
+                                                "spec": [
+                                                    {
+                                                        "name": "button_set",
+                                                        "spec": [
+                                                            {
+                                                                "name": "button",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "request_contact",
+                                                                        "type": "boolean",
+                                                                        "label": "Flag if to Send the User's Phone Number when the Button Is Pressed"
+                                                                    },
+                                                                    {
+                                                                        "name": "request_location",
+                                                                        "type": "boolean",
+                                                                        "label": "Flag if to Send the User's lLcation when the Button is Pressed"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Button",
+                                                                "required": true
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Array of Buttons"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "resize_keyboard",
+                                                "type": "boolean",
+                                                "label": "Flag if to Resize Keyboard Vertically for Optimal Fit"
+                                            },
+                                            {
+                                                "name": "one_time_keyboard",
+                                                "type": "boolean",
+                                                "label": "Flag if to Hide the Keyboard as Soon as It's Been Used"
+                                            },
+                                            {
+                                                "name": "selective",
+                                                "type": "boolean",
+                                                "label": "Flag if to Show the Keyboard to Specific Users Only"
+                                            },
+                                            {
+                                                "name": "remove_keyboard",
+                                                "type": "boolean",
+                                                "label": "Flag if to Remove the Custom Keyboard"
+                                            },
+                                            {
+                                                "name": "force_reply",
+                                                "type": "boolean",
+                                                "label": "Flag if to Show Interface to the User"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 7,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3978257
+                            },
+                            "filter": {
+                                "name": "кнопка 1",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.callback_query.id}}",
+                                            "o": "text:notequal",
+                                            "b": ""
+                                        },
+                                        {
+                                            "a": "{{1.callback_query.data}}",
+                                            "o": "text:equal",
+                                            "b": "кнопка 1"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "chatId": "{{1.callback_query.from.id}}",
+                                "text": "кнопка 1  принята",
+                                "messageThreadId": "",
+                                "parseMode": "",
+                                "replyToMessageId": "",
+                                "replyMarkupAssembleType": "reply_markup_enter",
+                                "replyMarkup": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 248,
+                                    "y": 24
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "Course2024_1Bot",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "Empty"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 10,
+                            "module": "telegram:EditMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3978257
+                            },
+                            "mapper": {
+                                "edit": "message",
+                                "text": "{{1.callback_query.message.text}}",
+                                "parseMode": "",
+                                "replyMarkupAssembleType": "reply_markup_enter",
+                                "chatId": "{{1.callback_query.message.chat.id}}",
+                                "messageId": "{{1.callback_query.message.message_id}}",
+                                "replyMarkup": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 548,
+                                    "y": 24,
+                                    "name": "удаление кнопок из сообщения где  нажали на нее"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "Course2024_1Bot",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "edit": {
+                                            "label": "Chat Mesage"
+                                        },
+                                        "parseMode": {
+                                            "label": "Empty"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "edit",
+                                        "type": "select",
+                                        "label": "Edit",
+                                        "validate": {
+                                            "enum": [
+                                                "message",
+                                                "inline"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageId",
+                                        "type": "number",
+                                        "label": "Message ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 8,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3978257
+                            },
+                            "filter": {
+                                "name": "кнопка 2",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.callback_query.id}}",
+                                            "o": "text:notequal",
+                                            "b": ""
+                                        },
+                                        {
+                                            "a": "{{1.callback_query.data}}",
+                                            "o": "text:equal",
+                                            "b": "кнопка 2"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "chatId": "{{1.callback_query.from.id}}",
+                                "text": "кнопка 1  принята",
+                                "messageThreadId": "",
+                                "parseMode": "",
+                                "replyToMessageId": "",
+                                "replyMarkupAssembleType": "reply_markup_enter",
+                                "replyMarkup": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 86,
+                                    "y": 216
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "Course2024_1Bot",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "Empty"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

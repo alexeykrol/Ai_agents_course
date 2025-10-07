@@ -1,0 +1,3003 @@
+{
+    "name": "rss.app:AI_Telegram",
+    "flow": [
+        {
+            "id": 1,
+            "module": "rss:TriggerNewArticle",
+            "version": 4,
+            "parameters": {
+                "url": "https://rss.app/feeds/_vPtHHonhsmOXxCfq.xml",
+                "gzip": true,
+                "include": [],
+                "password": "",
+                "username": "",
+                "maxResults": 5
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -2056,
+                    "y": -11
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of returned items",
+                        "required": true
+                    },
+                    {
+                        "name": "username",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "password",
+                        "type": "text",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "include",
+                        "type": "select",
+                        "label": "Process RSS fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "google-merchant-center",
+                                "itunes"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Title"
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "summary",
+                        "type": "text",
+                        "label": "Summary"
+                    },
+                    {
+                        "name": "author",
+                        "type": "text",
+                        "label": "Author"
+                    },
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "name": "dateUpdated",
+                        "type": "date",
+                        "label": "Date updated"
+                    },
+                    {
+                        "name": "dateCreated",
+                        "type": "date",
+                        "label": "Date created"
+                    },
+                    {
+                        "name": "comments",
+                        "type": "url",
+                        "label": "Comments"
+                    },
+                    {
+                        "name": "image",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Image"
+                    },
+                    {
+                        "name": "categories",
+                        "spec": {
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Categories"
+                    },
+                    {
+                        "name": "source",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Source"
+                    },
+                    {
+                        "name": "enclosures",
+                        "spec": [
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            },
+                            {
+                                "name": "type",
+                                "type": "text",
+                                "label": "Type"
+                            },
+                            {
+                                "name": "length",
+                                "type": "number",
+                                "label": "Length"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Enclosures"
+                    },
+                    {
+                        "help": "Other RSS fields. All values are in text format.",
+                        "name": "rssFields",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "title"
+                            },
+                            {
+                                "name": "description",
+                                "type": "text",
+                                "label": "description"
+                            },
+                            {
+                                "name": "link",
+                                "type": "text",
+                                "label": "link"
+                            },
+                            {
+                                "name": "guid",
+                                "type": "text",
+                                "label": "guid"
+                            },
+                            {
+                                "name": "pubdate",
+                                "type": "text",
+                                "label": "pubdate"
+                            },
+                            {
+                                "name": "media:content",
+                                "spec": [
+                                    {
+                                        "name": "props",
+                                        "spec": [
+                                            {
+                                                "name": "medium",
+                                                "type": "text",
+                                                "label": "medium"
+                                            },
+                                            {
+                                                "name": "url",
+                                                "type": "text",
+                                                "label": "url"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Properties"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "Value"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "media:content"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "RSS fields"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 16,
+            "module": "regexp:HTMLToText",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "html": "{{1.description}}",
+                "newline": "lf",
+                "uppercaseHeadings": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1610,
+                    "y": -9
+                },
+                "restore": {
+                    "expect": {
+                        "newline": {
+                            "label": "LF (\\n) - Unix/Mac OS X"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "html",
+                        "type": "text",
+                        "label": "HTML"
+                    },
+                    {
+                        "name": "newline",
+                        "type": "select",
+                        "label": "Line break",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "lf",
+                                "crlf",
+                                "cr"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "uppercaseHeadings",
+                        "type": "boolean",
+                        "label": "Uppercase headings",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 31,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "filter": {
+                "name": "Не Нейропрожарка",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{1.title}}",
+                            "b": "Нейропрожарка",
+                            "o": "text:notcontain:ci"
+                        }
+                    ],
+                    [
+                        {
+                            "a": "{{16.text}}",
+                            "b": "#промо",
+                            "o": "text:notcontain:ci"
+                        }
+                    ],
+                    [
+                        {
+                            "a": "{{16.text}}",
+                            "b": "Яндекс",
+                            "o": "text:notcontain:ci"
+                        }
+                    ],
+                    [
+                        {
+                            "a": "{{16.text}}",
+                            "b": "Росси",
+                            "o": "text:notcontain:ci"
+                        }
+                    ]
+                ]
+            },
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": -986,
+                    "y": -8
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 23,
+                            "module": "regexp:AdvancedParser",
+                            "version": 1,
+                            "parameters": {
+                                "global": false,
+                                "multiline": true,
+                                "sensitive": true,
+                                "singleline": false,
+                                "advancedParser": true,
+                                "continueWhenNoRes": false
+                            },
+                            "filter": {
+                                "name": "Есть картинка",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{16.text}}",
+                                            "b": "\\[(https?:\\/\\/[^\\]]+)\\]",
+                                            "o": "text:pattern"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{16.text}}",
+                                "pattern": "\\[(https?:\\/\\/[^\\]]+)\\]"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": -442,
+                                    "y": -193,
+                                    "name": "Извлечь URL из квадратных скобок"
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "advancedParser",
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 21,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{16.text}}",
+                                "value": " ",
+                                "global": true,
+                                "pattern": "\\[\\s*https?:\\/\\/[^\\]]+\\]",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 14,
+                                    "y": -191,
+                                    "name": "Удаляет ссылки в []"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 20,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{21.text}}",
+                                "value": "$1\n​",
+                                "global": true,
+                                "pattern": "([.!?])\\s+",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 381,
+                                    "y": -192,
+                                    "name": "Добавляет строчки"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 28,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{20.text}}",
+                                "value": "->2",
+                                "global": true,
+                                "pattern": "@\\S+",
+                                "multiline": false,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 770,
+                                    "y": -194,
+                                    "name": "@\\S+"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 29,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{28.text}}",
+                                "value": "->3",
+                                "global": true,
+                                "pattern": "\\[#.*?\\]",
+                                "multiline": false,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 778,
+                                    "y": -515,
+                                    "name": "\\[#.*?\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 30,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{29.text}}",
+                                "value": "->4",
+                                "global": true,
+                                "pattern": "\\[\\?[^]]+\\]",
+                                "multiline": false,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 7,
+                                    "y": -513,
+                                    "name": "\\[\\?[^]]+\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 39,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "filter": {
+                                "name": "Не ИНН: ",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{30.text}}",
+                                            "b": "ИНН: ",
+                                            "o": "text:notcontain:ci"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{30.text}}",
+                                "value": " ",
+                                "global": true,
+                                "pattern": "#\\w+\\s*\\[\\?q=%23[^\\]]+\\]",
+                                "multiline": false,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": -437,
+                                    "y": -515,
+                                    "name": "\\[\\?q=%23[^\\]]+\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 55,
+                            "module": "openai-gpt-3:messageAssistantAdvanced",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 4331518
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "message": "{{39.text}}",
+                                "assistantId": "asst_GNR8KbOlKCfi1lctUjIsqfw1"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": -444,
+                                    "y": -928,
+                                    "name": "Cleaner"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "role": {
+                                            "label": "User"
+                                        },
+                                        "model": {
+                                            "mode": "chose"
+                                        },
+                                        "tools": {
+                                            "mode": "chose"
+                                        },
+                                        "image_urls": {
+                                            "mode": "chose"
+                                        },
+                                        "assistantId": {
+                                            "mode": "chose",
+                                            "label": "Cleaner (gpt-4.1-nano)",
+                                            "nested": []
+                                        },
+                                        "image_files": {
+                                            "mode": "chose"
+                                        },
+                                        "tool_choice": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "truncation_strategy": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "file_search_resources": {
+                                            "mode": "chose"
+                                        },
+                                        "code_interpreter_resources": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "Trinity OpenAI"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "assistantId",
+                                        "type": "select",
+                                        "label": "Assistant",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "select",
+                                        "label": "Role",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "user",
+                                                "assistant"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "tools",
+                                        "type": "select",
+                                        "label": "Tools",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "file_search",
+                                                "code_interpreter"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "file_search_resources",
+                                        "type": "select",
+                                        "label": "File Search Resources"
+                                    },
+                                    {
+                                        "name": "code_interpreter_resources",
+                                        "type": "select",
+                                        "label": "Code Interpreter Resources",
+                                        "multiple": true,
+                                        "validate": {
+                                            "maxItems": 20
+                                        }
+                                    },
+                                    {
+                                        "name": "tool_choice",
+                                        "type": "select",
+                                        "label": "Tool Choice",
+                                        "validate": {
+                                            "enum": [
+                                                "none",
+                                                "auto",
+                                                "required",
+                                                "file_search",
+                                                "code_interpreter",
+                                                "function"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "instructions",
+                                        "type": "text",
+                                        "label": "Instructions"
+                                    },
+                                    {
+                                        "name": "max_prompt_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Prompt Tokens"
+                                    },
+                                    {
+                                        "name": "max_completion_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "json_object",
+                                                "text"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "truncation_strategy",
+                                        "type": "select",
+                                        "label": "Truncation Strategy",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "last_messages"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "message",
+                                        "type": "text",
+                                        "label": "Message",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "image_files",
+                                        "type": "select",
+                                        "label": "Image Files",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "image_urls",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "url",
+                                            "label": "Image URL",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "Image URLs"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 56,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Prompt_Tokens",
+                                "scope": "roundtrip",
+                                "value": "{{length(55.result) / 3.8}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 40,
+                                    "y": -922,
+                                    "name": "Prompt_Tokens"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Prompt_Tokens",
+                                        "type": "any",
+                                        "label": "Prompt_Tokens"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 57,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Compl_Tokens",
+                                "scope": "roundtrip",
+                                "value": "{{56.Prompt_Tokens * 25}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 540,
+                                    "y": -914,
+                                    "name": "Compl_Tokens"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Compl_Tokens",
+                                        "type": "any",
+                                        "label": "Compl_Tokens"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 52,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 4156908
+                            },
+                            "mapper": {
+                                "base": "app5VGioZdapp729W",
+                                "table": "tblbWGPI4WUCdZBX8",
+                                "record": {
+                                    "fld4PFvEJk7GDtOhD": "{{1.title}}",
+                                    "fld6jHOeGHMfm9EoY": "{{39.text}}",
+                                    "fld94kdDdbL8kSh8g": "{{1.description}}",
+                                    "fldBXPdJ28094O1Am": "make",
+                                    "fldCndzBrgVU2MFvm": "{{57.Compl_Tokens}}",
+                                    "fldLhKJH4TB6Fl2gr": "{{1.url}}",
+                                    "fldTNEtvt4JafLACX": "{{1.date}}",
+                                    "fldWOWunh9pHZ7sAu": "rss.app:AI_Telegram",
+                                    "fldfAnQPFV3spUbyK": "{{1.id}}",
+                                    "fldo6y9kCWkYmJpbW": "{{56.Prompt_Tokens}}"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 891,
+                                    "y": -919
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Агент"
+                                        },
+                                        "table": {
+                                            "label": "Trinity_raw_Input_1",
+                                            "nested": [
+                                                {
+                                                    "name": "record",
+                                                    "spec": [
+                                                        {
+                                                            "name": "fldfAnQPFV3spUbyK",
+                                                            "type": "text",
+                                                            "label": "my_ID"
+                                                        },
+                                                        {
+                                                            "name": "fldqF4wHllljFAQ3Z",
+                                                            "type": "text",
+                                                            "label": "published"
+                                                        },
+                                                        {
+                                                            "name": "fldRVUd2eOHxOIWQe",
+                                                            "type": "text",
+                                                            "label": "AI_Relevance"
+                                                        },
+                                                        {
+                                                            "name": "fld3fQeRMoDKOaSxe",
+                                                            "type": "text",
+                                                            "label": "AI-eval"
+                                                        },
+                                                        {
+                                                            "name": "fldWOWunh9pHZ7sAu",
+                                                            "type": "text",
+                                                            "label": "Feed"
+                                                        },
+                                                        {
+                                                            "name": "fldVDOCkI2fyY5FeT",
+                                                            "type": "text",
+                                                            "label": "Quality"
+                                                        },
+                                                        {
+                                                            "name": "fld6jHOeGHMfm9EoY",
+                                                            "type": "text",
+                                                            "label": "Content",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldBXPdJ28094O1Am",
+                                                            "type": "text",
+                                                            "label": "Tech"
+                                                        },
+                                                        {
+                                                            "name": "fldCndzBrgVU2MFvm",
+                                                            "type": "text",
+                                                            "label": "Compl_Tokens"
+                                                        },
+                                                        {
+                                                            "name": "fldUEArzP1CFsEVQ2",
+                                                            "type": "text",
+                                                            "label": "AI_expain",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fld4PFvEJk7GDtOhD",
+                                                            "type": "text",
+                                                            "label": "Title"
+                                                        },
+                                                        {
+                                                            "name": "fld94kdDdbL8kSh8g",
+                                                            "type": "text",
+                                                            "label": "Description",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldTNEtvt4JafLACX",
+                                                            "type": "text",
+                                                            "label": "Date"
+                                                        },
+                                                        {
+                                                            "name": "fldLhKJH4TB6Fl2gr",
+                                                            "type": "text",
+                                                            "label": "origin_URL"
+                                                        },
+                                                        {
+                                                            "name": "fld8MEM2tn20Yt4fj",
+                                                            "type": "text",
+                                                            "label": "Topics"
+                                                        },
+                                                        {
+                                                            "name": "fldyca63MIGfBPR1C",
+                                                            "spec": {
+                                                                "mode": "edit",
+                                                                "type": "select",
+                                                                "label": "Value",
+                                                                "dynamic": true,
+                                                                "options": [],
+                                                                "validate": false
+                                                            },
+                                                            "type": "array",
+                                                            "label": "Keywords"
+                                                        },
+                                                        {
+                                                            "name": "fldo6y9kCWkYmJpbW",
+                                                            "type": "text",
+                                                            "label": "Prompt_Tokens"
+                                                        },
+                                                        {
+                                                            "name": "fldNoSTW2pLF7W487",
+                                                            "type": "text",
+                                                            "label": "TGURL"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Record"
+                                                }
+                                            ]
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldyca63MIGfBPR1C": {
+                                                    "mode": "chose"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable2"
+                                            },
+                                            "label": "Airtable"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldfAnQPFV3spUbyK",
+                                                "type": "text",
+                                                "label": "my_ID"
+                                            },
+                                            {
+                                                "name": "fldqF4wHllljFAQ3Z",
+                                                "type": "text",
+                                                "label": "published"
+                                            },
+                                            {
+                                                "name": "fldRVUd2eOHxOIWQe",
+                                                "type": "text",
+                                                "label": "AI_Relevance"
+                                            },
+                                            {
+                                                "name": "fld3fQeRMoDKOaSxe",
+                                                "type": "text",
+                                                "label": "AI-eval"
+                                            },
+                                            {
+                                                "name": "fldWOWunh9pHZ7sAu",
+                                                "type": "text",
+                                                "label": "Feed"
+                                            },
+                                            {
+                                                "name": "fldVDOCkI2fyY5FeT",
+                                                "type": "text",
+                                                "label": "Quality"
+                                            },
+                                            {
+                                                "name": "fld6jHOeGHMfm9EoY",
+                                                "type": "text",
+                                                "label": "Content"
+                                            },
+                                            {
+                                                "name": "fldBXPdJ28094O1Am",
+                                                "type": "text",
+                                                "label": "Tech"
+                                            },
+                                            {
+                                                "name": "fldCndzBrgVU2MFvm",
+                                                "type": "text",
+                                                "label": "Compl_Tokens"
+                                            },
+                                            {
+                                                "name": "fldUEArzP1CFsEVQ2",
+                                                "type": "text",
+                                                "label": "AI_expain"
+                                            },
+                                            {
+                                                "name": "fld4PFvEJk7GDtOhD",
+                                                "type": "text",
+                                                "label": "Title"
+                                            },
+                                            {
+                                                "name": "fld94kdDdbL8kSh8g",
+                                                "type": "text",
+                                                "label": "Description"
+                                            },
+                                            {
+                                                "name": "fldTNEtvt4JafLACX",
+                                                "type": "text",
+                                                "label": "Date"
+                                            },
+                                            {
+                                                "name": "fldLhKJH4TB6Fl2gr",
+                                                "type": "text",
+                                                "label": "origin_URL"
+                                            },
+                                            {
+                                                "name": "fld8MEM2tn20Yt4fj",
+                                                "type": "text",
+                                                "label": "Topics"
+                                            },
+                                            {
+                                                "name": "fldyca63MIGfBPR1C",
+                                                "spec": {
+                                                    "mode": "edit",
+                                                    "name": "value",
+                                                    "type": "select",
+                                                    "label": "Value",
+                                                    "dynamic": true,
+                                                    "options": [],
+                                                    "validate": false
+                                                },
+                                                "type": "array",
+                                                "label": "Keywords"
+                                            },
+                                            {
+                                                "name": "fldo6y9kCWkYmJpbW",
+                                                "type": "text",
+                                                "label": "Prompt_Tokens"
+                                            },
+                                            {
+                                                "name": "fldNoSTW2pLF7W487",
+                                                "type": "text",
+                                                "label": "TGURL"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "my_ID",
+                                        "type": "text",
+                                        "label": "my_ID"
+                                    },
+                                    {
+                                        "name": "published",
+                                        "type": "text",
+                                        "label": "published"
+                                    },
+                                    {
+                                        "name": "AI_Relevance",
+                                        "type": "text",
+                                        "label": "AI_Relevance"
+                                    },
+                                    {
+                                        "name": "AI-eval",
+                                        "type": "text",
+                                        "label": "AI-eval"
+                                    },
+                                    {
+                                        "name": "Feed",
+                                        "type": "text",
+                                        "label": "Feed"
+                                    },
+                                    {
+                                        "name": "Created",
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "Quality",
+                                        "type": "text",
+                                        "label": "Quality"
+                                    },
+                                    {
+                                        "name": "Content",
+                                        "type": "text",
+                                        "label": "Content",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Tech",
+                                        "type": "text",
+                                        "label": "Tech"
+                                    },
+                                    {
+                                        "name": "Compl_Tokens",
+                                        "type": "text",
+                                        "label": "Compl_Tokens"
+                                    },
+                                    {
+                                        "name": "AI_expain",
+                                        "type": "text",
+                                        "label": "AI_expain",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Last Modified",
+                                        "type": "date",
+                                        "label": "Last Modified"
+                                    },
+                                    {
+                                        "name": "Title",
+                                        "type": "text",
+                                        "label": "Title"
+                                    },
+                                    {
+                                        "name": "Description",
+                                        "type": "text",
+                                        "label": "Description",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Date",
+                                        "type": "text",
+                                        "label": "Date"
+                                    },
+                                    {
+                                        "name": "origin_URL",
+                                        "type": "text",
+                                        "label": "origin_URL"
+                                    },
+                                    {
+                                        "name": "Topics",
+                                        "type": "text",
+                                        "label": "Topics"
+                                    },
+                                    {
+                                        "name": "Keywords",
+                                        "type": "array",
+                                        "label": "Keywords",
+                                        "dynamic": true,
+                                        "editable": true
+                                    },
+                                    {
+                                        "name": "Prompt_Tokens",
+                                        "type": "text",
+                                        "label": "Prompt_Tokens"
+                                    },
+                                    {
+                                        "name": "Autonumber",
+                                        "type": "number",
+                                        "label": "Autonumber"
+                                    },
+                                    {
+                                        "name": "TGURL",
+                                        "type": "text",
+                                        "label": "TGURL"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 32,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "filter": {
+                                "name": "Нет картинки",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{16.text}}",
+                                            "b": "\\[(https?:\\/\\/[^\\]]+)\\]",
+                                            "o": "text:notpattern"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{16.text}}",
+                                "value": " ",
+                                "global": true,
+                                "pattern": "\\[\\s*https?:\\/\\/[^\\]]+\\]",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": -405,
+                                    "y": 262,
+                                    "name": "Удаляет ссылки в []"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 33,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{32.text}}",
+                                "value": "$1\n​",
+                                "global": true,
+                                "pattern": "([.!?])\\s+",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 313,
+                                    "y": 259,
+                                    "name": "Добавляет строчки"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 34,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{33.text}}",
+                                "value": "->2",
+                                "global": false,
+                                "pattern": "@\\S+",
+                                "multiline": true,
+                                "sensitive": true,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 746,
+                                    "y": 267,
+                                    "name": "@\\S+"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 35,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{34.text}}",
+                                "value": "->3",
+                                "global": true,
+                                "pattern": "\\[#.*?\\]",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1219,
+                                    "y": 273,
+                                    "name": "\\[#.*?\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 36,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "text": "{{35.text}}",
+                                "value": "->4",
+                                "global": false,
+                                "pattern": "\\[\\?[^]]+\\]",
+                                "multiline": true,
+                                "sensitive": true,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1714,
+                                    "y": 256,
+                                    "name": "\\[\\?[^]]+\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 40,
+                            "module": "regexp:Replace",
+                            "version": 1,
+                            "parameters": {},
+                            "filter": {
+                                "name": "Не ИНН: ",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{36.text}}",
+                                            "b": "ИНН: ",
+                                            "o": "text:notcontain:ci"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{36.text}}",
+                                "value": " ",
+                                "global": true,
+                                "pattern": "#\\w+\\s*\\[\\?q=%23[^\\]]+\\]",
+                                "multiline": true,
+                                "sensitive": false,
+                                "singleline": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2185,
+                                    "y": 266,
+                                    "name": "\\[\\?q=%23[^\\]]+\\]"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "global": {
+                                            "mode": "chose"
+                                        },
+                                        "multiline": {
+                                            "mode": "chose"
+                                        },
+                                        "sensitive": {
+                                            "mode": "chose"
+                                        },
+                                        "singleline": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "text",
+                                        "label": "New value"
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 59,
+                            "module": "openai-gpt-3:messageAssistantAdvanced",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 4331518
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "message": "{{40.text}}",
+                                "assistantId": "asst_GNR8KbOlKCfi1lctUjIsqfw1"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2175,
+                                    "y": -59,
+                                    "name": "Cleaner"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "role": {
+                                            "label": "User"
+                                        },
+                                        "model": {
+                                            "mode": "chose"
+                                        },
+                                        "tools": {
+                                            "mode": "chose"
+                                        },
+                                        "image_urls": {
+                                            "mode": "chose"
+                                        },
+                                        "assistantId": {
+                                            "mode": "chose",
+                                            "label": "Cleaner (gpt-4.1-nano)",
+                                            "nested": []
+                                        },
+                                        "image_files": {
+                                            "mode": "chose"
+                                        },
+                                        "tool_choice": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "truncation_strategy": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "file_search_resources": {
+                                            "mode": "chose"
+                                        },
+                                        "code_interpreter_resources": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "Trinity OpenAI"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "assistantId",
+                                        "type": "select",
+                                        "label": "Assistant",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "select",
+                                        "label": "Role",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "user",
+                                                "assistant"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "tools",
+                                        "type": "select",
+                                        "label": "Tools",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "file_search",
+                                                "code_interpreter"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "file_search_resources",
+                                        "type": "select",
+                                        "label": "File Search Resources"
+                                    },
+                                    {
+                                        "name": "code_interpreter_resources",
+                                        "type": "select",
+                                        "label": "Code Interpreter Resources",
+                                        "multiple": true,
+                                        "validate": {
+                                            "maxItems": 20
+                                        }
+                                    },
+                                    {
+                                        "name": "tool_choice",
+                                        "type": "select",
+                                        "label": "Tool Choice",
+                                        "validate": {
+                                            "enum": [
+                                                "none",
+                                                "auto",
+                                                "required",
+                                                "file_search",
+                                                "code_interpreter",
+                                                "function"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "instructions",
+                                        "type": "text",
+                                        "label": "Instructions"
+                                    },
+                                    {
+                                        "name": "max_prompt_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Prompt Tokens"
+                                    },
+                                    {
+                                        "name": "max_completion_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "json_object",
+                                                "text"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "truncation_strategy",
+                                        "type": "select",
+                                        "label": "Truncation Strategy",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "last_messages"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "message",
+                                        "type": "text",
+                                        "label": "Message",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "image_files",
+                                        "type": "select",
+                                        "label": "Image Files",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "image_urls",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "url",
+                                            "label": "Image URL",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "Image URLs"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 60,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Prompt_Tokens",
+                                "scope": "roundtrip",
+                                "value": "{{length(59.result) / 3.8}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2152,
+                                    "y": -376,
+                                    "name": "Prompt_Tokens"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Prompt_Tokens",
+                                        "type": "any",
+                                        "label": "Prompt_Tokens"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 61,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Compl_Tokens",
+                                "scope": "roundtrip",
+                                "value": "{{60.Prompt_Tokens * 25}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2144,
+                                    "y": -682,
+                                    "name": "Compl_Tokens"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Compl_Tokens",
+                                        "type": "any",
+                                        "label": "Compl_Tokens"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 62,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 4156908
+                            },
+                            "mapper": {
+                                "base": "app5VGioZdapp729W",
+                                "table": "tblbWGPI4WUCdZBX8",
+                                "record": {
+                                    "fld4PFvEJk7GDtOhD": "{{1.title}}",
+                                    "fld6jHOeGHMfm9EoY": "{{59.result}}",
+                                    "fld94kdDdbL8kSh8g": "{{1.description}}",
+                                    "fldBXPdJ28094O1Am": "make",
+                                    "fldCndzBrgVU2MFvm": "{{61.Compl_Tokens}}",
+                                    "fldLhKJH4TB6Fl2gr": "{{1.url}}",
+                                    "fldTNEtvt4JafLACX": "{{1.date}}",
+                                    "fldWOWunh9pHZ7sAu": "AI_Telegram",
+                                    "fldfAnQPFV3spUbyK": "{{1.id}}",
+                                    "fldo6y9kCWkYmJpbW": "{{60.Prompt_Tokens}}"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1657,
+                                    "y": -677
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Агент"
+                                        },
+                                        "table": {
+                                            "label": "Trinity_raw_Input_1",
+                                            "nested": [
+                                                {
+                                                    "name": "record",
+                                                    "spec": [
+                                                        {
+                                                            "name": "fldfAnQPFV3spUbyK",
+                                                            "type": "text",
+                                                            "label": "my_ID"
+                                                        },
+                                                        {
+                                                            "name": "fldqF4wHllljFAQ3Z",
+                                                            "type": "text",
+                                                            "label": "published"
+                                                        },
+                                                        {
+                                                            "name": "fldRVUd2eOHxOIWQe",
+                                                            "type": "text",
+                                                            "label": "AI_Relevance"
+                                                        },
+                                                        {
+                                                            "name": "fld3fQeRMoDKOaSxe",
+                                                            "type": "text",
+                                                            "label": "AI-eval"
+                                                        },
+                                                        {
+                                                            "name": "fldWOWunh9pHZ7sAu",
+                                                            "type": "text",
+                                                            "label": "Feed"
+                                                        },
+                                                        {
+                                                            "name": "fldVDOCkI2fyY5FeT",
+                                                            "type": "text",
+                                                            "label": "Quality"
+                                                        },
+                                                        {
+                                                            "name": "fld6jHOeGHMfm9EoY",
+                                                            "type": "text",
+                                                            "label": "Content",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldBXPdJ28094O1Am",
+                                                            "type": "text",
+                                                            "label": "Tech"
+                                                        },
+                                                        {
+                                                            "name": "fldCndzBrgVU2MFvm",
+                                                            "type": "text",
+                                                            "label": "Compl_Tokens"
+                                                        },
+                                                        {
+                                                            "name": "fldUEArzP1CFsEVQ2",
+                                                            "type": "text",
+                                                            "label": "AI_expain",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fld4PFvEJk7GDtOhD",
+                                                            "type": "text",
+                                                            "label": "Title"
+                                                        },
+                                                        {
+                                                            "name": "fld94kdDdbL8kSh8g",
+                                                            "type": "text",
+                                                            "label": "Description",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldTNEtvt4JafLACX",
+                                                            "type": "text",
+                                                            "label": "Date"
+                                                        },
+                                                        {
+                                                            "name": "fldLhKJH4TB6Fl2gr",
+                                                            "type": "text",
+                                                            "label": "origin_URL"
+                                                        },
+                                                        {
+                                                            "name": "fld8MEM2tn20Yt4fj",
+                                                            "type": "text",
+                                                            "label": "Topics"
+                                                        },
+                                                        {
+                                                            "name": "fldyca63MIGfBPR1C",
+                                                            "spec": {
+                                                                "mode": "edit",
+                                                                "type": "select",
+                                                                "label": "Value",
+                                                                "dynamic": true,
+                                                                "options": [],
+                                                                "validate": false
+                                                            },
+                                                            "type": "array",
+                                                            "label": "Keywords"
+                                                        },
+                                                        {
+                                                            "name": "fldo6y9kCWkYmJpbW",
+                                                            "type": "text",
+                                                            "label": "Prompt_Tokens"
+                                                        },
+                                                        {
+                                                            "name": "fldNoSTW2pLF7W487",
+                                                            "type": "text",
+                                                            "label": "TGURL"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Record"
+                                                }
+                                            ]
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldyca63MIGfBPR1C": {
+                                                    "mode": "chose"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable2"
+                                            },
+                                            "label": "Airtable"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldfAnQPFV3spUbyK",
+                                                "type": "text",
+                                                "label": "my_ID"
+                                            },
+                                            {
+                                                "name": "fldqF4wHllljFAQ3Z",
+                                                "type": "text",
+                                                "label": "published"
+                                            },
+                                            {
+                                                "name": "fldRVUd2eOHxOIWQe",
+                                                "type": "text",
+                                                "label": "AI_Relevance"
+                                            },
+                                            {
+                                                "name": "fld3fQeRMoDKOaSxe",
+                                                "type": "text",
+                                                "label": "AI-eval"
+                                            },
+                                            {
+                                                "name": "fldWOWunh9pHZ7sAu",
+                                                "type": "text",
+                                                "label": "Feed"
+                                            },
+                                            {
+                                                "name": "fldVDOCkI2fyY5FeT",
+                                                "type": "text",
+                                                "label": "Quality"
+                                            },
+                                            {
+                                                "name": "fld6jHOeGHMfm9EoY",
+                                                "type": "text",
+                                                "label": "Content"
+                                            },
+                                            {
+                                                "name": "fldBXPdJ28094O1Am",
+                                                "type": "text",
+                                                "label": "Tech"
+                                            },
+                                            {
+                                                "name": "fldCndzBrgVU2MFvm",
+                                                "type": "text",
+                                                "label": "Compl_Tokens"
+                                            },
+                                            {
+                                                "name": "fldUEArzP1CFsEVQ2",
+                                                "type": "text",
+                                                "label": "AI_expain"
+                                            },
+                                            {
+                                                "name": "fld4PFvEJk7GDtOhD",
+                                                "type": "text",
+                                                "label": "Title"
+                                            },
+                                            {
+                                                "name": "fld94kdDdbL8kSh8g",
+                                                "type": "text",
+                                                "label": "Description"
+                                            },
+                                            {
+                                                "name": "fldTNEtvt4JafLACX",
+                                                "type": "text",
+                                                "label": "Date"
+                                            },
+                                            {
+                                                "name": "fldLhKJH4TB6Fl2gr",
+                                                "type": "text",
+                                                "label": "origin_URL"
+                                            },
+                                            {
+                                                "name": "fld8MEM2tn20Yt4fj",
+                                                "type": "text",
+                                                "label": "Topics"
+                                            },
+                                            {
+                                                "name": "fldyca63MIGfBPR1C",
+                                                "spec": {
+                                                    "mode": "edit",
+                                                    "name": "value",
+                                                    "type": "select",
+                                                    "label": "Value",
+                                                    "dynamic": true,
+                                                    "options": [],
+                                                    "validate": false
+                                                },
+                                                "type": "array",
+                                                "label": "Keywords"
+                                            },
+                                            {
+                                                "name": "fldo6y9kCWkYmJpbW",
+                                                "type": "text",
+                                                "label": "Prompt_Tokens"
+                                            },
+                                            {
+                                                "name": "fldNoSTW2pLF7W487",
+                                                "type": "text",
+                                                "label": "TGURL"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "my_ID",
+                                        "type": "text",
+                                        "label": "my_ID"
+                                    },
+                                    {
+                                        "name": "published",
+                                        "type": "text",
+                                        "label": "published"
+                                    },
+                                    {
+                                        "name": "AI_Relevance",
+                                        "type": "text",
+                                        "label": "AI_Relevance"
+                                    },
+                                    {
+                                        "name": "AI-eval",
+                                        "type": "text",
+                                        "label": "AI-eval"
+                                    },
+                                    {
+                                        "name": "Feed",
+                                        "type": "text",
+                                        "label": "Feed"
+                                    },
+                                    {
+                                        "name": "Created",
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "Quality",
+                                        "type": "text",
+                                        "label": "Quality"
+                                    },
+                                    {
+                                        "name": "Content",
+                                        "type": "text",
+                                        "label": "Content",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Tech",
+                                        "type": "text",
+                                        "label": "Tech"
+                                    },
+                                    {
+                                        "name": "Compl_Tokens",
+                                        "type": "text",
+                                        "label": "Compl_Tokens"
+                                    },
+                                    {
+                                        "name": "AI_expain",
+                                        "type": "text",
+                                        "label": "AI_expain",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Last Modified",
+                                        "type": "date",
+                                        "label": "Last Modified"
+                                    },
+                                    {
+                                        "name": "Title",
+                                        "type": "text",
+                                        "label": "Title"
+                                    },
+                                    {
+                                        "name": "Description",
+                                        "type": "text",
+                                        "label": "Description",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Date",
+                                        "type": "text",
+                                        "label": "Date"
+                                    },
+                                    {
+                                        "name": "origin_URL",
+                                        "type": "text",
+                                        "label": "origin_URL"
+                                    },
+                                    {
+                                        "name": "Topics",
+                                        "type": "text",
+                                        "label": "Topics"
+                                    },
+                                    {
+                                        "name": "Keywords",
+                                        "type": "array",
+                                        "label": "Keywords",
+                                        "dynamic": true,
+                                        "editable": true
+                                    },
+                                    {
+                                        "name": "Prompt_Tokens",
+                                        "type": "text",
+                                        "label": "Prompt_Tokens"
+                                    },
+                                    {
+                                        "name": "Autonumber",
+                                        "type": "number",
+                                        "label": "Autonumber"
+                                    },
+                                    {
+                                        "name": "TGURL",
+                                        "type": "text",
+                                        "label": "TGURL"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": true,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com",
+        "notes": []
+    }
+}

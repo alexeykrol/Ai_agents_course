@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post Editor (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    input, textarea, button { font-size: 16px; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useEffect, useRef, useState } = React;
+
+    const STORAGE_KEY = 'demo_post_editor_draft_v1';
+
+    function Modal({ open, title, children, onCancel, onConfirm }) {
+      React.useEffect(() => {
+        function onKey(e){ if(e.key === 'Escape' && open) onCancel?.(); }
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [open, onCancel]);
+
+      if (!open) return null;
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-lg ring-1 ring-black/5 p-6 animate-[fadeIn_.15s_ease-out]">
+            <h3 className="text-lg font-semibold mb-2">{title}</h3>
+            <div className="text-sm text-gray-600 mb-5">{children}</div>
+            <div className="flex justify-end gap-2">
+              <button onClick={onCancel} className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50">Cancel</button>
+              <button onClick={onConfirm} className="rounded-xl bg-gray-900 text-white px-4 py-2 text-sm font-medium hover:bg-black">Confirm</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function EditorApp() {
+      const [title, setTitle] = useState('');
+      const [content, setContent] = useState('');
+      const [status, setStatus] = useState('All changes saved');
+      const [lastSaved, setLastSaved] = useState(null);
+      const [dirty, setDirty] = useState(false);
+      const [modalOpen, setModalOpen] = useState(false);
+      const intervalRef = useRef(null);
+
+      // Load draft from localStorage on mount
+      useEffect(() => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const d = JSON.parse(raw);
+            setTitle(d.title || '');
+            setContent(d.content || '');
+            if (d.savedAt) setLastSaved(new Date(d.savedAt));
+          }
+        } catch {}
+      }, []);
+
+      // Mark as dirty on change
+      useEffect(() => { setDirty(true); setStatus('Auto-saving…'); }, [title, content]);
+
+      // Auto-save every 5s if dirty
+      useEffect(() => {
+        intervalRef.current = setInterval(() => {
+          if (dirty) doSave();
+        }, 5000);
+        return () => clearInterval(intervalRef.current);
+      }, [dirty, title, content]);
+
+      const doSave = () => {
+        const payload = { title, content, savedAt: Date.now() };
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch {}
+        setDirty(false);
+        setLastSaved(new Date(payload.savedAt));
+        setStatus('All changes saved');
+      };
+
+      const onPublish = () => {
+        setModalOpen(true);
+      };
+
+      const confirmPublish = () => {
+        setModalOpen(false);
+        // Ensure latest is saved (mock)
+        doSave();
+        alert('Published! (demo)');
+      };
+
+      return (
+        <div className="min-h-screen p-4 sm:p-6 flex items-start justify-center">
+          <div className="w-full max-w-4xl">
+            <div className="bg-white rounded-2xl shadow-lg ring-1 ring-black/5 p-6 sm:p-8">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Post title"
+                  className="flex-1 min-w-0 rounded-xl border border-gray-300 px-3 py-2 text-base outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                />
+                <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
+                  {status}{lastSaved ? ` · ${lastSaved.toLocaleTimeString()}` : ''}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="mb-5">
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Write your post…"
+                  className="block w-full min-h-[300px] sm:min-h-[360px] resize-y rounded-xl border border-gray-300 px-3 py-3 text-base leading-7 outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-between">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={doSave}
+                    className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50"
+                  >
+                    Save Draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onPublish}
+                    className="rounded-xl bg-gray-900 text-white px-4 py-2 text-sm font-medium hover:bg-black"
+                  >
+                    Publish
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">Drafts are stored locally (demo).</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Publish Modal */}
+          <Modal
+            open={modalOpen}
+            title="Publish post?"
+            onCancel={() => setModalOpen(false)}
+            onConfirm={confirmPublish}
+          >
+            Your post will be published. You can continue editing the local draft afterwards.
+          </Modal>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<EditorApp />);
+  </script>
+</body>
+</html>

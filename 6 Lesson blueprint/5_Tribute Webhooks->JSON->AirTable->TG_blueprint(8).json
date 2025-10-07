@@ -1,0 +1,2655 @@
+{
+    "name": "5_Tribute Webhooks->JSON->AirTable->TG",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 2185416,
+                "maxResults": 3
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -415,
+                    "y": -6
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "Tribute webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTHEADERS__",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "__IMTMETHOD__",
+                        "type": "text",
+                        "label": "Method"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 6,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 127,
+                    "y": 9
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 2,
+                            "module": "slack:CreateMessage",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 388400
+                            },
+                            "mapper": {
+                                "text": "{{1.value}}",
+                                "parse": false,
+                                "mrkdwn": true,
+                                "channel": "D1KE528BG",
+                                "channelType": "im",
+                                "channelWType": "list"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 446,
+                                    "y": 6
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parse": {
+                                            "mode": "chose"
+                                        },
+                                        "mrkdwn": {
+                                            "mode": "chose"
+                                        },
+                                        "channel": {
+                                            "mode": "chose",
+                                            "label": "alexeykrol"
+                                        },
+                                        "link_names": {
+                                            "mode": "chose"
+                                        },
+                                        "channelType": {
+                                            "label": "Direct message"
+                                        },
+                                        "channelWType": {
+                                            "label": "Select from the list"
+                                        },
+                                        "unfurl_links": {
+                                            "mode": "chose"
+                                        },
+                                        "unfurl_media": {
+                                            "mode": "chose"
+                                        },
+                                        "reply_broadcast": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "slack2"
+                                            },
+                                            "label": "My Slack (user) connection (alexeykrol)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:slack2,slack3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "channelWType",
+                                        "type": "select",
+                                        "label": "Enter a channel ID or name",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "manualy",
+                                                "list"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    },
+                                    {
+                                        "name": "blocks",
+                                        "type": "text",
+                                        "label": "Blocks"
+                                    },
+                                    {
+                                        "name": "thread_ts",
+                                        "type": "text",
+                                        "label": "Thread message ID (time stamp)"
+                                    },
+                                    {
+                                        "name": "reply_broadcast",
+                                        "type": "boolean",
+                                        "label": "Reply broadcast"
+                                    },
+                                    {
+                                        "name": "link_names",
+                                        "type": "boolean",
+                                        "label": "Link names"
+                                    },
+                                    {
+                                        "name": "parse",
+                                        "type": "boolean",
+                                        "label": "Parse message text"
+                                    },
+                                    {
+                                        "name": "mrkdwn",
+                                        "type": "boolean",
+                                        "label": "Use markdown"
+                                    },
+                                    {
+                                        "name": "unfurl_links",
+                                        "type": "boolean",
+                                        "label": "Unfurl primarily text-based content"
+                                    },
+                                    {
+                                        "name": "unfurl_media",
+                                        "type": "boolean",
+                                        "label": "Unfurl media content"
+                                    },
+                                    {
+                                        "name": "icon_emoji",
+                                        "type": "text",
+                                        "label": "Icon emoji"
+                                    },
+                                    {
+                                        "name": "icon_url",
+                                        "type": "url",
+                                        "label": "Icon url"
+                                    },
+                                    {
+                                        "name": "username",
+                                        "type": "text",
+                                        "label": "User name"
+                                    },
+                                    {
+                                        "name": "channelType",
+                                        "type": "select",
+                                        "label": "Channel type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "public",
+                                                "private",
+                                                "im",
+                                                "mpim"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "channel",
+                                        "type": "select",
+                                        "label": "User",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 5,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 1238,
+                                    "y": 7
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 7,
+                                            "module": "slack:CreateMessage",
+                                            "version": 4,
+                                            "parameters": {
+                                                "__IMTCONN__": 388400
+                                            },
+                                            "filter": {
+                                                "name": "Дальновидный",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.message.text}}",
+                                                            "b": "Дальновидный",
+                                                            "o": "text:contain"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "text": "Дальновидный: {{2.message.text}}",
+                                                "parse": false,
+                                                "mrkdwn": true,
+                                                "channel": "D1KE528BG",
+                                                "channelType": "im",
+                                                "channelWType": "list"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1538,
+                                                    "y": -443
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "mrkdwn": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channel": {
+                                                            "mode": "chose",
+                                                            "label": "alexeykrol"
+                                                        },
+                                                        "link_names": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channelType": {
+                                                            "label": "Direct message"
+                                                        },
+                                                        "channelWType": {
+                                                            "label": "Select from the list"
+                                                        },
+                                                        "unfurl_links": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "unfurl_media": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "reply_broadcast": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "slack2"
+                                                            },
+                                                            "label": "My Slack (user) connection (alexeykrol)"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:slack2,slack3",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "channelWType",
+                                                        "type": "select",
+                                                        "label": "Enter a channel ID or name",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "manualy",
+                                                                "list"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text"
+                                                    },
+                                                    {
+                                                        "name": "blocks",
+                                                        "type": "text",
+                                                        "label": "Blocks"
+                                                    },
+                                                    {
+                                                        "name": "thread_ts",
+                                                        "type": "text",
+                                                        "label": "Thread message ID (time stamp)"
+                                                    },
+                                                    {
+                                                        "name": "reply_broadcast",
+                                                        "type": "boolean",
+                                                        "label": "Reply broadcast"
+                                                    },
+                                                    {
+                                                        "name": "link_names",
+                                                        "type": "boolean",
+                                                        "label": "Link names"
+                                                    },
+                                                    {
+                                                        "name": "parse",
+                                                        "type": "boolean",
+                                                        "label": "Parse message text"
+                                                    },
+                                                    {
+                                                        "name": "mrkdwn",
+                                                        "type": "boolean",
+                                                        "label": "Use markdown"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_links",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl primarily text-based content"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_media",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl media content"
+                                                    },
+                                                    {
+                                                        "name": "icon_emoji",
+                                                        "type": "text",
+                                                        "label": "Icon emoji"
+                                                    },
+                                                    {
+                                                        "name": "icon_url",
+                                                        "type": "url",
+                                                        "label": "Icon url"
+                                                    },
+                                                    {
+                                                        "name": "username",
+                                                        "type": "text",
+                                                        "label": "User name"
+                                                    },
+                                                    {
+                                                        "name": "channelType",
+                                                        "type": "select",
+                                                        "label": "Channel type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "public",
+                                                                "private",
+                                                                "im",
+                                                                "mpim"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "channel",
+                                                        "type": "select",
+                                                        "label": "User",
+                                                        "required": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 45,
+                                            "module": "builtin:BasicRouter",
+                                            "version": 1,
+                                            "mapper": null,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1838,
+                                                    "y": -700
+                                                }
+                                            },
+                                            "routes": [
+                                                {
+                                                    "flow": [
+                                                        {
+                                                            "id": 23,
+                                                            "module": "regexp:Parser",
+                                                            "version": 1,
+                                                            "parameters": {
+                                                                "global": false,
+                                                                "pattern": "\"telegram_user_id\":(\\d{9,10})",
+                                                                "multiline": false,
+                                                                "sensitive": true,
+                                                                "singleline": false,
+                                                                "continueWhenNoRes": false
+                                                            },
+                                                            "mapper": {
+                                                                "text": "{{1.value}}"
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2112,
+                                                                    "y": -751
+                                                                },
+                                                                "restore": {},
+                                                                "parameters": [
+                                                                    {
+                                                                        "name": "pattern",
+                                                                        "type": "text",
+                                                                        "label": "Pattern",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "global",
+                                                                        "type": "boolean",
+                                                                        "label": "Global match",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "sensitive",
+                                                                        "type": "boolean",
+                                                                        "label": "Case sensitive",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "multiline",
+                                                                        "type": "boolean",
+                                                                        "label": "Multiline",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "singleline",
+                                                                        "type": "boolean",
+                                                                        "label": "Singleline",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "continueWhenNoRes",
+                                                                        "type": "boolean",
+                                                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                                                        "required": true
+                                                                    }
+                                                                ],
+                                                                "expect": [
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text"
+                                                                    }
+                                                                ],
+                                                                "interface": [
+                                                                    {
+                                                                        "name": "$1",
+                                                                        "type": "text",
+                                                                        "label": "$1"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 11,
+                                                            "module": "telegram:SendReplyMessage",
+                                                            "version": 1,
+                                                            "parameters": {
+                                                                "__IMTCONN__": 3794539
+                                                            },
+                                                            "mapper": {
+                                                                "text": "Tribute Webhooks->JSON->AirTable->TG\n\nПользователь: {{23.`$1`}}\n\nВы взяли тариф Дальновидный. Это вежливое напоминание. Вы заполнили форму по ссылке https://alexeykrol.com/help/ ?",
+                                                                "chatId": "196267257",
+                                                                "parseMode": "",
+                                                                "replyMarkup": "",
+                                                                "messageThreadId": "",
+                                                                "replyToMessageId": "",
+                                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2553,
+                                                                    "y": -742
+                                                                },
+                                                                "restore": {
+                                                                    "expect": {
+                                                                        "parseMode": {
+                                                                            "label": "Empty"
+                                                                        },
+                                                                        "disableNotification": {
+                                                                            "mode": "chose"
+                                                                        },
+                                                                        "replyMarkupAssembleType": {
+                                                                            "label": "Enter the Reply Markup"
+                                                                        }
+                                                                    },
+                                                                    "parameters": {
+                                                                        "__IMTCONN__": {
+                                                                            "data": {
+                                                                                "scoped": "true",
+                                                                                "connection": "telegram"
+                                                                            },
+                                                                            "label": "Make_Tribute_bot"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "parameters": [
+                                                                    {
+                                                                        "name": "__IMTCONN__",
+                                                                        "type": "account:telegram",
+                                                                        "label": "Connection",
+                                                                        "required": true
+                                                                    }
+                                                                ],
+                                                                "expect": [
+                                                                    {
+                                                                        "name": "chatId",
+                                                                        "type": "text",
+                                                                        "label": "Chat ID",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "messageThreadId",
+                                                                        "type": "number",
+                                                                        "label": "Message Thread ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "parseMode",
+                                                                        "type": "select",
+                                                                        "label": "Parse Mode",
+                                                                        "validate": {
+                                                                            "enum": [
+                                                                                "Markdown",
+                                                                                "HTML"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "name": "disableNotification",
+                                                                        "type": "boolean",
+                                                                        "label": "Disable Notifications"
+                                                                    },
+                                                                    {
+                                                                        "name": "disableWebPagePreview",
+                                                                        "type": "boolean",
+                                                                        "label": "Disable Link Previews"
+                                                                    },
+                                                                    {
+                                                                        "name": "replyToMessageId",
+                                                                        "type": "number",
+                                                                        "label": "Original Message ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "replyMarkupAssembleType",
+                                                                        "type": "select",
+                                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                                        "validate": {
+                                                                            "enum": [
+                                                                                "reply_markup_enter",
+                                                                                "reply_markup_assemble"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "name": "replyMarkup",
+                                                                        "type": "text",
+                                                                        "label": "Reply Markup"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 10,
+                                                            "module": "telegram:SendReplyMessage",
+                                                            "version": 1,
+                                                            "parameters": {
+                                                                "__IMTCONN__": 3794539
+                                                            },
+                                                            "mapper": {
+                                                                "text": "Вы взяли тариф Дальновидный. Это вежливое напоминание. \n\n1. Вы были добавлены в группу \"Магазин Квеста\" (ну вот такое сранное название) и вам пришло письмо с просьбой заполнить форму.\n\n2. Вы заполнили форму по ссылке https://alexeykrol.com/help/?\n\nЕсл да, на всякий случай ответье на присьмо-приглашение, чтобы мы точно знали, что все у вас в порядке. Спасибо.",
+                                                                "chatId": "{{23.`$1`}}",
+                                                                "parseMode": "",
+                                                                "replyMarkup": "",
+                                                                "messageThreadId": "",
+                                                                "replyToMessageId": "",
+                                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2894,
+                                                                    "y": -760,
+                                                                    "name": "Send User"
+                                                                },
+                                                                "restore": {
+                                                                    "expect": {
+                                                                        "parseMode": {
+                                                                            "label": "Empty"
+                                                                        },
+                                                                        "disableNotification": {
+                                                                            "mode": "chose"
+                                                                        },
+                                                                        "replyMarkupAssembleType": {
+                                                                            "label": "Enter the Reply Markup"
+                                                                        }
+                                                                    },
+                                                                    "parameters": {
+                                                                        "__IMTCONN__": {
+                                                                            "data": {
+                                                                                "scoped": "true",
+                                                                                "connection": "telegram"
+                                                                            },
+                                                                            "label": "Make_Tribute_bot"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "parameters": [
+                                                                    {
+                                                                        "name": "__IMTCONN__",
+                                                                        "type": "account:telegram",
+                                                                        "label": "Connection",
+                                                                        "required": true
+                                                                    }
+                                                                ],
+                                                                "expect": [
+                                                                    {
+                                                                        "name": "chatId",
+                                                                        "type": "text",
+                                                                        "label": "Chat ID",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text",
+                                                                        "required": true
+                                                                    },
+                                                                    {
+                                                                        "name": "messageThreadId",
+                                                                        "type": "number",
+                                                                        "label": "Message Thread ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "parseMode",
+                                                                        "type": "select",
+                                                                        "label": "Parse Mode",
+                                                                        "validate": {
+                                                                            "enum": [
+                                                                                "Markdown",
+                                                                                "HTML"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "name": "disableNotification",
+                                                                        "type": "boolean",
+                                                                        "label": "Disable Notifications"
+                                                                    },
+                                                                    {
+                                                                        "name": "disableWebPagePreview",
+                                                                        "type": "boolean",
+                                                                        "label": "Disable Link Previews"
+                                                                    },
+                                                                    {
+                                                                        "name": "replyToMessageId",
+                                                                        "type": "number",
+                                                                        "label": "Original Message ID"
+                                                                    },
+                                                                    {
+                                                                        "name": "replyMarkupAssembleType",
+                                                                        "type": "select",
+                                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                                        "validate": {
+                                                                            "enum": [
+                                                                                "reply_markup_enter",
+                                                                                "reply_markup_assemble"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "name": "replyMarkup",
+                                                                        "type": "text",
+                                                                        "label": "Reply Markup"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "onerror": [
+                                                                {
+                                                                    "id": 47,
+                                                                    "module": "builtin:Break",
+                                                                    "version": 1,
+                                                                    "parameters": {},
+                                                                    "mapper": {
+                                                                        "count": "3",
+                                                                        "retry": true,
+                                                                        "interval": "15"
+                                                                    },
+                                                                    "metadata": {
+                                                                        "designer": {
+                                                                            "x": 3379,
+                                                                            "y": -870
+                                                                        },
+                                                                        "restore": {
+                                                                            "expect": {
+                                                                                "retry": {
+                                                                                    "mode": "chose"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "expect": [
+                                                                            {
+                                                                                "name": "retry",
+                                                                                "type": "boolean",
+                                                                                "label": "Automatically complete execution",
+                                                                                "required": true
+                                                                            },
+                                                                            {
+                                                                                "name": "count",
+                                                                                "type": "uinteger",
+                                                                                "label": "Number of attempts",
+                                                                                "required": true,
+                                                                                "validate": {
+                                                                                    "max": 10000,
+                                                                                    "min": 1
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "name": "interval",
+                                                                                "type": "uinteger",
+                                                                                "label": "Interval between attempts",
+                                                                                "required": true,
+                                                                                "validate": {
+                                                                                    "max": 44640,
+                                                                                    "min": 1
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 8,
+                                            "module": "slack:CreateMessage",
+                                            "version": 4,
+                                            "parameters": {
+                                                "__IMTCONN__": 388400
+                                            },
+                                            "filter": {
+                                                "name": "Пытливый",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.message.text}}",
+                                                            "b": "Пытливый",
+                                                            "o": "text:contain"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "text": "Пытливый: {{2.message.text}}",
+                                                "parse": false,
+                                                "mrkdwn": true,
+                                                "channel": "D1KE528BG",
+                                                "channelType": "im",
+                                                "channelWType": "list"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1542,
+                                                    "y": -83
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "mrkdwn": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channel": {
+                                                            "mode": "chose",
+                                                            "label": "alexeykrol"
+                                                        },
+                                                        "link_names": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channelType": {
+                                                            "label": "Direct message"
+                                                        },
+                                                        "channelWType": {
+                                                            "label": "Select from the list"
+                                                        },
+                                                        "unfurl_links": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "unfurl_media": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "reply_broadcast": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "slack2"
+                                                            },
+                                                            "label": "My Slack (user) connection (alexeykrol)"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:slack2,slack3",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "channelWType",
+                                                        "type": "select",
+                                                        "label": "Enter a channel ID or name",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "manualy",
+                                                                "list"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text"
+                                                    },
+                                                    {
+                                                        "name": "blocks",
+                                                        "type": "text",
+                                                        "label": "Blocks"
+                                                    },
+                                                    {
+                                                        "name": "thread_ts",
+                                                        "type": "text",
+                                                        "label": "Thread message ID (time stamp)"
+                                                    },
+                                                    {
+                                                        "name": "reply_broadcast",
+                                                        "type": "boolean",
+                                                        "label": "Reply broadcast"
+                                                    },
+                                                    {
+                                                        "name": "link_names",
+                                                        "type": "boolean",
+                                                        "label": "Link names"
+                                                    },
+                                                    {
+                                                        "name": "parse",
+                                                        "type": "boolean",
+                                                        "label": "Parse message text"
+                                                    },
+                                                    {
+                                                        "name": "mrkdwn",
+                                                        "type": "boolean",
+                                                        "label": "Use markdown"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_links",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl primarily text-based content"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_media",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl media content"
+                                                    },
+                                                    {
+                                                        "name": "icon_emoji",
+                                                        "type": "text",
+                                                        "label": "Icon emoji"
+                                                    },
+                                                    {
+                                                        "name": "icon_url",
+                                                        "type": "url",
+                                                        "label": "Icon url"
+                                                    },
+                                                    {
+                                                        "name": "username",
+                                                        "type": "text",
+                                                        "label": "User name"
+                                                    },
+                                                    {
+                                                        "name": "channelType",
+                                                        "type": "select",
+                                                        "label": "Channel type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "public",
+                                                                "private",
+                                                                "im",
+                                                                "mpim"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "channel",
+                                                        "type": "select",
+                                                        "label": "User",
+                                                        "required": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 25,
+                                            "module": "regexp:Parser",
+                                            "version": 1,
+                                            "parameters": {
+                                                "global": false,
+                                                "pattern": "\"telegram_user_id\":(\\d{9,10})",
+                                                "multiline": false,
+                                                "sensitive": true,
+                                                "singleline": false,
+                                                "continueWhenNoRes": false
+                                            },
+                                            "mapper": {
+                                                "text": "{{1.value}}"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1889,
+                                                    "y": -92
+                                                },
+                                                "restore": {},
+                                                "parameters": [
+                                                    {
+                                                        "name": "pattern",
+                                                        "type": "text",
+                                                        "label": "Pattern",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "global",
+                                                        "type": "boolean",
+                                                        "label": "Global match",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "sensitive",
+                                                        "type": "boolean",
+                                                        "label": "Case sensitive",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "multiline",
+                                                        "type": "boolean",
+                                                        "label": "Multiline",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "singleline",
+                                                        "type": "boolean",
+                                                        "label": "Singleline",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "continueWhenNoRes",
+                                                        "type": "boolean",
+                                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text"
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "$1",
+                                                        "type": "text",
+                                                        "label": "$1"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 13,
+                                            "module": "telegram:SendReplyMessage",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 3794539
+                                            },
+                                            "mapper": {
+                                                "text": "Tribute Webhooks->JSON->AirTable->TG\n\nПользователь: {{25.`$1`}}\n\nВы взяли тариф Пытливый. Это вежливое напоминание. Вы заполнили форму по ссылке https://alexeykrol.com/help/ ?",
+                                                "chatId": "196267257",
+                                                "parseMode": "",
+                                                "replyMarkup": "",
+                                                "messageThreadId": "",
+                                                "replyToMessageId": "",
+                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2258,
+                                                    "y": -91
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parseMode": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "disableNotification": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "replyMarkupAssembleType": {
+                                                            "label": "Enter the Reply Markup"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "telegram"
+                                                            },
+                                                            "label": "Make_Tribute_bot"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:telegram",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "chatId",
+                                                        "type": "text",
+                                                        "label": "Chat ID",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "messageThreadId",
+                                                        "type": "number",
+                                                        "label": "Message Thread ID"
+                                                    },
+                                                    {
+                                                        "name": "parseMode",
+                                                        "type": "select",
+                                                        "label": "Parse Mode",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "Markdown",
+                                                                "HTML"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "disableNotification",
+                                                        "type": "boolean",
+                                                        "label": "Disable Notifications"
+                                                    },
+                                                    {
+                                                        "name": "disableWebPagePreview",
+                                                        "type": "boolean",
+                                                        "label": "Disable Link Previews"
+                                                    },
+                                                    {
+                                                        "name": "replyToMessageId",
+                                                        "type": "number",
+                                                        "label": "Original Message ID"
+                                                    },
+                                                    {
+                                                        "name": "replyMarkupAssembleType",
+                                                        "type": "select",
+                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "reply_markup_enter",
+                                                                "reply_markup_assemble"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "replyMarkup",
+                                                        "type": "text",
+                                                        "label": "Reply Markup"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 12,
+                                            "module": "telegram:SendReplyMessage",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 3794539
+                                            },
+                                            "mapper": {
+                                                "text": "Вы взяли тариф Пытливый. Это вежливое напоминание. \n\n1. Вы были добавлены в группу \"Магазин Квеста\" (ну вот такое сранное название) и вам пришло письмо с просьбой заполнить форму.\n\n2. Вы заполнили форму по ссылке https://alexeykrol.com/help/?\n\nЕсл да, на всякий случай ответье на присьмо-приглашение, чтобы мы точно знали, что все у вас в порядке. Спасибо.",
+                                                "chatId": "{{25.`$1`}}",
+                                                "parseMode": "",
+                                                "replyMarkup": "",
+                                                "messageThreadId": "",
+                                                "replyToMessageId": "",
+                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2895,
+                                                    "y": -147,
+                                                    "name": "Send User"
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parseMode": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "disableNotification": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "replyMarkupAssembleType": {
+                                                            "label": "Enter the Reply Markup"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "telegram"
+                                                            },
+                                                            "label": "Make_Tribute_bot"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:telegram",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "chatId",
+                                                        "type": "text",
+                                                        "label": "Chat ID",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "messageThreadId",
+                                                        "type": "number",
+                                                        "label": "Message Thread ID"
+                                                    },
+                                                    {
+                                                        "name": "parseMode",
+                                                        "type": "select",
+                                                        "label": "Parse Mode",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "Markdown",
+                                                                "HTML"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "disableNotification",
+                                                        "type": "boolean",
+                                                        "label": "Disable Notifications"
+                                                    },
+                                                    {
+                                                        "name": "disableWebPagePreview",
+                                                        "type": "boolean",
+                                                        "label": "Disable Link Previews"
+                                                    },
+                                                    {
+                                                        "name": "replyToMessageId",
+                                                        "type": "number",
+                                                        "label": "Original Message ID"
+                                                    },
+                                                    {
+                                                        "name": "replyMarkupAssembleType",
+                                                        "type": "select",
+                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "reply_markup_enter",
+                                                                "reply_markup_assemble"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "replyMarkup",
+                                                        "type": "text",
+                                                        "label": "Reply Markup"
+                                                    }
+                                                ]
+                                            },
+                                            "onerror": [
+                                                {
+                                                    "id": 48,
+                                                    "module": "builtin:Break",
+                                                    "version": 1,
+                                                    "parameters": {},
+                                                    "mapper": {
+                                                        "count": "3",
+                                                        "retry": true,
+                                                        "interval": "15"
+                                                    },
+                                                    "metadata": {
+                                                        "designer": {
+                                                            "x": 3415,
+                                                            "y": -177
+                                                        },
+                                                        "restore": {
+                                                            "expect": {
+                                                                "retry": {
+                                                                    "mode": "chose"
+                                                                }
+                                                            }
+                                                        },
+                                                        "expect": [
+                                                            {
+                                                                "name": "retry",
+                                                                "type": "boolean",
+                                                                "label": "Automatically complete execution",
+                                                                "required": true
+                                                            },
+                                                            {
+                                                                "name": "count",
+                                                                "type": "uinteger",
+                                                                "label": "Number of attempts",
+                                                                "required": true,
+                                                                "validate": {
+                                                                    "max": 10000,
+                                                                    "min": 1
+                                                                }
+                                                            },
+                                                            {
+                                                                "name": "interval",
+                                                                "type": "uinteger",
+                                                                "label": "Interval between attempts",
+                                                                "required": true,
+                                                                "validate": {
+                                                                    "max": 44640,
+                                                                    "min": 1
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 9,
+                                            "module": "slack:CreateMessage",
+                                            "version": 4,
+                                            "parameters": {
+                                                "__IMTCONN__": 388400
+                                            },
+                                            "filter": {
+                                                "name": "Любопытный",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.message.type}}",
+                                                            "b": "Любопытный",
+                                                            "o": "text:contain"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "text": "Любопытный: {{2.message.text}}",
+                                                "parse": false,
+                                                "mrkdwn": true,
+                                                "channel": "D1KE528BG",
+                                                "channelType": "im",
+                                                "channelWType": "list"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1491,
+                                                    "y": 266
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "mrkdwn": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channel": {
+                                                            "mode": "chose",
+                                                            "label": "alexeykrol"
+                                                        },
+                                                        "link_names": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "channelType": {
+                                                            "label": "Direct message"
+                                                        },
+                                                        "channelWType": {
+                                                            "label": "Select from the list"
+                                                        },
+                                                        "unfurl_links": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "unfurl_media": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "reply_broadcast": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "slack2"
+                                                            },
+                                                            "label": "My Slack (user) connection (alexeykrol)"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:slack2,slack3",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "channelWType",
+                                                        "type": "select",
+                                                        "label": "Enter a channel ID or name",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "manualy",
+                                                                "list"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text"
+                                                    },
+                                                    {
+                                                        "name": "blocks",
+                                                        "type": "text",
+                                                        "label": "Blocks"
+                                                    },
+                                                    {
+                                                        "name": "thread_ts",
+                                                        "type": "text",
+                                                        "label": "Thread message ID (time stamp)"
+                                                    },
+                                                    {
+                                                        "name": "reply_broadcast",
+                                                        "type": "boolean",
+                                                        "label": "Reply broadcast"
+                                                    },
+                                                    {
+                                                        "name": "link_names",
+                                                        "type": "boolean",
+                                                        "label": "Link names"
+                                                    },
+                                                    {
+                                                        "name": "parse",
+                                                        "type": "boolean",
+                                                        "label": "Parse message text"
+                                                    },
+                                                    {
+                                                        "name": "mrkdwn",
+                                                        "type": "boolean",
+                                                        "label": "Use markdown"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_links",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl primarily text-based content"
+                                                    },
+                                                    {
+                                                        "name": "unfurl_media",
+                                                        "type": "boolean",
+                                                        "label": "Unfurl media content"
+                                                    },
+                                                    {
+                                                        "name": "icon_emoji",
+                                                        "type": "text",
+                                                        "label": "Icon emoji"
+                                                    },
+                                                    {
+                                                        "name": "icon_url",
+                                                        "type": "url",
+                                                        "label": "Icon url"
+                                                    },
+                                                    {
+                                                        "name": "username",
+                                                        "type": "text",
+                                                        "label": "User name"
+                                                    },
+                                                    {
+                                                        "name": "channelType",
+                                                        "type": "select",
+                                                        "label": "Channel type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "public",
+                                                                "private",
+                                                                "im",
+                                                                "mpim"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "channel",
+                                                        "type": "select",
+                                                        "label": "User",
+                                                        "required": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 26,
+                                            "module": "regexp:Parser",
+                                            "version": 1,
+                                            "parameters": {
+                                                "global": false,
+                                                "pattern": "\"telegram_user_id\":(\\d{9,10})",
+                                                "multiline": false,
+                                                "sensitive": true,
+                                                "singleline": false,
+                                                "continueWhenNoRes": false
+                                            },
+                                            "mapper": {
+                                                "text": "{{1.value}}"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1803,
+                                                    "y": 375
+                                                },
+                                                "restore": {},
+                                                "parameters": [
+                                                    {
+                                                        "name": "pattern",
+                                                        "type": "text",
+                                                        "label": "Pattern",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "global",
+                                                        "type": "boolean",
+                                                        "label": "Global match",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "sensitive",
+                                                        "type": "boolean",
+                                                        "label": "Case sensitive",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "multiline",
+                                                        "type": "boolean",
+                                                        "label": "Multiline",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "singleline",
+                                                        "type": "boolean",
+                                                        "label": "Singleline",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "continueWhenNoRes",
+                                                        "type": "boolean",
+                                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text"
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "$1",
+                                                        "type": "text",
+                                                        "label": "$1"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 15,
+                                            "module": "telegram:SendReplyMessage",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 3794539
+                                            },
+                                            "mapper": {
+                                                "text": "Tribute Webhooks->JSON->AirTable->TG\n\nПользователь: \n{{26.`$1`}}\n\nВы взяли тариф Любопытный. Это вежливое напоминание. Вы заполнили форму по ссылке https://alexeykrol.com/help/ ?",
+                                                "chatId": "196267257",
+                                                "parseMode": "",
+                                                "replyMarkup": "",
+                                                "messageThreadId": "",
+                                                "replyToMessageId": "",
+                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2397,
+                                                    "y": 366
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parseMode": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "disableNotification": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "replyMarkupAssembleType": {
+                                                            "label": "Enter the Reply Markup"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "telegram"
+                                                            },
+                                                            "label": "Make_Tribute_bot"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:telegram",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "chatId",
+                                                        "type": "text",
+                                                        "label": "Chat ID",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "messageThreadId",
+                                                        "type": "number",
+                                                        "label": "Message Thread ID"
+                                                    },
+                                                    {
+                                                        "name": "parseMode",
+                                                        "type": "select",
+                                                        "label": "Parse Mode",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "Markdown",
+                                                                "HTML"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "disableNotification",
+                                                        "type": "boolean",
+                                                        "label": "Disable Notifications"
+                                                    },
+                                                    {
+                                                        "name": "disableWebPagePreview",
+                                                        "type": "boolean",
+                                                        "label": "Disable Link Previews"
+                                                    },
+                                                    {
+                                                        "name": "replyToMessageId",
+                                                        "type": "number",
+                                                        "label": "Original Message ID"
+                                                    },
+                                                    {
+                                                        "name": "replyMarkupAssembleType",
+                                                        "type": "select",
+                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "reply_markup_enter",
+                                                                "reply_markup_assemble"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "replyMarkup",
+                                                        "type": "text",
+                                                        "label": "Reply Markup"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 14,
+                                            "module": "telegram:SendReplyMessage",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 3794539
+                                            },
+                                            "mapper": {
+                                                "text": "Вы взяли тариф Любопытный. Это вежливое напоминание. \n\n1. Вы были добавлены в группу \"Магазин Квеста\" (ну вот такое сранное название) и вам пришло письмо с просьбой заполнить форму.\n\n2. Вы заполнили форму по ссылке https://alexeykrol.com/help/?\n\nЕсл да, на всякий случай ответье на присьмо-приглашение, чтобы мы точно знали, что все у вас в порядке. Спасибо.",
+                                                "chatId": "{{26.`$1`}}",
+                                                "parseMode": "",
+                                                "replyMarkup": "",
+                                                "messageThreadId": "",
+                                                "replyToMessageId": "",
+                                                "replyMarkupAssembleType": "reply_markup_enter"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2890,
+                                                    "y": 339,
+                                                    "name": "Send User"
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "parseMode": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "disableNotification": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "replyMarkupAssembleType": {
+                                                            "label": "Enter the Reply Markup"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "telegram"
+                                                            },
+                                                            "label": "Make_Tribute_bot"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:telegram",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "chatId",
+                                                        "type": "text",
+                                                        "label": "Chat ID",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "messageThreadId",
+                                                        "type": "number",
+                                                        "label": "Message Thread ID"
+                                                    },
+                                                    {
+                                                        "name": "parseMode",
+                                                        "type": "select",
+                                                        "label": "Parse Mode",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "Markdown",
+                                                                "HTML"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "disableNotification",
+                                                        "type": "boolean",
+                                                        "label": "Disable Notifications"
+                                                    },
+                                                    {
+                                                        "name": "disableWebPagePreview",
+                                                        "type": "boolean",
+                                                        "label": "Disable Link Previews"
+                                                    },
+                                                    {
+                                                        "name": "replyToMessageId",
+                                                        "type": "number",
+                                                        "label": "Original Message ID"
+                                                    },
+                                                    {
+                                                        "name": "replyMarkupAssembleType",
+                                                        "type": "select",
+                                                        "label": "Enter/Assemble the Reply Markup Field",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "reply_markup_enter",
+                                                                "reply_markup_assemble"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "replyMarkup",
+                                                        "type": "text",
+                                                        "label": "Reply Markup"
+                                                    }
+                                                ]
+                                            },
+                                            "onerror": [
+                                                {
+                                                    "id": 49,
+                                                    "module": "builtin:Break",
+                                                    "version": 1,
+                                                    "parameters": {},
+                                                    "mapper": {
+                                                        "count": "3",
+                                                        "retry": true,
+                                                        "interval": "15"
+                                                    },
+                                                    "metadata": {
+                                                        "designer": {
+                                                            "x": 3546,
+                                                            "y": 332
+                                                        },
+                                                        "restore": {
+                                                            "expect": {
+                                                                "retry": {
+                                                                    "mode": "chose"
+                                                                }
+                                                            }
+                                                        },
+                                                        "expect": [
+                                                            {
+                                                                "name": "retry",
+                                                                "type": "boolean",
+                                                                "label": "Automatically complete execution",
+                                                                "required": true
+                                                            },
+                                                            {
+                                                                "name": "count",
+                                                                "type": "uinteger",
+                                                                "label": "Number of attempts",
+                                                                "required": true,
+                                                                "validate": {
+                                                                    "max": 10000,
+                                                                    "min": 1
+                                                                }
+                                                            },
+                                                            {
+                                                                "name": "interval",
+                                                                "type": "uinteger",
+                                                                "label": "Interval between attempts",
+                                                                "required": true,
+                                                                "validate": {
+                                                                    "max": 44640,
+                                                                    "min": 1
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 51,
+                            "module": "json:ParseJSON",
+                            "version": 1,
+                            "parameters": {
+                                "type": 229440
+                            },
+                            "mapper": {
+                                "json": "{{1.value}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 258,
+                                    "y": -614
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "type": {
+                                            "label": "Tribite Webhook"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "type",
+                                        "type": "udt",
+                                        "label": "Data structure"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "json",
+                                        "type": "text",
+                                        "label": "JSON string",
+                                        "required": true
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "help": "",
+                                        "name": "created_at",
+                                        "type": "date",
+                                        "label": null,
+                                        "required": true
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "cancelled_subscription",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "payload",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "subscription_name",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "subscription_id",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "period_id",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "period",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "price",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "amount",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "currency",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "user_id",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "telegram_user_id",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "web_app_link",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "channel_id",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "channel_name",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "cancel_reason",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "expires_at",
+                                        "type": "date",
+                                        "label": null,
+                                        "required": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 52,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 4156908
+                            },
+                            "mapper": {
+                                "base": "apphqV53mWmQH5Tv2",
+                                "table": "tbllDUktyUssYcUch",
+                                "record": {
+                                    "fld25Rss0DPBsAggF": "{{51.user_id}}",
+                                    "fld4qg9Rk9zVqkGy1": "{{51.subscription_id}}",
+                                    "fld58cT3yMWPyJcto": "{{51.currency}}",
+                                    "fld7xF9IeFCDwIVxA": "{{51.telegram_user_id}}",
+                                    "fldLgsRaxsNWDodRA": "{{51.channel_id}}",
+                                    "fldOq4HJnqcAfCqx8": "{{51.subscription_id}}",
+                                    "fldP8LONxBbmJIPzx": "{{51.cancelled_subscription}}",
+                                    "fldU5Os8XyTUBQlUM": "{{51.period}}",
+                                    "fldbgJFKlOSl98Ewy": "{{51.amount}}",
+                                    "fldimbg9SoLpmW9PB": "{{51.created_at}}",
+                                    "fldjzCIOQHtPExIbD": "{{51.subscription_name}}",
+                                    "fldmmQwqusfY4fA1X": "{{51.cancelled_subscription}}",
+                                    "fldmq6IeVWLwp1MU0": "{{51.web_app_link}}",
+                                    "fldrrV1iUvcOULl0w": "{{51.price}}",
+                                    "fldtI8QpFCIPl2VLf": "{{51.channel_name}}",
+                                    "fldurdjR5vaEDdxW5": "{{51.payload}}",
+                                    "fldvLQ99AeA3nTzGK": "{{51.cancel_reason}}",
+                                    "fldwkA2GCCNJs5b7i": "{{51.period_id}}",
+                                    "fldznaU2syKqeEDt4": "{{51.expires_at}}"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 698,
+                                    "y": -806
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Курс"
+                                        },
+                                        "table": {
+                                            "label": "Tribute",
+                                            "nested": [
+                                                {
+                                                    "name": "record",
+                                                    "spec": [
+                                                        {
+                                                            "name": "fld4qg9Rk9zVqkGy1",
+                                                            "type": "text",
+                                                            "label": "Subs_Id"
+                                                        },
+                                                        {
+                                                            "name": "fldimbg9SoLpmW9PB",
+                                                            "time": true,
+                                                            "type": "date",
+                                                            "label": "Created"
+                                                        },
+                                                        {
+                                                            "name": "fldmmQwqusfY4fA1X",
+                                                            "type": "text",
+                                                            "label": "Name"
+                                                        },
+                                                        {
+                                                            "name": "fldP8LONxBbmJIPzx",
+                                                            "type": "text",
+                                                            "label": "cancelled_subscription"
+                                                        },
+                                                        {
+                                                            "name": "fldurdjR5vaEDdxW5",
+                                                            "type": "text",
+                                                            "label": "payload"
+                                                        },
+                                                        {
+                                                            "name": "fldjzCIOQHtPExIbD",
+                                                            "type": "text",
+                                                            "label": "subscription_name"
+                                                        },
+                                                        {
+                                                            "name": "fldOq4HJnqcAfCqx8",
+                                                            "type": "text",
+                                                            "label": "subscription_id"
+                                                        },
+                                                        {
+                                                            "name": "fldwkA2GCCNJs5b7i",
+                                                            "type": "text",
+                                                            "label": "period_id"
+                                                        },
+                                                        {
+                                                            "name": "fldU5Os8XyTUBQlUM",
+                                                            "type": "text",
+                                                            "label": "period"
+                                                        },
+                                                        {
+                                                            "name": "fldrrV1iUvcOULl0w",
+                                                            "type": "text",
+                                                            "label": "price"
+                                                        },
+                                                        {
+                                                            "name": "fldbgJFKlOSl98Ewy",
+                                                            "type": "text",
+                                                            "label": "amount"
+                                                        },
+                                                        {
+                                                            "name": "fld58cT3yMWPyJcto",
+                                                            "type": "text",
+                                                            "label": "currency"
+                                                        },
+                                                        {
+                                                            "name": "fld25Rss0DPBsAggF",
+                                                            "type": "text",
+                                                            "label": "user_id"
+                                                        },
+                                                        {
+                                                            "name": "fld7xF9IeFCDwIVxA",
+                                                            "type": "text",
+                                                            "label": "telegram_user_id"
+                                                        },
+                                                        {
+                                                            "name": "fldmq6IeVWLwp1MU0",
+                                                            "type": "text",
+                                                            "label": "web_app_link"
+                                                        },
+                                                        {
+                                                            "name": "fldLgsRaxsNWDodRA",
+                                                            "type": "text",
+                                                            "label": "channel_id"
+                                                        },
+                                                        {
+                                                            "name": "fldtI8QpFCIPl2VLf",
+                                                            "type": "text",
+                                                            "label": "channel_name"
+                                                        },
+                                                        {
+                                                            "name": "fldvLQ99AeA3nTzGK",
+                                                            "type": "text",
+                                                            "label": "cancel_reason"
+                                                        },
+                                                        {
+                                                            "name": "fldznaU2syKqeEDt4",
+                                                            "type": "text",
+                                                            "label": "expires_at"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Record"
+                                                }
+                                            ]
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable2"
+                                            },
+                                            "label": "Airtable"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fld4qg9Rk9zVqkGy1",
+                                                "type": "text",
+                                                "label": "Subs_Id"
+                                            },
+                                            {
+                                                "name": "fldimbg9SoLpmW9PB",
+                                                "time": true,
+                                                "type": "date",
+                                                "label": "Created"
+                                            },
+                                            {
+                                                "name": "fldmmQwqusfY4fA1X",
+                                                "type": "text",
+                                                "label": "Name"
+                                            },
+                                            {
+                                                "name": "fldP8LONxBbmJIPzx",
+                                                "type": "text",
+                                                "label": "cancelled_subscription"
+                                            },
+                                            {
+                                                "name": "fldurdjR5vaEDdxW5",
+                                                "type": "text",
+                                                "label": "payload"
+                                            },
+                                            {
+                                                "name": "fldjzCIOQHtPExIbD",
+                                                "type": "text",
+                                                "label": "subscription_name"
+                                            },
+                                            {
+                                                "name": "fldOq4HJnqcAfCqx8",
+                                                "type": "text",
+                                                "label": "subscription_id"
+                                            },
+                                            {
+                                                "name": "fldwkA2GCCNJs5b7i",
+                                                "type": "text",
+                                                "label": "period_id"
+                                            },
+                                            {
+                                                "name": "fldU5Os8XyTUBQlUM",
+                                                "type": "text",
+                                                "label": "period"
+                                            },
+                                            {
+                                                "name": "fldrrV1iUvcOULl0w",
+                                                "type": "text",
+                                                "label": "price"
+                                            },
+                                            {
+                                                "name": "fldbgJFKlOSl98Ewy",
+                                                "type": "text",
+                                                "label": "amount"
+                                            },
+                                            {
+                                                "name": "fld58cT3yMWPyJcto",
+                                                "type": "text",
+                                                "label": "currency"
+                                            },
+                                            {
+                                                "name": "fld25Rss0DPBsAggF",
+                                                "type": "text",
+                                                "label": "user_id"
+                                            },
+                                            {
+                                                "name": "fld7xF9IeFCDwIVxA",
+                                                "type": "text",
+                                                "label": "telegram_user_id"
+                                            },
+                                            {
+                                                "name": "fldmq6IeVWLwp1MU0",
+                                                "type": "text",
+                                                "label": "web_app_link"
+                                            },
+                                            {
+                                                "name": "fldLgsRaxsNWDodRA",
+                                                "type": "text",
+                                                "label": "channel_id"
+                                            },
+                                            {
+                                                "name": "fldtI8QpFCIPl2VLf",
+                                                "type": "text",
+                                                "label": "channel_name"
+                                            },
+                                            {
+                                                "name": "fldvLQ99AeA3nTzGK",
+                                                "type": "text",
+                                                "label": "cancel_reason"
+                                            },
+                                            {
+                                                "name": "fldznaU2syKqeEDt4",
+                                                "type": "text",
+                                                "label": "expires_at"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Subs_Id",
+                                        "type": "text",
+                                        "label": "Subs_Id"
+                                    },
+                                    {
+                                        "name": "Created",
+                                        "time": true,
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "type": "text",
+                                        "label": "Name"
+                                    },
+                                    {
+                                        "name": "cancelled_subscription",
+                                        "type": "text",
+                                        "label": "cancelled_subscription"
+                                    },
+                                    {
+                                        "name": "payload",
+                                        "type": "text",
+                                        "label": "payload"
+                                    },
+                                    {
+                                        "name": "subscription_name",
+                                        "type": "text",
+                                        "label": "subscription_name"
+                                    },
+                                    {
+                                        "name": "subscription_id",
+                                        "type": "text",
+                                        "label": "subscription_id"
+                                    },
+                                    {
+                                        "name": "period_id",
+                                        "type": "text",
+                                        "label": "period_id"
+                                    },
+                                    {
+                                        "name": "period",
+                                        "type": "text",
+                                        "label": "period"
+                                    },
+                                    {
+                                        "name": "price",
+                                        "type": "text",
+                                        "label": "price"
+                                    },
+                                    {
+                                        "name": "amount",
+                                        "type": "text",
+                                        "label": "amount"
+                                    },
+                                    {
+                                        "name": "currency",
+                                        "type": "text",
+                                        "label": "currency"
+                                    },
+                                    {
+                                        "name": "user_id",
+                                        "type": "text",
+                                        "label": "user_id"
+                                    },
+                                    {
+                                        "name": "telegram_user_id",
+                                        "type": "text",
+                                        "label": "telegram_user_id"
+                                    },
+                                    {
+                                        "name": "web_app_link",
+                                        "type": "text",
+                                        "label": "web_app_link"
+                                    },
+                                    {
+                                        "name": "channel_id",
+                                        "type": "text",
+                                        "label": "channel_id"
+                                    },
+                                    {
+                                        "name": "channel_name",
+                                        "type": "text",
+                                        "label": "channel_name"
+                                    },
+                                    {
+                                        "name": "cancel_reason",
+                                        "type": "text",
+                                        "label": "cancel_reason"
+                                    },
+                                    {
+                                        "name": "expires_at",
+                                        "type": "text",
+                                        "label": "expires_at"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 53,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 3794539
+                            },
+                            "mapper": {
+                                "text": "Tribute Webhooks->JSON->AirTable->TG\n\nПользователь: {{52.user_id}}\nТелеграм ID: {{52.telegram_user_id}}\n\nСобытие: {{52.Name}}\n{{52.cancelled_subscription}}\n{{52.payload}}\n\nТариф: {{52.subscription_name}} /{{52.subscription_id}}\nСумма: {{52.amount}}\nЗаканчивается: {{52.expires_at}}\n\nВежливое напоминание. Вы заполнили форму по ссылке https://alexeykrol.com/help/ ?",
+                                "chatId": "196267257",
+                                "parseMode": "",
+                                "replyMarkup": "",
+                                "messageThreadId": "",
+                                "replyToMessageId": "",
+                                "replyMarkupAssembleType": "reply_markup_enter"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1153,
+                                    "y": -923
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "Empty"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            },
+                                            "label": "Make_Tribute_bot"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": true,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com",
+        "notes": []
+    }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inline Validation Form (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    input, button { font-size: 16px; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    function FieldWrapper({ label, htmlFor, children, hint }) {
+      return (
+        <div>
+          <label htmlFor={htmlFor} className="block text-sm font-medium mb-1">{label}</label>
+          {children}
+          {hint}
+        </div>
+      );
+    }
+
+    function IconValid() {
+      return (
+        <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-green-600">
+          <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.414l-7.2 7.2a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414l2.293 2.293 6.493-6.493a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
+      );
+    }
+    function IconInvalid() {
+      return (
+        <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-red-600">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 112 0 1 1 0 01-2 0zm1-8a1 1 0 00-1 1v5a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+        </svg>
+      );
+    }
+
+    function ValidatedInput({ id, type = 'text', value, onChange, placeholder, valid, touched, error }) {
+      const border = touched ? (valid ? 'border-green-500 focus:border-green-500 focus:ring-green-200' : 'border-red-500 focus:border-red-500 focus:ring-red-200') : 'border-gray-300 focus:border-gray-400 focus:ring-black/10';
+      return (
+        <>
+          <div className={`relative`}> 
+            <input
+              id={id}
+              type={type}
+              value={value}
+              onChange={onChange}
+              placeholder={placeholder}
+              aria-invalid={touched && !valid}
+              aria-describedby={`${id}-error`}
+              className={`w-full rounded-xl border bg-white px-3 py-2 pr-10 text-base outline-none focus:ring-2 ${border}`}
+            />
+            <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+              {touched && (valid ? <IconValid /> : <IconInvalid />)}
+            </div>
+          </div>
+          {touched && !valid && (
+            <p id={`${id}-error`} className="mt-1 text-xs text-red-600">{error}</p>
+          )}
+        </>
+      );
+    }
+
+    function App() {
+      const [form, setForm] = useState({ name: '', email: '', password: '' });
+      const [touched, setTouched] = useState({ name: false, email: false, password: false });
+
+      const setField = (k, v) => {
+        setForm(f => ({ ...f, [k]: v }));
+        setTouched(t => ({ ...t, [k]: true }));
+      };
+
+      const isNameValid = useMemo(() => form.name.trim().length > 0, [form.name]);
+      const isEmailValid = useMemo(() => /.+@.+\..+/.test(form.email.trim()), [form.email]);
+      const isPasswordValid = useMemo(() => form.password.length >= 6, [form.password]);
+      const isFormValid = isNameValid && isEmailValid && isPasswordValid;
+
+      const onSubmit = (e) => {
+        e.preventDefault();
+        alert('Submitted! (demo)');
+      };
+
+      return (
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            <form onSubmit={onSubmit} className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-5">
+              <header className="space-y-1">
+                <h1 className="text-xl font-semibold tracking-tight">Create Account</h1>
+                <p className="text-sm text-gray-500">All fields are required.</p>
+              </header>
+
+              <FieldWrapper label="Name" htmlFor="name">
+                <ValidatedInput
+                  id="name"
+                  value={form.name}
+                  onChange={(e) => setField('name', e.target.value)}
+                  placeholder="Jane Doe"
+                  valid={isNameValid}
+                  touched={touched.name}
+                  error="Name is required."
+                />
+              </FieldWrapper>
+
+              <FieldWrapper label="Email" htmlFor="email">
+                <ValidatedInput
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setField('email', e.target.value)}
+                  placeholder="jane@example.com"
+                  valid={isEmailValid}
+                  touched={touched.email}
+                  error="Enter a valid email address."
+                />
+              </FieldWrapper>
+
+              <FieldWrapper label="Password" htmlFor="password">
+                <ValidatedInput
+                  id="password"
+                  type="password"
+                  value={form.password}
+                  onChange={(e) => setField('password', e.target.value)}
+                  placeholder="At least 6 characters"
+                  valid={isPasswordValid}
+                  touched={touched.password}
+                  error="Password must be at least 6 characters."
+                />
+              </FieldWrapper>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={!isFormValid}
+                  className="w-full rounded-xl bg-gray-900 text-white py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black focus:outline-none focus:ring-2 focus:ring-black/20"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

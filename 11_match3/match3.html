@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Простая игра 3 в ряд</title>
+<style>
+  :root {
+    --size: 8;           /* размер поля NxN */
+    --cell: 56px;        /* размер клетки */
+    --gap: 6px;          /* зазор между клетками */
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+  .wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+  }
+  h1 { font-size: 18px; margin: 6px 0 0 0; }
+  .hud {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    background: #111827;
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25) inset;
+    font-weight: 600;
+  }
+  button {
+    background: #2563eb;
+    color: white;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.05); }
+  button:active { transform: translateY(1px); }
+
+  .board {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--size), var(--cell));
+    grid-template-rows: repeat(var(--size), var(--cell));
+    gap: var(--gap);
+    background: #0b1220;
+    padding: var(--gap);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    user-select: none;
+    touch-action: manipulation;
+  }
+  .cell {
+    width: var(--cell);
+    height: var(--cell);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: #0b1220;
+    transition: transform 120ms ease, opacity 180ms ease;
+  }
+  .cell.sel { outline: 3px solid #fbbf24; }
+  .cell.removing { opacity: 0; transform: scale(0.7); }
+  .cell-0 { background: #60a5fa; } /* синий */
+  .cell-1 { background: #34d399; } /* зелёный */
+  .cell-2 { background: #f472b6; } /* розовый */
+  .cell-3 { background: #f59e0b; } /* янтарный */
+  .cell-4 { background: #a78bfa; } /* фиолетовый */
+  .cell-5 { background: #f87171; } /* красный */
+
+  .tips { opacity: 0.8; font-size: 13px; }
+  .footer { opacity: 0.6; font-size: 12px; margin-top: 4px; }
+  @media (max-width: 520px) {
+    :root { --cell: 42px; --gap: 5px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>3 в ряд — минимальная версия</h1>
+    <div class="hud">
+      <div class="stat">Счёт: <span id="score">0</span></div>
+      <div class="stat">Ходы: <span id="moves">0</span></div>
+      <button id="reset">Новая игра</button>
+    </div>
+    <div class="board" id="board" aria-label="Игровое поле" role="grid"></div>
+    <div class="tips">Правила: нажмите две соседние плитки, чтобы поменять их местами. Если образуется линия из 3+ — они исчезнут, а сверху упадут новые.</div>
+    <div class="footer">Сделано без библиотек. Один HTML‑файл.</div>
+  </div>
+
+<script>
+(() => {
+  const SIZE = 8;           // размер поля
+  const TYPES = 6;          // количество типов плиток
+  const SCORE_PER_TILE = 10;
+  const ANIM = 160;         // задержка между шагами анимации, мс
+
+  const boardEl = document.getElementById('board');
+  const scoreEl = document.getElementById('score');
+  const movesEl = document.getElementById('moves');
+  const resetBtn = document.getElementById('reset');
+
+  // Модель
+  let grid = [];
+  let score = 0;
+  let moves = 0;
+  let sel = null; // выбранная клетка {r,c}
+
+  // Инициализация DOM
+  boardEl.style.setProperty('--size', SIZE);
+  boardEl.innerHTML = '';
+  function createCell(r, c, v) {
+    const d = document.createElement('div');
+    d.className = 'cell cell-' + v;
+    d.dataset.r = r;
+    d.dataset.c = c;
+    d.setAttribute('role','gridcell');
+    d.setAttribute('aria-label', 'Плитка');
+    d.addEventListener('click', () => onCellClick(r,c));
+    return d;
+  }
+
+  function randomType() { return Math.floor(Math.random()*TYPES); }
+
+  function newGrid() {
+    grid = Array.from({length: SIZE}, () => Array(SIZE).fill(0));
+    do {
+      for (let r=0; r<SIZE; r++) {
+        for (let c=0; c<SIZE; c++) {
+          grid[r][c] = randomType();
+        }
+      }
+    } while (findMatches().length); // гарантируем отсутствие стартовых совпадений
+  }
+
+  function render() {
+    boardEl.innerHTML = '';
+    for (let r=0; r<SIZE; r++) {
+      for (let c=0; c<SIZE; c++) {
+        const v = grid[r][c];
+        const cell = createCell(r,c,v);
+        if (sel && sel.r === r && sel.c === c) cell.classList.add('sel');
+        boardEl.appendChild(cell);
+      }
+    }
+    scoreEl.textContent = String(score);
+    movesEl.textContent = String(moves);
+  }
+
+  function inBounds(r,c){ return r>=0 && r<SIZE && c>=0 && c<SIZE; }
+  function areAdjacent(a,b){ return Math.abs(a.r-b.r) + Math.abs(a.c-b.c) === 1; }
+
+  function swap(a,b){
+    const tmp = grid[a.r][a.c];
+    grid[a.r][a.c] = grid[b.r][b.c];
+    grid[b.r][b.c] = tmp;
+  }
+
+  // Поиск всех совпадений (группы 3+)
+  function findMatches() {
+    const matches = [];
+    // горизонтальные
+    for (let r=0; r<SIZE; r++) {
+      let count = 1;
+      for (let c=1; c<=SIZE; c++) {
+        const cur = c < SIZE ? grid[r][c] : -1;
+        const prev = grid[r][c-1];
+        if (c < SIZE && cur === prev) {
+          count++;
+        } else {
+          if (count >= 3) {
+            for (let k = c-count; k < c; k++) matches.push({r, c:k});
+          }
+          count = 1;
+        }
+      }
+    }
+    // вертикальные
+    for (let c=0; c<SIZE; c++) {
+      let count = 1;
+      for (let r=1; r<=SIZE; r++) {
+        const cur = r < SIZE ? grid[r][c] : -1;
+        const prev = grid[r-1][c];
+        if (r < SIZE && cur === prev) {
+          count++;
+        } else {
+          if (count >= 3) {
+            for (let k = r-count; k < r; k++) matches.push({r:k, c});
+          }
+          count = 1;
+        }
+      }
+    }
+    // удалить дубликаты (пересечения)
+    const key = p => p.r + ':' + p.c;
+    const uniq = Array.from(new Map(matches.map(m => [key(m), m])).values());
+    return uniq;
+  }
+
+  function markRemoving(cells) {
+    // добавим класс removing для простой визуальной обратной связи
+    cells.forEach(({r,c}) => {
+      const idx = r*SIZE + c;
+      const el = boardEl.children[idx];
+      if (el) el.classList.add('removing');
+    });
+  }
+
+  function clearMatches(cells) {
+    if (!cells.length) return false;
+    // начислить очки
+    score += cells.length * SCORE_PER_TILE;
+    // удалить с поля (помечаем как null)
+    for (const {r,c} of cells) grid[r][c] = null;
+    return true;
+  }
+
+  function applyGravityAndFill() {
+    // гравитация по колонкам
+    for (let c=0; c<SIZE; c++) {
+      let write = SIZE - 1;
+      for (let r = SIZE - 1; r >= 0; r--) {
+        if (grid[r][c] !== null) {
+          grid[write][c] = grid[r][c];
+          write--;
+        }
+      }
+      // заполнение верхней части новыми
+      for (let r = write; r >= 0; r--) {
+        grid[r][c] = randomType();
+      }
+    }
+  }
+
+  let busy = false;
+  async function resolveBoard() {
+    // каскады пока есть совпадения
+    while (true) {
+      const matches = findMatches();
+      if (!matches.length) break;
+      markRemoving(matches);
+      await wait(ANIM);
+      clearMatches(matches);
+      render();
+      await wait(60);
+      applyGravityAndFill();
+      render();
+      await wait(ANIM);
+    }
+  }
+
+  function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+  async function trySwap(a,b) {
+    busy = true;
+    swap(a,b);
+    render();
+    await wait(120);
+    const matches = findMatches();
+    if (matches.length) {
+      await resolveBoard();
+    } else {
+      // откат
+      swap(a,b);
+      render();
+    }
+    busy = false;
+  }
+
+  async function onCellClick(r,c) {
+    if (busy) return;
+    const cur = {r,c};
+    if (!sel) {
+      sel = cur;
+      render();
+      return;
+    }
+    if (sel.r === r && sel.c === c) {
+      sel = null;
+      render();
+      return;
+    }
+    // если соседние — пробуем свап
+    if (areAdjacent(sel, cur)) {
+      const a = sel, b = cur;
+      sel = null;
+      moves++;
+      await trySwap(a,b);
+      render();
+    } else {
+      // выбрать другую
+      sel = cur;
+      render();
+    }
+  }
+
+  function reset() {
+    score = 0;
+    moves = 0;
+    sel = null;
+    newGrid();
+    render();
+  }
+
+  resetBtn.addEventListener('click', () => reset());
+
+  // старт
+  reset();
+})();
+</script>
+</body>
+</html>

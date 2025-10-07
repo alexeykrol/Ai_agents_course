@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3‑Step Wizard (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    function Stepper({ current }) {
+      const steps = [
+        { id: 0, label: 'Basic Info' },
+        { id: 1, label: 'Preferences' },
+        { id: 2, label: 'Summary' },
+      ];
+      return (
+        <ol className="flex items-center gap-2" aria-label="Progress">
+          {steps.map((s, i) => {
+            const active = i === current;
+            const done = i < current;
+            return (
+              <li key={s.id} className="flex items-center gap-2">
+                <div className={[
+                  'w-7 h-7 shrink-0 grid place-items-center rounded-full text-xs font-semibold',
+                  done ? 'bg-gray-900 text-white' : active ? 'ring-2 ring-gray-900 text-gray-900 bg-white' : 'bg-gray-200 text-gray-600',
+                ].join(' ')}>
+                  {done ? '✓' : i + 1}
+                </div>
+                <span className={[
+                  'text-sm',
+                  active ? 'text-gray-900 font-medium' : 'text-gray-500'
+                ].join(' ')}>{s.label}</span>
+                {i < steps.length - 1 && <span className="w-8 sm:w-12 h-px bg-gray-200 mx-1"></span>}
+              </li>
+            );
+          })}
+        </ol>
+      );
+    }
+
+    function Wizard() {
+      const [step, setStep] = useState(0);
+      const [form, setForm] = useState({ name: '', email: '', prefs: [] });
+
+      const PREFS = ['Newsletters', 'Product Updates', 'Beta Access', 'Promotions', 'Surveys'];
+
+      const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+      const togglePref = (p) => {
+        setForm(f => {
+          const exists = f.prefs.includes(p);
+          return { ...f, prefs: exists ? f.prefs.filter(x => x !== p) : [...f.prefs, p] };
+        });
+      };
+
+      const isEmailValid = useMemo(() => /.+@.+\..+/.test(form.email.trim()), [form.email]);
+      const isStepValid = useMemo(() => {
+        if (step === 0) return form.name.trim().length > 0 && isEmailValid;
+        if (step === 1) return form.prefs.length > 0; // require at least one preference
+        return true;
+      }, [step, form, isEmailValid]);
+
+      const next = () => setStep(s => Math.min(2, s + 1));
+      const back = () => setStep(s => Math.max(0, s - 1));
+
+      return (
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+              <div className="mb-6">
+                <Stepper current={step} />
+              </div>
+
+              {/* Step content */}
+              {step === 0 && (
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium mb-1">Name <span className="text-red-500">*</span></label>
+                    <input
+                      id="name"
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setField('name', e.target.value)}
+                      placeholder="Jane Doe"
+                      className="w-full rounded-xl border border-gray-300 px-3 py-2 text-base outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setField('email', e.target.value)}
+                      placeholder="jane@example.com"
+                      className="w-full rounded-xl border border-gray-300 px-3 py-2 text-base outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400"
+                    />
+                    {form.email && !isEmailValid && (
+                      <p className="text-xs text-red-600 mt-1">Please enter a valid email.</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {step === 1 && (
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium mb-2">Choose your preferences <span className="text-red-500">*</span></legend>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {PREFS.map(p => (
+                      <label key={p} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          className="rounded"
+                          checked={form.prefs.includes(p)}
+                          onChange={() => togglePref(p)}
+                        />
+                        <span className="text-sm">{p}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {form.prefs.length === 0 && (
+                    <p className="text-xs text-red-600">Select at least one option to continue.</p>
+                  )}
+                </fieldset>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-4">
+                  <h2 className="text-lg font-semibold">Review your information</h2>
+                  <ul className="divide-y divide-gray-100 rounded-xl border border-gray-100 overflow-hidden">
+                    <li className="flex items-center justify-between p-3 sm:p-4">
+                      <span className="text-sm text-gray-500">Name</span>
+                      <span className="text-sm font-medium">{form.name || '—'}</span>
+                    </li>
+                    <li className="flex items-center justify-between p-3 sm:p-4">
+                      <span className="text-sm text-gray-500">Email</span>
+                      <span className="text-sm font-medium">{form.email || '—'}</span>
+                    </li>
+                    <li className="p-3 sm:p-4">
+                      <div className="text-sm text-gray-500 mb-1">Preferences</div>
+                      <div className="text-sm font-medium">{form.prefs.length ? form.prefs.join(', ') : '—'}</div>
+                    </li>
+                  </ul>
+                </div>
+              )}
+
+              {/* Navigation */}
+              <div className="mt-8 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={back}
+                  disabled={step === 0}
+                  className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  Back
+                </button>
+
+                {step < 2 ? (
+                  <button
+                    type="button"
+                    onClick={next}
+                    disabled={!isStepValid}
+                    className="rounded-xl bg-gray-900 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => alert('Confirmed! (demo)')}
+                    className="rounded-xl bg-gray-900 text-white px-4 py-2 text-sm font-medium hover:bg-black"
+                  >
+                    Confirm
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Wizard />);
+  </script>
+</body>
+</html>

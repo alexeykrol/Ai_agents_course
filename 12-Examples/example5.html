@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Stock Dashboard (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Keep numbers crisp and large on mobile */
+    html { -webkit-text-size-adjust: 100%; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useEffect, useState } = React;
+
+    function formatMoney(n) {
+      return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function TickerCard({ symbol, name, price, changePct }) {
+      const up = changePct > 0;
+      const down = changePct < 0;
+      const color = up ? 'text-green-600' : down ? 'text-red-600' : 'text-gray-700';
+      const bgTint = up ? 'bg-green-50' : down ? 'bg-red-50' : 'bg-gray-50';
+      const arrow = up ? '▲' : down ? '▼' : '•';
+
+      return (
+        <div className={`bg-white rounded-2xl shadow p-6 flex flex-col gap-4`}> 
+          <div className="flex items-baseline justify-between">
+            <div>
+              <div className="text-sm text-gray-500">{symbol}</div>
+              <div className="text-base font-medium">{name}</div>
+            </div>
+            <div className={`text-xs px-2 py-1 rounded-full ${bgTint} ${color} font-medium`}>{arrow} {changePct.toFixed(2)}%</div>
+          </div>
+          <div className={`text-3xl sm:text-4xl font-semibold tracking-tight ${color}`}>
+            ${formatMoney(price)}
+          </div>
+        </div>
+      );
+    }
+
+    function Dashboard() {
+      const [tickers, setTickers] = useState([
+        { symbol: 'AAA', name: 'Alpha Corp', price: 120.32, changePct: 0 },
+        { symbol: 'BBB', name: 'Beta Labs', price: 58.10, changePct: 0 },
+        { symbol: 'CCC', name: 'Gamma Systems', price: 245.76, changePct: 0 },
+      ]);
+
+      useEffect(() => {
+        const id = setInterval(() => {
+          setTickers(prev => prev.map(t => {
+            // Random change between -1.5% and +1.5%
+            const deltaPct = (Math.random() * 3 - 1.5); // -1.5 .. +1.5
+            const nextPrice = Math.max(0.01, t.price * (1 + deltaPct / 100));
+            return { ...t, price: nextPrice, changePct: deltaPct };
+          }));
+        }, 3000);
+        return () => clearInterval(id);
+      }, []);
+
+      return (
+        <div className="min-h-screen p-4 sm:p-6">
+          <header className="max-w-6xl mx-auto mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Mock Stock Dashboard</h1>
+            <p className="text-sm text-gray-500">Prices update every 3 seconds (demo).</p>
+          </header>
+
+          <main className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {tickers.map(t => (
+                <TickerCard key={t.symbol} {...t} />
+              ))}
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+  </script>
+</body>
+</html>

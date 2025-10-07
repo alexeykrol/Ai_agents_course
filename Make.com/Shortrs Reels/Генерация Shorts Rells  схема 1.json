@@ -1,0 +1,2776 @@
+{
+    "name": "Генерация Shorts Rells 1",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-sheets:getCell",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 2487103
+            },
+            "mapper": {
+                "cell": "A1",
+                "from": "drive",
+                "select": "list",
+                "sheetId": "Лист1",
+                "spreadsheetId": "/1TUSdg0hkF2Ce2QE7udJ0e9jiDmm-WgRxWEh68vsYxcA",
+                "valueRenderOption": "FORMATTED_VALUE",
+                "dateTimeRenderOption": "FORMATTED_STRING"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1542,
+                    "y": -66,
+                    "name": "ТЕМА"
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "select": {
+                            "label": "Search by path"
+                        },
+                        "sheetId": {
+                            "label": "Лист1"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "ВИДЕО"
+                            ]
+                        },
+                        "valueRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted value"
+                        },
+                        "dateTimeRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted string"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (mr.rutra@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Search Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "list",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cell",
+                        "type": "text",
+                        "label": "Cell",
+                        "required": true
+                    },
+                    {
+                        "name": "valueRenderOption",
+                        "type": "select",
+                        "label": "Value render option",
+                        "validate": {
+                            "enum": [
+                                "FORMATTED_VALUE",
+                                "UNFORMATTED_VALUE",
+                                "FORMULA"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "dateTimeRenderOption",
+                        "type": "select",
+                        "label": "Date and time render option",
+                        "validate": {
+                            "enum": [
+                                "SERIAL_NUMBER",
+                                "FORMATTED_STRING"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "app#x-kov4eg-6xe48w:vidoiscenario",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 7261324
+            },
+            "mapper": {
+                "model": "gpt-4o-mini",
+                "topic": "Ваг промпт :\nТема : {{1.value}}",
+                "video_style": "realistic",
+                "number_of_scenes": "5",
+                "language_prompt": "English",
+                "language_output": "Russian"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1272,
+                    "y": -70
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "ВИДЕО ОПЕН",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "app#x-kov4eg-6xe48w2"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "model": {
+                            "mode": "chose",
+                            "label": "🔥GPT-4o Mini"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:app#x-kov4eg-6xe48w2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Выбор модели",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chatgpt-4o-latest",
+                                "gpt-4o-2024-11-20",
+                                "gpt-4o-2024-08-06",
+                                "gpt-4o-2024-05-13",
+                                "gpt-4o",
+                                "gpt-4o-mini",
+                                "gpt-4o-mini-2024-07-18"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "topic",
+                        "type": "text",
+                        "label": "Тема видео",
+                        "required": true
+                    },
+                    {
+                        "name": "video_style",
+                        "type": "text",
+                        "label": "Стиль изображения",
+                        "required": true
+                    },
+                    {
+                        "name": "number_of_scenes",
+                        "type": "number",
+                        "label": "Количество сцен",
+                        "required": true
+                    },
+                    {
+                        "name": "language_prompt",
+                        "type": "text",
+                        "label": "Язык промпта для изображений",
+                        "required": true
+                    },
+                    {
+                        "name": "language_output",
+                        "type": "text",
+                        "label": "Язык озвучки и описаний",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "json2video:toolbox",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 6768278
+            },
+            "mapper": {
+                "id": "D10pEJUCt6ybMSJEyEd7",
+                "voice": "ru-RU-DmitryNeural",
+                "scenes": "{{2.scenes}}",
+                "imageModel": "flux-pro",
+                "resolution": "instagram-story",
+                "voiceModel": "azure",
+                "subtitlesModel": "default",
+                "imageAspectRatio": "vertical"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1004,
+                    "y": -75
+                },
+                "restore": {
+                    "expect": {
+                        "id": {
+                            "mode": "chose",
+                            "label": "Social media reel (Advanced)",
+                            "nested": [
+                                {
+                                    "help": null,
+                                    "name": "scenes",
+                                    "spec": [
+                                        {
+                                            "name": "imagePrompt",
+                                            "type": "text",
+                                            "label": "Image Prompt",
+                                            "default": "A sunset at a beautiful beach"
+                                        },
+                                        {
+                                            "name": "voiceOverText",
+                                            "type": "text",
+                                            "label": "Voice Over Text",
+                                            "default": "The hills are alive with the sound of music, with songs they have sung for a thousand years. The hills fill my heart with the sound of music. My heart wants to sing every song it hears"
+                                        }
+                                    ],
+                                    "type": "array",
+                                    "label": "Scenes",
+                                    "options": null,
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Check [credit consumption](https://json2video.com/pricing/credit-consumption.html)",
+                                    "name": "voiceModel",
+                                    "spec": null,
+                                    "type": "select",
+                                    "label": "Voice Model",
+                                    "options": [
+                                        {
+                                            "label": "Azure (free to use)",
+                                            "value": "azure"
+                                        },
+                                        {
+                                            "label": "ElevenLabs (consumes extra credits)",
+                                            "value": "elevenlabs"
+                                        },
+                                        {
+                                            "label": "ElevenLabs Flash v2.5 (consumes extra credits)",
+                                            "value": "elevenlabs-flash-v2-5"
+                                        }
+                                    ],
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Enter your [Connection ID](https://json2video.com/dashboard/connections) to use your own API key to connect to the voice model",
+                                    "name": "voiceConnectionID",
+                                    "spec": null,
+                                    "type": "text",
+                                    "label": "Voice Connection ID",
+                                    "options": null,
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Choose the voice name depending on the Voice Model used. Check [Azure voice catalogue](https://json2video.com/ai-voices/azure/languages/).",
+                                    "name": "voice",
+                                    "spec": null,
+                                    "type": "text",
+                                    "label": "Voice",
+                                    "options": null,
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": null,
+                                    "name": "imageAspectRatio",
+                                    "spec": null,
+                                    "type": "select",
+                                    "label": "Image Aspect Ratio",
+                                    "options": [
+                                        {
+                                            "label": "Vertical",
+                                            "value": "vertical"
+                                        },
+                                        {
+                                            "label": "Horizontal",
+                                            "value": "horizontal"
+                                        },
+                                        {
+                                            "label": "Squared",
+                                            "value": "squared"
+                                        }
+                                    ],
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Check [credit consumption](https://json2video.com/pricing/credit-consumption.html)",
+                                    "name": "imageModel",
+                                    "spec": null,
+                                    "type": "select",
+                                    "label": "Image Model",
+                                    "options": [
+                                        {
+                                            "label": "Freepik Classic (free to use)",
+                                            "value": "freepik-classic"
+                                        },
+                                        {
+                                            "label": "Flux Pro (consumes extra credits)",
+                                            "value": "flux-pro"
+                                        }
+                                    ],
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Choose the transcription model. Start with 'default' and if it does not work fine for your language try 'whisper'",
+                                    "name": "subtitlesModel",
+                                    "spec": null,
+                                    "type": "select",
+                                    "label": "Subtitles Model",
+                                    "options": [
+                                        {
+                                            "label": "Default",
+                                            "value": "default"
+                                        },
+                                        {
+                                            "label": "Whisper",
+                                            "value": "whisper"
+                                        },
+                                        {
+                                            "label": "No subtitles",
+                                            "value": "none"
+                                        }
+                                    ],
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "Choose the font family for the subtitles. Default font is 'Oswald Bold'",
+                                    "name": "fontFamily",
+                                    "spec": null,
+                                    "type": "text",
+                                    "label": "Font Family",
+                                    "options": null,
+                                    "advanced": null,
+                                    "required": null
+                                },
+                                {
+                                    "help": "URL that will be called once the video has been created. This can be a Make.com webhook URL or any other URL",
+                                    "name": "make_webhook_url",
+                                    "spec": null,
+                                    "type": "text",
+                                    "label": "Webhook URL",
+                                    "options": null,
+                                    "advanced": true,
+                                    "required": null
+                                },
+                                {
+                                    "help": "This is a collection of key-value pairs that is passed to the webhook. You can use it to pass along data from this scenerio to the next scenario",
+                                    "name": "client_data",
+                                    "spec": [
+                                        {
+                                            "name": "key",
+                                            "type": "text",
+                                            "label": "Key"
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Value"
+                                        }
+                                    ],
+                                    "type": "array",
+                                    "label": "Client data",
+                                    "options": null,
+                                    "advanced": true,
+                                    "required": null
+                                }
+                            ]
+                        },
+                        "scenes": {
+                            "mode": "edit"
+                        },
+                        "imageModel": {
+                            "mode": "chose",
+                            "label": "Flux Pro (consumes extra credits)"
+                        },
+                        "resolution": {
+                            "mode": "chose",
+                            "label": "1080x1920 - Vertical"
+                        },
+                        "voiceModel": {
+                            "mode": "chose",
+                            "label": "Azure (free to use)"
+                        },
+                        "client_data": {
+                            "mode": "chose"
+                        },
+                        "subtitlesModel": {
+                            "mode": "chose",
+                            "label": "Default"
+                        },
+                        "imageAspectRatio": {
+                            "mode": "chose",
+                            "label": "Vertical"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "json2video"
+                            },
+                            "label": "My JSON2Video connection (mrrutra@gmail.com - admin)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:json2video",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "resolution",
+                        "type": "select",
+                        "label": "Desired video resolution",
+                        "validate": {
+                            "enum": [
+                                "full-hd",
+                                "instagram-story",
+                                "squared",
+                                "custom"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "type": "select",
+                        "label": "Select a tool"
+                    },
+                    {
+                        "name": "scenes",
+                        "spec": [
+                            {
+                                "name": "imagePrompt",
+                                "type": "text",
+                                "label": "Image Prompt"
+                            },
+                            {
+                                "name": "voiceOverText",
+                                "type": "text",
+                                "label": "Voice Over Text"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Scenes"
+                    },
+                    {
+                        "name": "voiceModel",
+                        "type": "select",
+                        "label": "Voice Model",
+                        "validate": {
+                            "enum": [
+                                "azure",
+                                "elevenlabs",
+                                "elevenlabs-flash-v2-5"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "voiceConnectionID",
+                        "type": "text",
+                        "label": "Voice Connection ID"
+                    },
+                    {
+                        "name": "voice",
+                        "type": "text",
+                        "label": "Voice"
+                    },
+                    {
+                        "name": "imageAspectRatio",
+                        "type": "select",
+                        "label": "Image Aspect Ratio",
+                        "validate": {
+                            "enum": [
+                                "vertical",
+                                "horizontal",
+                                "squared"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "imageModel",
+                        "type": "select",
+                        "label": "Image Model",
+                        "validate": {
+                            "enum": [
+                                "freepik-classic",
+                                "flux-pro"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "subtitlesModel",
+                        "type": "select",
+                        "label": "Subtitles Model",
+                        "validate": {
+                            "enum": [
+                                "default",
+                                "whisper",
+                                "none"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "fontFamily",
+                        "type": "text",
+                        "label": "Font Family"
+                    },
+                    {
+                        "name": "make_webhook_url",
+                        "type": "text",
+                        "label": "Webhook URL"
+                    },
+                    {
+                        "name": "client_data",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Client data"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "json2video:waitForAMovieToRender",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 6768278
+            },
+            "mapper": {
+                "project": "{{3.project}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -752,
+                    "y": -78
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "json2video"
+                            },
+                            "label": "My JSON2Video connection (mrrutra@gmail.com - admin)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:json2video",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "project",
+                        "type": "text",
+                        "label": "Project ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "http:ActionGetFile",
+            "version": 3,
+            "parameters": {
+                "handleErrors": false
+            },
+            "mapper": {
+                "url": "{{4.movie.url}}",
+                "method": "get",
+                "serializeUrl": false,
+                "shareCookies": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": -499,
+                    "y": -78
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "handleErrors",
+                        "type": "boolean",
+                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "serializeUrl",
+                        "type": "boolean",
+                        "label": "Serialize URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "hidden",
+                        "label": "Method"
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 3933155
+            },
+            "mapper": {
+                "model": "gpt-4o-mini",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "На основе текста придумай заголовок для Youtube на русском языке. Заголовок должен цеплять!!! Учитывая все правила этой платформы и рекомендации по SEO и маркетинговому продвижениею на Youtube 70 символов максимум без скобок и лишних знаков\n\nВот совет: Включайте ключевые слова в заголовки и описания ваших пинов. Это поможет пользователям находить ваш контент через поиск"
+                    },
+                    {
+                        "role": "user",
+                        "content": "Вот тема ролика: {{3.value}}\n\nВ твоём ответе не должно быть лишних символов разметок и ковычек, только текст ",
+                        "imageDetail": "auto"
+                    }
+                ],
+                "max_tokens": "400",
+                "temperature": "1",
+                "n_completions": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -239,
+                    "y": -83,
+                    "name": "ЗАГОЛОВОК"
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4o-mini (system)"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT and o1 models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "Developer / System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    },
+                                    "imageDetail": {
+                                        "mode": "chose",
+                                        "label": "Auto"
+                                    },
+                                    "imageInputType": {
+                                        "mode": "chose",
+                                        "label": "Empty"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "Maya"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "uinteger",
+                        "label": "Max Completion Tokens"
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": {
+                                        "store": [
+                                            {
+                                                "label": "User",
+                                                "value": "user",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    },
+                                                    {
+                                                        "name": "imageInputType",
+                                                        "type": "select",
+                                                        "label": "Image Input Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "URL",
+                                                                "value": "url",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Make sure to use a publicly accessible URL.\nYou can test if your image is publicly accessible by opening the link in an incognito tab.",
+                                                                        "name": "imageUrl",
+                                                                        "type": "url",
+                                                                        "label": "Image URL"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Image File",
+                                                                "value": "file",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "imageFile",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                "name": "imageFilename",
+                                                                                "type": "filename",
+                                                                                "label": "Image Filename",
+                                                                                "semantic": "file:name",
+                                                                                "extension": [
+                                                                                    "jpg",
+                                                                                    "jpeg",
+                                                                                    "png",
+                                                                                    "webp",
+                                                                                    "gif"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "name": "imageData",
+                                                                                "type": "buffer",
+                                                                                "label": "Image Data",
+                                                                                "semantic": "file:data"
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Image"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "mappable": false
+                                                    },
+                                                    {
+                                                        "help": "Recommended value: `Auto`",
+                                                        "name": "imageDetail",
+                                                        "type": "select",
+                                                        "label": "Image Detail",
+                                                        "options": [
+                                                            {
+                                                                "label": "Auto",
+                                                                "value": "auto",
+                                                                "default": true
+                                                            },
+                                                            {
+                                                                "label": "High",
+                                                                "value": "high"
+                                                            },
+                                                            {
+                                                                "label": "Low",
+                                                                "value": "low"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Assistant",
+                                                "value": "assistant",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Developer / System",
+                                                "value": "system",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "required": true
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "prediction",
+                        "type": "text",
+                        "label": "Predicted Outputs"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "result",
+                        "type": "any",
+                        "label": "Result"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "object",
+                        "type": "text",
+                        "label": "Object"
+                    },
+                    {
+                        "name": "created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "model",
+                        "type": "text",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "choices",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text"
+                                },
+                                {
+                                    "name": "index",
+                                    "type": "number",
+                                    "label": "Index"
+                                },
+                                {
+                                    "name": "logprobs",
+                                    "type": "text",
+                                    "label": "Log Probs"
+                                },
+                                {
+                                    "name": "finish_reason",
+                                    "type": "text",
+                                    "label": "Finish Reason"
+                                },
+                                {
+                                    "name": "message",
+                                    "spec": [
+                                        {
+                                            "name": "role",
+                                            "type": "text",
+                                            "label": "Role"
+                                        },
+                                        {
+                                            "name": "content",
+                                            "type": "text",
+                                            "label": "Content"
+                                        },
+                                        {
+                                            "name": "refusal",
+                                            "type": "text",
+                                            "label": "Refusal"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Message"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "Choices"
+                    },
+                    {
+                        "name": "usage",
+                        "spec": [
+                            {
+                                "name": "prompt_tokens",
+                                "type": "number",
+                                "label": "Prompt Tokens"
+                            },
+                            {
+                                "name": "completion_tokens",
+                                "type": "text",
+                                "label": "Completion Tokens"
+                            },
+                            {
+                                "name": "total_tokens",
+                                "type": "number",
+                                "label": "Total Tokens"
+                            },
+                            {
+                                "name": "prompt_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "cached_tokens",
+                                        "type": "uinteger",
+                                        "label": "Cached Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "image_tokens",
+                                        "type": "uinteger",
+                                        "label": "Image Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Prompt Tokens Details"
+                            },
+                            {
+                                "name": "completion_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "reasoning_tokens",
+                                        "type": "uinteger",
+                                        "label": "Reasoning Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    },
+                                    {
+                                        "name": "accepted_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Accepted Prediction Tokens"
+                                    },
+                                    {
+                                        "name": "rejected_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Rejected Prediction Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Completion Tokens Details"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Usage"
+                    },
+                    {
+                        "name": "service_tier",
+                        "type": "text",
+                        "label": "Service Tier"
+                    },
+                    {
+                        "name": "system_fingerprint",
+                        "type": "text",
+                        "label": "System Fingerprint"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 3933155
+            },
+            "mapper": {
+                "model": "gpt-4o-mini",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "Н\nПОсапиши короткую пост об этом образе для Youtube на русском языке. Cоздай 3 хэштега потеме . Со всеми знаками  и пробелами должно быть не более 500 символов. Вот совет:\n\nВ твоём ответе не должно быть лишних символов разметок и ковычек, только текст описания, в начале всегда ставь это :\n\nТелеграм канал : https://t.me/maya_pro\nКурс по Make: https://kv-ai.ru/obuchenie-po-make\nBlueprint для make : https://kv-ai.ru/blyuprinty-make-com-podpiska\nСервис Make : https://www.make.com/en/register?pc=horosheff\n​"
+                    },
+                    {
+                        "role": "user",
+                        "content": "Вот тема ролика {{3.value}}",
+                        "imageDetail": "auto"
+                    }
+                ],
+                "max_tokens": "400",
+                "temperature": "1",
+                "n_completions": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 34,
+                    "y": -82,
+                    "name": "Описание и хэштеги"
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4o-mini (system)"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT and o1 models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "Developer / System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    },
+                                    "imageDetail": {
+                                        "mode": "chose",
+                                        "label": "Auto"
+                                    },
+                                    "imageInputType": {
+                                        "mode": "chose",
+                                        "label": "Empty"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "Maya"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "uinteger",
+                        "label": "Max Completion Tokens"
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": {
+                                        "store": [
+                                            {
+                                                "label": "User",
+                                                "value": "user",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    },
+                                                    {
+                                                        "name": "imageInputType",
+                                                        "type": "select",
+                                                        "label": "Image Input Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "URL",
+                                                                "value": "url",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Make sure to use a publicly accessible URL.\nYou can test if your image is publicly accessible by opening the link in an incognito tab.",
+                                                                        "name": "imageUrl",
+                                                                        "type": "url",
+                                                                        "label": "Image URL"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Image File",
+                                                                "value": "file",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "imageFile",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                "name": "imageFilename",
+                                                                                "type": "filename",
+                                                                                "label": "Image Filename",
+                                                                                "semantic": "file:name",
+                                                                                "extension": [
+                                                                                    "jpg",
+                                                                                    "jpeg",
+                                                                                    "png",
+                                                                                    "webp",
+                                                                                    "gif"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "name": "imageData",
+                                                                                "type": "buffer",
+                                                                                "label": "Image Data",
+                                                                                "semantic": "file:data"
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Image"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "mappable": false
+                                                    },
+                                                    {
+                                                        "help": "Recommended value: `Auto`",
+                                                        "name": "imageDetail",
+                                                        "type": "select",
+                                                        "label": "Image Detail",
+                                                        "options": [
+                                                            {
+                                                                "label": "Auto",
+                                                                "value": "auto",
+                                                                "default": true
+                                                            },
+                                                            {
+                                                                "label": "High",
+                                                                "value": "high"
+                                                            },
+                                                            {
+                                                                "label": "Low",
+                                                                "value": "low"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Assistant",
+                                                "value": "assistant",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Developer / System",
+                                                "value": "system",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "required": true
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "prediction",
+                        "type": "text",
+                        "label": "Predicted Outputs"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "result",
+                        "type": "any",
+                        "label": "Result"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "object",
+                        "type": "text",
+                        "label": "Object"
+                    },
+                    {
+                        "name": "created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "model",
+                        "type": "text",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "choices",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text"
+                                },
+                                {
+                                    "name": "index",
+                                    "type": "number",
+                                    "label": "Index"
+                                },
+                                {
+                                    "name": "logprobs",
+                                    "type": "text",
+                                    "label": "Log Probs"
+                                },
+                                {
+                                    "name": "finish_reason",
+                                    "type": "text",
+                                    "label": "Finish Reason"
+                                },
+                                {
+                                    "name": "message",
+                                    "spec": [
+                                        {
+                                            "name": "role",
+                                            "type": "text",
+                                            "label": "Role"
+                                        },
+                                        {
+                                            "name": "content",
+                                            "type": "text",
+                                            "label": "Content"
+                                        },
+                                        {
+                                            "name": "refusal",
+                                            "type": "text",
+                                            "label": "Refusal"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Message"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "Choices"
+                    },
+                    {
+                        "name": "usage",
+                        "spec": [
+                            {
+                                "name": "prompt_tokens",
+                                "type": "number",
+                                "label": "Prompt Tokens"
+                            },
+                            {
+                                "name": "completion_tokens",
+                                "type": "text",
+                                "label": "Completion Tokens"
+                            },
+                            {
+                                "name": "total_tokens",
+                                "type": "number",
+                                "label": "Total Tokens"
+                            },
+                            {
+                                "name": "prompt_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "cached_tokens",
+                                        "type": "uinteger",
+                                        "label": "Cached Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "image_tokens",
+                                        "type": "uinteger",
+                                        "label": "Image Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Prompt Tokens Details"
+                            },
+                            {
+                                "name": "completion_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "reasoning_tokens",
+                                        "type": "uinteger",
+                                        "label": "Reasoning Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    },
+                                    {
+                                        "name": "accepted_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Accepted Prediction Tokens"
+                                    },
+                                    {
+                                        "name": "rejected_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Rejected Prediction Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Completion Tokens Details"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Usage"
+                    },
+                    {
+                        "name": "service_tier",
+                        "type": "text",
+                        "label": "Service Tier"
+                    },
+                    {
+                        "name": "system_fingerprint",
+                        "type": "text",
+                        "label": "System Fingerprint"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 299,
+                    "y": -80,
+                    "name": "ВЫКЛАДКА"
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 9,
+                            "module": "instagram-business:CreateAReelPost",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 2458524
+                            },
+                            "mapper": {
+                                "caption": "{{7.result}}",
+                                "accountId": "17841450346775140",
+                                "video_url": "{{4.movie.url}}",
+                                "share_to_feed": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 789,
+                                    "y": -300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "accountId": {
+                                            "mode": "chose",
+                                            "label": "Ковчег (@kov4eg_ai)"
+                                        },
+                                        "share_to_feed": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "facebook"
+                                            },
+                                            "label": "Артур (Артур Хорошев)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:facebook",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "accountId",
+                                        "type": "select",
+                                        "label": "Page",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "video_url",
+                                        "type": "url",
+                                        "label": "Video URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "caption",
+                                        "type": "text",
+                                        "label": "Caption"
+                                    },
+                                    {
+                                        "name": "thumb_offset",
+                                        "type": "number",
+                                        "label": "Cover Frame"
+                                    },
+                                    {
+                                        "name": "location_id",
+                                        "type": "text",
+                                        "label": "Location ID"
+                                    },
+                                    {
+                                        "name": "share_to_feed",
+                                        "type": "boolean",
+                                        "label": "Share to Feed",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 10,
+                            "module": "app#threads-1lqd8y:video",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 6702617
+                            },
+                            "mapper": {
+                                "caption": "{{6.result}}",
+                                "videoUrl": "{{4.movie.url}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 567,
+                                    "y": -32
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "app#threads-1lqd8y2"
+                                            },
+                                            "label": "v1"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:app#threads-1lqd8y2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "videoUrl",
+                                        "type": "text",
+                                        "label": "Ссылка на видео",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "caption",
+                                        "type": "text",
+                                        "label": "Описание видео"
+                                    },
+                                    {
+                                        "name": "videoUrl",
+                                        "type": "text",
+                                        "label": "Ссылка на видео",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "caption",
+                                        "type": "text",
+                                        "label": "Описание видео"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 11,
+                            "module": "util:FunctionSleep",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "duration": "30"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 800,
+                                    "y": 29
+                                },
+                                "restore": {},
+                                "expect": [
+                                    {
+                                        "name": "duration",
+                                        "type": "uinteger",
+                                        "label": "Delay",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 300,
+                                            "min": 1
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "module": "app#threads-1lqd8y:publish",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 6702617
+                            },
+                            "mapper": {
+                                "container_id": "{{10.creation_id}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1043,
+                                    "y": 100
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "app#threads-1lqd8y2"
+                                            },
+                                            "label": "v1"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:app#threads-1lqd8y2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "container_id",
+                                        "type": "text",
+                                        "label": "ID контейнера",
+                                        "required": true
+                                    }
+                                ]
+                            },
+                            "onerror": [
+                                {
+                                    "id": 13,
+                                    "module": "builtin:Ignore",
+                                    "version": 1,
+                                    "metadata": {
+                                        "designer": {
+                                            "x": 1308,
+                                            "y": 129
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 14,
+                            "module": "app#discord-connector-nq1abo:mjseed",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 6402205
+                            },
+                            "mapper": {
+                                "prompt": "{{2.scenes[].imagePrompt}} male , action scene  --cref https://s.mj.run/35IdXMZqEvk --cw 0 --sref https://s.mj.run/vz7TW8sJp-A  --ar 16:10",
+                                "maxJobs": "3",
+                                "discordToken": "***",
+                                "discordServerId": "***",
+                                "discordChannelId": "***"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 454,
+                                    "y": 149
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "maxJobs": {
+                                            "mode": "chose",
+                                            "label": "тариф Midjourney 10$ или 30$"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "app#discord-connector-nq1abo"
+                                            },
+                                            "label": "Тестовый"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:app#discord-connector-nq1abo",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "prompt",
+                                        "type": "text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "maxJobs",
+                                        "type": "select",
+                                        "label": "Тариф Midjourney",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "3",
+                                                "10"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "discordToken",
+                                        "type": "text",
+                                        "label": "Токен discord",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "discordServerId",
+                                        "type": "text",
+                                        "label": "Сервер discord",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "discordChannelId",
+                                        "type": "text",
+                                        "label": "Id канала discord",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "replyUrl",
+                                        "type": "text",
+                                        "label": "Адрес вебхука задачи"
+                                    },
+                                    {
+                                        "name": "replyRef",
+                                        "type": "text",
+                                        "label": "Реферер задачи"
+                                    },
+                                    {
+                                        "name": "replyUrl2",
+                                        "type": "text",
+                                        "label": "Адрес вебхука большого изображения"
+                                    },
+                                    {
+                                        "name": "replyRef2",
+                                        "type": "text",
+                                        "label": "Реферер большого изображения"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "http:ActionGetFile",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": false
+                            },
+                            "mapper": {
+                                "url": "{{14.attachments[].url}}",
+                                "method": "get",
+                                "serializeUrl": false,
+                                "shareCookies": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 608,
+                                    "y": 324
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "hidden",
+                                        "label": "Method"
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "module": "app#vkplus-nqbpd7:univesalvideoioblozhka",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 7103503
+                            },
+                            "mapper": {
+                                "name": "{{6.result}}",
+                                "group_id": "227928951",
+                                "wallpost": true,
+                                "file_data": "{{5.data}}",
+                                "file_name": "{{5.fileName}}",
+                                "description": "{{7.result}}",
+                                "thumb_file_data": "{{15.data}}",
+                                "thumb_file_name": "{{15.fileName}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 792,
+                                    "y": 515
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "repeat": {
+                                            "mode": "chose"
+                                        },
+                                        "wallpost": {
+                                            "mode": "chose"
+                                        },
+                                        "is_private": {
+                                            "mode": "chose"
+                                        },
+                                        "no_comments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "app#vkplus-nqbpd710"
+                                            },
+                                            "label": "МОЙ ТОКЕН VK ( )"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:app#vkplus-nqbpd710",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "📝 Название"
+                                    },
+                                    {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "📄 Описание"
+                                    },
+                                    {
+                                        "name": "is_private",
+                                        "type": "boolean",
+                                        "label": "🔒 Приватное"
+                                    },
+                                    {
+                                        "name": "wallpost",
+                                        "type": "boolean",
+                                        "label": "📌 Опубликовать на стене"
+                                    },
+                                    {
+                                        "name": "link",
+                                        "type": "url",
+                                        "label": "🌍 Ссылка на видео"
+                                    },
+                                    {
+                                        "name": "group_id",
+                                        "type": "uinteger",
+                                        "label": "👥 ID группы"
+                                    },
+                                    {
+                                        "name": "album_id",
+                                        "type": "uinteger",
+                                        "label": "📔 ID альбома"
+                                    },
+                                    {
+                                        "name": "privacy_view",
+                                        "type": "text",
+                                        "label": "👀 Настройки приватности просмотра"
+                                    },
+                                    {
+                                        "name": "privacy_comment",
+                                        "type": "text",
+                                        "label": "💬 Настройки приватности комментариев"
+                                    },
+                                    {
+                                        "name": "no_comments",
+                                        "type": "boolean",
+                                        "label": "🔕 Отключить комментарии"
+                                    },
+                                    {
+                                        "name": "repeat",
+                                        "type": "boolean",
+                                        "label": "🔁 Зациклить воспроизведение"
+                                    },
+                                    {
+                                        "name": "file_data",
+                                        "type": "buffer",
+                                        "label": "📂 Видео файл для загрузки",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "file_name",
+                                        "type": "filename",
+                                        "label": "📝 Имя видеофайла",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "thumb_file_data",
+                                        "type": "buffer",
+                                        "label": "🖼 Обложка для видео (миниатюра)",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "thumb_file_name",
+                                        "type": "filename",
+                                        "label": "📝 Имя файла обложки",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 17,
+                            "module": "youtube:uploadVideo",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 7261729
+                            },
+                            "mapper": {
+                                "data": "{{5.data}}",
+                                "title": "{{6.result}}",
+                                "fileName": "{{5.fileName}}",
+                                "categoryId": "28",
+                                "description": "{{7.result}}",
+                                "privacyStatus": "public",
+                                "selfDeclaredMadeForKids": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 492,
+                                    "y": -375
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "tags": {
+                                            "mode": "chose"
+                                        },
+                                        "license": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "categoryId": {
+                                            "mode": "chose",
+                                            "label": "Science & Technology"
+                                        },
+                                        "embeddable": {
+                                            "mode": "chose"
+                                        },
+                                        "privacyStatus": {
+                                            "mode": "chose",
+                                            "label": "Public"
+                                        },
+                                        "notifySubscribers": {
+                                            "mode": "chose"
+                                        },
+                                        "selfDeclaredMadeForKids": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "youtube"
+                                            },
+                                            "label": "My YouTube connection (Alina Shalneva <alina.lelaj@gmail.com>)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:youtube",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "type": "hidden"
+                                    },
+                                    {
+                                        "name": "title",
+                                        "type": "text",
+                                        "label": "Title",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 100
+                                        }
+                                    },
+                                    {
+                                        "name": "fileName",
+                                        "type": "filename",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "categoryId",
+                                        "type": "select",
+                                        "label": "Video Category",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "privacyStatus",
+                                        "type": "select",
+                                        "label": "Privacy Status and Scheduling",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "private",
+                                                "unlisted",
+                                                "public"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "Description",
+                                        "validate": {
+                                            "max": 5000
+                                        }
+                                    },
+                                    {
+                                        "name": "selfDeclaredMadeForKids",
+                                        "type": "boolean",
+                                        "label": "**The video is made for kids**",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "tags",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Tag",
+                                            "required": true,
+                                            "validate": {
+                                                "max": 500
+                                            }
+                                        },
+                                        "type": "array",
+                                        "label": "Tags"
+                                    },
+                                    {
+                                        "name": "recordingDate",
+                                        "type": "date",
+                                        "label": "Recording Date"
+                                    },
+                                    {
+                                        "name": "license",
+                                        "type": "select",
+                                        "label": "License",
+                                        "validate": {
+                                            "enum": [
+                                                "youtube",
+                                                "creativeCommon"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "embeddable",
+                                        "type": "boolean",
+                                        "label": "Allow Embedding"
+                                    },
+                                    {
+                                        "name": "notifySubscribers",
+                                        "type": "boolean",
+                                        "label": "Notify Subscribers"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 18,
+                            "module": "google-sheets:deleteRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 2487103
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "select": "list",
+                                "sheetId": 0,
+                                "rowNumber": "1",
+                                "spreadsheetId": "/1TUSdg0hkF2Ce2QE7udJ0e9jiDmm-WgRxWEh68vsYxcA"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 659,
+                                    "y": -581
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "from": {
+                                            "label": "My Drive"
+                                        },
+                                        "select": {
+                                            "label": "Search by path"
+                                        },
+                                        "sheetId": {
+                                            "label": "Лист1"
+                                        },
+                                        "spreadsheetId": {
+                                            "path": [
+                                                "ВИДЕО"
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "My Google connection (mr.rutra@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Search Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "list",
+                                                "fromAll",
+                                                "map"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "rowNumber",
+                                        "type": "uinteger",
+                                        "label": "Row number",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "from",
+                                        "type": "select",
+                                        "label": "Drive",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "drive",
+                                                "share",
+                                                "team"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "spreadsheetId",
+                                        "type": "file",
+                                        "label": "Spreadsheet ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sheetId",
+                                        "type": "select",
+                                        "label": "Sheet ID",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

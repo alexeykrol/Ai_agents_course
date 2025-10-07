@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto-Save Text Editor (React + Tailwind)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (development builds) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for in-browser JSX transform (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Prevent iOS zoom on inputs */
+    input, textarea { font-size: 16px; }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useEffect, useRef, useState } = React;
+
+    function EditorApp() {
+      const [title, setTitle] = useState("Untitled");
+      const [body, setBody] = useState("");
+      const [isSaving, setIsSaving] = useState(false);
+      const [lastSaved, setLastSaved] = useState(null);
+      const timerRef = useRef(null);
+
+      const triggerSave = () => {
+        // Clear existing timer
+        if (timerRef.current) clearTimeout(timerRef.current);
+        // Mark as saving while typing
+        setIsSaving(true);
+        // Simulate save after 2s of inactivity
+        timerRef.current = setTimeout(() => {
+          setIsSaving(false);
+          setLastSaved(new Date());
+        }, 2000);
+      };
+
+      // Trigger save on content changes
+      useEffect(() => {
+        if (title === "Untitled" && body === "") return; // avoid initial save flash
+        triggerSave();
+        return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [title, body]);
+
+      useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+      const statusText = isSaving ? "Auto-saving…" : "All changes saved";
+
+      return (
+        <div className="h-screen flex flex-col">
+          {/* Fixed Header */}
+          <header className="fixed top-0 inset-x-0 h-14 border-b border-gray-200 bg-white/80 backdrop-blur z-10">
+            <div className="h-full max-w-5xl mx-auto px-4 flex items-center gap-3">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="flex-1 min-w-0 rounded-lg border border-transparent px-2 py-1.5 text-base font-medium focus:border-gray-300 focus:outline-none"
+                placeholder="Document title"
+              />
+              <div className="text-xs sm:text-sm select-none text-gray-500 whitespace-nowrap">
+                {statusText}
+              </div>
+            </div>
+          </header>
+
+          {/* Content Area (fills remaining space) */}
+          <main className="flex-1 pt-14">
+            <div className="max-w-5xl mx-auto h-full px-4">
+              <div className="h-full">
+                <textarea
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder="Start typing…"
+                  className="block w-full h-full resize-none outline-none text-base leading-7 sm:text-lg sm:leading-8 p-3 sm:p-4 rounded-xl border border-transparent focus:border-gray-200"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<EditorApp />);
+  </script>
+</body>
+</html>

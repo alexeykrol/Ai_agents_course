@@ -1,0 +1,376 @@
+{
+  "name": "Twitter_AIselebs",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://rss.app/feeds/4V3QMDfWEY4Dukx8.xml"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        0
+      ],
+      "id": "b28c2bd5-5255-4ab3-b618-ec5e3bb6414e",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let raw = item.json.contentSnippet || \"\";          // ← здесь\n// (если literal \"\\n\" нужно конвертировать, сделайте .split(\"\\\\n\").join(\"\\n\") )\nlet cleaned = raw\n  .replace(/https?:\\/\\/\\S+/g, \"\")                  // ссылки\n  .replace(/#[\\w\\d_]+/g, \"\")                       // хэштеги\n  .replace(/@[\\w\\d_]+/g, \"\")                       // упоминания\n  .replace(/[ \\t]{2,}/g, \" \")                      // лишние пробелы\n  .replace(/\\n{3,}/g, \"\\n\\n\")                      // >2 пустых строк → 1\n  .trim();\n\n// сохраняем обратно в тот же key\nitem.json.contentSnippet = cleaned;                // ← и здесь\n\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        240
+      ],
+      "id": "98facdf3-fd6e-4052-bb36-6a592e731d80",
+      "name": "Удаление мусора"
+    },
+    {
+      "parameters": {
+        "chatId": "-1001381692730",
+        "text": "=<b>Оригинальный Твит:</b> {{ $('Перевод').item.json.choices[0].message.content }}, {{ $('RSS Feed Trigger').item.json.link }}\n\n<b>Разбор</b>: {{ $json.choices[0].message.content }}\n\n<b>Лента AIseleb:</b> - пафосные люди из мира IT, кто иногда говорит что-то полезное: https://x.com/i/lists/1893738230648033398",
+        "replyMarkup": "forceReply",
+        "forceReply": {},
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2520,
+        240
+      ],
+      "id": "0163aaf5-16e4-45fa-a060-e07fdc3c2ed2",
+      "name": "Телеграм",
+      "webhookId": "abf5d929-172a-4000-971b-dac137dfb52c",
+      "credentials": {
+        "telegramApi": {
+          "id": "kwX9s2KoZT3g0H8V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. исходник\nconst raw = item.json.contentSnippet || \"\";\n\n// 2. чистка\nlet text = raw\n  .split(\"\\\\n\").join(\"\\n\")\n  .replace(/<[^>]+>/g, \"\")\n  .replace(/\\[https?:\\/\\/[^\\]]+\\]/g, \"\")\n  .replace(/https?:\\/\\/\\S+/g, \"\")\n  .replace(/#[\\w\\d_]+/g, \"\")\n  .replace(/@[\\w\\d_]+/g, \"\")\n  .replace(/cc:\\s*pic\\.twitter\\.com\\/\\S+/gi, \"\")\n  .replace(/[ \\t]{2,}/g, \" \")\n  .replace(/\\n{3,}/g, \"\\n\\n\")\n  .trim();\n\n// 3. возвращаем\nitem.json.contentSnippet = text;\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        240
+      ],
+      "id": "18253a08-94d8-4ab7-a275-f41fb333e6ff",
+      "name": "replace(/cc:\\s*pic"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43470c2a-f4bd-430f-8496-bf42ff2a3292",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "\"RT @",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        -220
+      ],
+      "id": "7ad4b873-b4a9-4062-a9e4-37e1c3ebc6b1",
+      "name": "Да \"RT @"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43470c2a-f4bd-430f-8496-bf42ff2a3292",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "\"@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        0
+      ],
+      "id": "fad61c35-a805-460d-af36-ca61575813a3",
+      "name": "Да \"@"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43470c2a-f4bd-430f-8496-bf42ff2a3292",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "\"@",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "7e0bd6c3-e865-48bb-94dc-66aabd23e490",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "\"RT @",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        240
+      ],
+      "id": "e3be696b-d16f-4e50-b629-a92a1cd18120",
+      "name": "Твит"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Translate this into Russian as accurately as possible, taking into account the contexts",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.contentSnippet }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1660,
+        240
+      ],
+      "id": "a7eadd8c-962e-4afc-a61e-10b5b4b07531",
+      "name": "Перевод",
+      "credentials": {
+        "openAiApi": {
+          "id": "HNspK7aWjsgYrzHc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Analyze this text and try to comment on what is meant here and how it relates to the ability to create something. Are these new opportunities or threats? The final text should not exceed approximately 1000 characters or approximately 200 words.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.choices[0].message.content }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2080,
+        240
+      ],
+      "id": "51ac5639-e373-494d-8114-90968eddb2e4",
+      "name": "Комментарий",
+      "credentials": {
+        "openAiApi": {
+          "id": "HNspK7aWjsgYrzHc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://rss.app/feeds/4V3QMDfWEY4Dukx8.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        -280,
+        -240
+      ],
+      "id": "467f5263-dce8-4d23-bdc6-c5a0edcde8ae",
+      "name": "RSS Read1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Твит",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Да \"@",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Да \"RT @",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Удаление мусора": {
+      "main": [
+        [
+          {
+            "node": "replace(/cc:\\s*pic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "replace(/cc:\\s*pic": {
+      "main": [
+        [
+          {
+            "node": "Перевод",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Да \"RT @": {
+      "main": [
+        []
+      ]
+    },
+    "Твит": {
+      "main": [
+        [
+          {
+            "node": "Удаление мусора",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Перевод": {
+      "main": [
+        [
+          {
+            "node": "Комментарий",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Комментарий": {
+      "main": [
+        [
+          {
+            "node": "Телеграм",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0bc5142e-9931-4098-b7af-ddc8280e578e",
+  "meta": {
+    "instanceId": "f6d75b3a10ac990baeac979361444e13968039955b88afe4d9f2bbb685dc10b1"
+  },
+  "id": "9BNxr0mWeHVAUr1H",
+  "tags": []
+}

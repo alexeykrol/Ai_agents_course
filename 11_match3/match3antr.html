@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Elemental Harmony - Match-3 Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    canvas { display: block; margin: 0 auto; background: #333; }
+  </style>
+</head>
+<body>
+<script>
+// ------ СЦЕНЫ ------
+
+// BootScene: стартовая сцена для подготовки
+class BootScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'BootScene' });
+  }
+  preload() {
+    console.log("BootScene: preload");
+  }
+  create() {
+    console.log("BootScene: create");
+    this.scene.start('PreloaderScene');
+  }
+}
+
+// PreloaderScene: создаём текстуры для плиток
+class PreloaderScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'PreloaderScene' });
+  }
+  preload() {
+    console.log("PreloaderScene: preload");
+    // Определяем цвета для плиток
+    const colors = { red: 0xff0000, green: 0x00ff00, blue: 0x0000ff, yellow: 0xffff00, purple: 0x800080 };
+    for (const [key, color] of Object.entries(colors)) {
+      let graphics = this.make.graphics({ x: 0, y: 0, add: false });
+      graphics.fillStyle(color, 1);
+      graphics.fillRect(0, 0, 64, 64);
+      graphics.generateTexture(key, 64, 64);
+    }
+  }
+  create() {
+    console.log("PreloaderScene: create");
+    this.scene.start('GameScene');
+  }
+}
+
+// GameScene: основная игровая логика
+class GameScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'GameScene' });
+    this.score = 0;
+    this.isProcessing = false; // блокирует ввод во время анимаций
+  }
+  
+  init() {
+    this.cols = 8;
+    this.rows = 8;
+    this.tileSize = 64;
+    this.grid = [];
+    this.selectedTile = null;
+    this.colors = ['red', 'green', 'blue', 'yellow', 'purple'];
+    console.log("GameScene: init");
+  }
+  
+  create() {
+    console.log("GameScene: create");
+    this.add.text(10, 10, 'Elemental Harmony', { fontSize: '20px', fill: '#ffffff' });
+    this.scoreText = this.add.text(10, 40, 'Score: 0', { fontSize: '16px', fill: '#ffffff' });
+    this.createGrid();
+  }
+  
+  createGrid() {
+    // Создаём сетку случайных плиток
+    for (let row = 0; row < this.rows; row++) {
+      this.grid[row] = [];
+      for (let col = 0; col < this.cols; col++) {
+        const color = Phaser.Utils.Array.GetRandom(this.colors);
+        let tile = this.add.sprite(col * this.tileSize + this.tileSize / 2, row * this.tileSize + this.tileSize / 2, color);
+        tile.setInteractive();
+        tile.row = row;
+        tile.col = col;
+        tile.color = color;
+        tile.isMatched = false;
+        tile.on('pointerdown', () => this.handleTileClick(tile));
+        this.grid[row][col] = tile;
+      }
+    }
+    // Можно добавить небольшую задержку, чтобы убедиться, что изначальные совпадения убраны
+    this.time.delayedCall(500, () => { this.processMatches(); });
+  }
+  
+  handleTileClick(tile) {
+    if (this.isProcessing) return;
+    if (!this.selectedTile) {
+      this.selectedTile = tile;
+      tile.setScale(1.2);
+    } else {
+      if (this.isAdjacent(tile, this.selectedTile)) {
+        this.swapTiles(this.selectedTile, tile, true);
+      } else {
+        this.selectedTile.setScale(1);
+        this.selectedTile = tile;
+        tile.setScale(1.2);
+      }
+    }
+  }
+  
+  isAdjacent(tileA, tileB) {
+    const dx = Math.abs(tileA.col - tileB.col);
+    const dy = Math.abs(tileA.row - tileB.row);
+    return (dx + dy === 1);
+  }
+  
+  swapTiles(tileA, tileB, checkMatch) {
+    this.isProcessing = true;
+    // Сохраняем исходные координаты
+    const tempRow = tileA.row;
+    const tempCol = tileA.col;
+    
+    // Обновляем grid
+    this.grid[tileA.row][tileA.col] = tileB;
+    this.grid[tileB.row][tileB.col] = tileA;
+    
+    // Меняем координаты плиток
+    tileA.row = tileB.row;
+    tileA.col = tileB.col;
+    tileB.row = tempRow;
+    tileB.col = tempCol;
+    
+    // Анимация перемещения
+    this.tweens.add({
+      targets: tileA,
+      x: tileA.col * this.tileSize + this.tileSize / 2,
+      y: tileA.row * this.tileSize + this.tileSize / 2,
+      duration: 200,
+    });
+    this.tweens.add({
+      targets: tileB,
+      x: tileB.col * this.tileSize + this.tileSize / 2,
+      y: tileB.row * this.tileSize + this.tileSize / 2,
+      duration: 200,
+      onComplete: () => {
+        if (checkMatch) {
+          if (!this.hasMatch()) {
+            // Если совпадений нет, меняем обратно
+            this.swapTiles(tileA, tileB, false);
+            this.time.delayedCall(250, () => {
+              this.isProcessing = false;
+            });
+          } else {
+            this.processMatches();
+          }
+        } else {
+          this.isProcessing = false;
+        }
+        // Сброс выбора
+        if (this.selectedTile) {
+          this.selectedTile.setScale(1);
+          this.selectedTile = null;
+        }
+      }
+    });
+  }
+  
+  // Проверяем всю сетку на совпадения
+  hasMatch() {
+    return this.findMatches().length > 0;
+  }
+  
+  // Находим совпадения по горизонтали и вертикали
+  findMatches() {
+    let matches = [];
+    
+    // Горизонтальные совпадения
+    for (let row = 0; row < this.rows; row++) {
+      let matchLength = 1;
+      for (let col = 0; col < this.cols; col++) {
+        let checkNext = (col < this.cols - 1);
+        if (checkNext && this.grid[row][col].color === this.grid[row][col+1].color) {
+          matchLength++;
+        } else {
+          if (matchLength >= 3) {
+            for (let i = 0; i < matchLength; i++) {
+              let tile = this.grid[row][col - i];
+              if (!matches.includes(tile)) matches.push(tile);
+            }
+          }
+          matchLength = 1;
+        }
+      }
+    }
+    
+    // Вертикальные совпадения
+    for (let col = 0; col < this.cols; col++) {
+      let matchLength = 1;
+      for (let row = 0; row < this.rows; row++) {
+        let checkNext = (row < this.rows - 1);
+        if (checkNext && this.grid[row][col].color === this.grid[row+1][col].color) {
+          matchLength++;
+        } else {
+          if (matchLength >= 3) {
+            for (let i = 0; i < matchLength; i++) {
+              let tile = this.grid[row - i][col];
+              if (!matches.includes(tile)) matches.push(tile);
+            }
+          }
+          matchLength = 1;
+        }
+      }
+    }
+    
+    return matches;
+  }
+  
+  // Удаляем совпавшие плитки, начисляем очки и запускаем падение плиток
+  processMatches() {
+    let matches = this.findMatches();
+    if (matches.length === 0) {
+      this.isProcessing = false;
+      return;
+    }
+    // Отмечаем и убираем совпавшие плитки
+    matches.forEach(tile => {
+      tile.isMatched = true;
+    });
+    
+    // Обновляем счет (например, 10 очков за плитку)
+    this.score += matches.length * 10;
+    this.scoreText.setText('Score: ' + this.score);
+    
+    // Анимация исчезновения плиток
+    this.tweens.add({
+      targets: matches,
+      alpha: 0,
+      scale: 0,
+      duration: 300,
+      onComplete: () => {
+        matches.forEach(tile => {
+          // Удаляем плитку из сцены и из grid
+          this.grid[tile.row][tile.col] = null;
+          tile.destroy();
+        });
+        this.cascadeTiles();
+      }
+    });
+  }
+  
+  // Пускаем плитки падать в пустые места и добавляем новые сверху
+  cascadeTiles() {
+    // Для каждого столбца проходим снизу вверх
+    let tweens = [];
+    for (let col = 0; col < this.cols; col++) {
+      let emptySpots = 0;
+      for (let row = this.rows - 1; row >= 0; row--) {
+        let tile = this.grid[row][col];
+        if (tile === null) {
+          emptySpots++;
+        } else if (emptySpots > 0) {
+          // Перемещаем плитку вниз
+          this.grid[row + emptySpots][col] = tile;
+          tile.row += emptySpots;
+          this.grid[row][col] = null;
+          tweens.push(this.tweens.add({
+            targets: tile,
+            y: tile.row * this.tileSize + this.tileSize / 2,
+            duration: 200,
+          }));
+        }
+      }
+      // Добавляем новые плитки в верхних пустых местах
+      for (let i = 0; i < emptySpots; i++) {
+        let newRow = i;
+        const color = Phaser.Utils.Array.GetRandom(this.colors);
+        let tile = this.add.sprite(col * this.tileSize + this.tileSize / 2, (newRow - emptySpots) * this.tileSize + this.tileSize / 2, color);
+        tile.setInteractive();
+        tile.row = newRow;
+        tile.col = col;
+        tile.color = color;
+        tile.isMatched = false;
+        tile.setAlpha(0);
+        tile.on('pointerdown', () => this.handleTileClick(tile));
+        this.grid[newRow][col] = tile;
+        tweens.push(this.tweens.add({
+          targets: tile,
+          y: newRow * this.tileSize + this.tileSize / 2,
+          alpha: 1,
+          duration: 200,
+        }));
+      }
+    }
+    // После всех анимаций снова проверяем совпадения (каскады)
+    this.time.delayedCall(250, () => {
+      this.processMatches();
+    });
+  }
+}
+
+// ------ Создание игры после объявления всех классов ------
+const config = {
+    type: Phaser.AUTO,
+    width: 512,
+    height: 512,
+    scene: [ BootScene, PreloaderScene, GameScene ]
+};
+
+const game = new Phaser.Game(config);
+</script>
+</body>
+</html>
